@@ -15,7 +15,6 @@
     "@datocms/astro": "0.6.2",
     "@datocms/cda-client": "0.2.7",
     "@datocms/cma-client-node": "4.0.2",
-    "@graphql-typed-document-node/core": "3.2.0",
     "astro": "5.15.9",
     "graphql": "16.11.0"
   },
