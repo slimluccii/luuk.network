@@ -40,7 +40,7 @@ const { block } = Astro.props;
     --image-size: 150px;
     position: relative;
     margin: -1px;
-    border: 1px solid oklch(0.269 0.042 263);
+    border: 1px solid var(--color-surface-base);
     border-block-start-color: transparent;
 
     @media (min-width: 500px) {
@@ -67,8 +67,8 @@ const { block } = Astro.props;
     flex-direction: column;
     gap: var(--spacing-size-l);
     margin: -1px;
-    border: 1px solid oklch(0.269 0.042 263);
-    background-color: oklch(0.269 0.042 263);
+    border: 1px solid var(--color-surface-base);
+    background-color: var(--color-surface-base);
     padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-xxl)
       var(--spacing-size-l);
   }

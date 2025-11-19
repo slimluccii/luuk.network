@@ -58,7 +58,7 @@ const { class: className, ...props } = Astro.props;
     display: flex;
     position: fixed;
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: var(--spacing-size-md);
     transform: scale(0);
     opacity: 0;
     transition:
@@ -68,9 +68,9 @@ const { class: className, ...props } = Astro.props;
       display 0.15s ease-out allow-discrete;
     margin: auto;
     inset: 0;
-    border: 1px solid oklch(0.269 0.042 263);
-    background: oklch(0.269 0.042 263);
-    padding: var(--spacing-lg);
+    border: 1px solid var(--color-surface-base);
+    background: var(--color-surface-base);
+    padding: var(--spacing-size-lg);
     width: 100%;
     max-inline-size: 600px;
   }

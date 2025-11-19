@@ -27,11 +27,11 @@ const { menu, class: className, ...props } = Astro.props;
     position: relative;
     justify-content: center;
     align-items: center;
-    transition: 0.3s;
+    transition-duration: var(--motion-transition);
     margin: -1px -1px 0px -1px;
-    border: 1px solid oklch(0.269 0.042 263);
+    border: 1px solid var(--color-surface-base);
     border-block-end-color: transparent;
-    background-color: #001523;
+    background-color: var(--color-surface-canvas);
     padding: var(--spacing-size-xs);
   }
 
@@ -39,17 +39,18 @@ const { menu, class: className, ...props } = Astro.props;
     position: absolute;
     transform: translateY(100%);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity ease;
+    transition-duration: var(--motion-transition);
     inset-block-end: 0px;
     inset-inline: 0px;
-    background: linear-gradient(to bottom, oklch(0.269 0.042 263), transparent);
-    height: var(--spacing-lg);
+    background: linear-gradient(to bottom, var(--color-surface-base), transparent);
+    height: var(--spacing-size-lg);
     pointer-events: none;
     content: "";
   }
 
   .header--scrolled {
-    border-block-end-color: oklch(0.269 0.042 263);
+    border-block-end-color: var(--color-surface-base);
   }
 
   .header--scrolled::after {
@@ -58,7 +59,7 @@ const { menu, class: className, ...props } = Astro.props;
 
   .home-link {
     display: inline-block;
-    padding: var(--spacing-xs);
+    padding: var(--spacing-size-xs);
   }
 </style>
 

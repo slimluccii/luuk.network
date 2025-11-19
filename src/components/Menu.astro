@@ -81,15 +81,15 @@ function getHref(page: Props["items"][0]["page"]) {
   .menu-open-button,
   .menu-close-button {
     position: fixed;
-    right: var(--spacing-lg);
-    bottom: var(--spacing-lg);
+    right: var(--spacing-size-lg);
+    bottom: var(--spacing-size-lg);
     z-index: 999;
   }
 
   .menu {
     position: fixed;
-    transform-origin: calc(100% - var(--spacing-lg))
-      calc(100% - var(--spacing-lg));
+    transform-origin: calc(100% - var(--spacing-size-lg))
+      calc(100% - var(--spacing-size-lg));
     transition:
       opacity 0.05s ease-out 0.15s,
       transform 0.2s ease-out;

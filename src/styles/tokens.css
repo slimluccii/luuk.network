@@ -32,11 +32,11 @@
   --text-size-3xl: 51px;
   --text-size-4xl: 67px;
 
-  --spacing-xss: 5px;
-  --spacing-xs: 7px;
-  --spacing-sm: 12px;
-  --spacing-md: 19px;
-  --spacing-lg: 31px;
-  --spacing-xl: 51px;
-  --spacing-xxl: 82px;
+  --spacing-size-xss: 5px;
+  --spacing-size-xs: 7px;
+  --spacing-size-sm: 12px;
+  --spacing-size-md: 19px;
+  --spacing-size-lg: 31px;
+  --spacing-size-xl: 51px;
+  --spacing-size-xxl: 82px;
 }

@@ -43,20 +43,20 @@ const {
   .button {
     display: inline-flex;
     align-items: center;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-size-xs);
     transition:
       background var(--motion-feedback),
       border var(--motion-feedback),
       color var(--motion-feedback);
     cursor: pointer;
     border: 1px solid;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-size-sm) var(--spacing-size-md);
     font-weight: 500;
     text-decoration: none;
   }
 
   .button--icon-only {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-size-sm);
   }
 
   .button--round {
@@ -65,8 +65,8 @@ const {
 
   .button,
   .button--primary {
-    border-color: oklch(0.68 0.179 247);
-    background-color: oklch(0.68 0.179 247);
+    border-color: var(--color-brand-primary-default);
+    background-color: var(--color-brand-primary-default);
     color: #000000;
   }
 
@@ -78,14 +78,14 @@ const {
   }
 
   .button--secondary {
-    border-color: oklch(0.937 0.015 270);
-    background-color: oklch(0.937 0.015 270);
+    border-color: var(--color-brand-secondary-default);
+    background-color: var(--color-brand-secondary-default);
     color: #000000;
   }
 
   .button--secondary:hover {
-    border-color: oklch(0.937 0.015 270);
-    background-color: oklch(0.937 0.015 270);
+    border-color: var(--color-brand-secondary-default);
+    background-color: var(--color-brand-secondary-default);
     color: #000000;
   }
 
@@ -108,8 +108,8 @@ const {
   }
 
   .button--transparent:hover {
-    border-color: oklch(0.269 0.042 263);
-    background-color: oklch(0.269 0.042 263);
+    border-color: var(--color-surface-base);
+    background-color: var(--color-surface-base);
     color: #ffffff;
   }
 </style>
