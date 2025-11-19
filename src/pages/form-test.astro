@@ -1,0 +1,21 @@
+---
+import { SiteLocale } from "@generated/datocms";
+import { Base } from "@layouts";
+import { Button, Form, FormField, FormLabel, InputEmail, InputPassword } from "@components";
+
+---
+
+<Base locale={SiteLocale.En}>
+    <Form method="post" action="/api/">
+        <FormField>
+            <FormLabel for="email">Email</FormLabel>
+            <InputEmail id="email" required />
+        </FormField>
+        <FormField>
+            <FormLabel for="password">Password</FormLabel>
+            <InputPassword id="password" required />
+        </FormField>
+
+        <Button type="submit">Submit</Button>
+    </Form>
+</Base>

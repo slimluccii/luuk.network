@@ -26,7 +26,7 @@ const {
 <Tag
   class:list={[
     "button",
-    `button--${variant}`,
+    { [`button--${variant}`]: variant },
     { "button--icon-only": iconOnly },
     { "button--round": round }
   ]}
@@ -45,24 +45,18 @@ const {
     align-items: center;
     gap: var(--spacing-xs);
     transition:
-      background 0.1618s,
-      border 0.1618s,
-      color 0.1618s;
+      background var(--motion-feedback),
+      border var(--motion-feedback),
+      color var(--motion-feedback);
     cursor: pointer;
     border: 1px solid;
     padding: var(--spacing-sm) var(--spacing-md);
-    font-weight: bold;
+    font-weight: 500;
     text-decoration: none;
   }
 
   .button--icon-only {
     padding: var(--spacing-sm);
-  }
-
-  .button--icon-only .button__icon {
-    padding: 4px;
-    width: 24px;
-    height: 24px;
   }
 
   .button--round {
@@ -93,6 +87,18 @@ const {
     border-color: oklch(0.937 0.015 270);
     background-color: oklch(0.937 0.015 270);
     color: #000000;
+  }
+
+  .button--link {
+    border-color: transparent;
+    background-color: transparent;
+    padding: 0px;
+    color: #ffd166;
+  }
+
+  .button--link:hover {
+    border-color: transparent;
+    background-color: transparent;
   }
 
   .button--transparent {

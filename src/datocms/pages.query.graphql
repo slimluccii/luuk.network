@@ -1,0 +1,7 @@
+#import '@datocms/page.fragment.graphql'
+
+query Pages($locale: SiteLocale) {
+  allPages(locale: $locale) {
+    ...Page
+  }
+}

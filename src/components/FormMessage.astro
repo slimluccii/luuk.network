@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { Icon } from "@components";
+
+type Props = HTMLAttributes<"p"> & {
+  type: "success" | "warning" | "error";
+};
+
+const { type, class: className, ...props } = Astro.props;
+---
+
+<p
+  {...props}
+  class:list={["form-message", `form-message--${type}`, className]}
+  role="status"
+>
+  <Icon name="xmark" />
+  <slot />
+</p>
+
+<style>
+    .form-message {
+        display: flex;
+        gap: var(--spacing-xs);
+        align-items: center;
+        color: red;
+    }
+</style>

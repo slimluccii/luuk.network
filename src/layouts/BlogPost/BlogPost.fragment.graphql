@@ -1,3 +1,0 @@
-fragment BlogPost on BlogPostRecord {
-  id
-}

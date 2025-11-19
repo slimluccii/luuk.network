@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"form">;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<form {...props} class:list={["form", className]}>
+  <slot />
+</form>
+
+<style>
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+</style>

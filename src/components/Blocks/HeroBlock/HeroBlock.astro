@@ -16,7 +16,7 @@ const { block } = Astro.props;
     <div class="hero-block-actions">
       <Image
         pictureClass="hero-block-picture"
-        data={block.image?.responsiveImage}
+        data={block.subjectImage.responsiveImage}
         priority={true}
       />
 
@@ -24,14 +24,14 @@ const { block } = Astro.props;
         as="a"
         icon="github"
         variant="secondary"
-        iconOnly
-        round
-        href="https://github.com/luukbrauckmann"
-        prefetch={false}>See my GitHub profile</Button
+        href="https://github.com/slimluccii"
+        prefetch={false}>GitHub</Button
       >
     </div>
-    <h1>{block.title}</h1>
-    <p>{block.description}</p>
+    <div class="hero-block-details">
+      <h1>{block.title}</h1>
+      <p>{block.description}</p>
+    </div>
   </div>
 </section>
 
@@ -39,13 +39,19 @@ const { block } = Astro.props;
   .hero-block {
     --image-size: 150px;
     position: relative;
-    margin: -1px -1px 0px -1px;
+    margin: -1px;
     border: 1px solid oklch(0.269 0.042 263);
     border-block-start-color: transparent;
+
+    @media (min-width: 500px) {
+      --image-size: 200px;
+    }
   }
 
   .hero-block__visual {
-    height: var(--image-size);
+    aspect-ratio: 16 / 9;
+    inline-size: 100%;
+    block-size: auto;
   }
 
   .hero-block :global(.hero-block-picture) {
@@ -59,20 +65,28 @@ const { block } = Astro.props;
   .hero-block__content {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: var(--spacing-size-l);
+    margin: -1px;
+    border: 1px solid oklch(0.269 0.042 263);
     background-color: oklch(0.269 0.042 263);
-    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-xxl)
-      var(--spacing-lg);
+    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-xxl)
+      var(--spacing-size-l);
   }
 
   .hero-block-actions {
     display: flex;
     position: relative;
     justify-content: flex-end;
-    padding-inline-start: calc(var(--image-size) + var(--spacing-lg));
+    padding-inline-start: calc(var(--image-size) + var(--spacing-size-l));
+  }
+
+  .hero-block-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
   }
 
   .hero-block__content h1 {
-    font-size: var(--text-size-3xl);
+    font-size: var(--typography-size-display);
   }
 </style>

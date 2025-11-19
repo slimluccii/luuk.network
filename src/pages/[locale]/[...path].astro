@@ -1,0 +1,29 @@
+---
+import type {
+  GetStaticPaths,
+  InferGetStaticParamsType,
+  InferGetStaticPropsType
+} from "astro";
+import type { SiteLocale } from "@generated/datocms";
+import { getCollection } from "astro:content";
+import { Base } from "@layouts";
+import { Blocks } from "@components";
+
+export const getStaticPaths = (async () => {
+  const pages = await getCollection("pages");
+  return pages.map(({ data }) => ({
+    params: { locale: "en" as SiteLocale, path: data.path! },
+    props: { page: data }
+  }));
+}) satisfies GetStaticPaths;
+
+type Params = InferGetStaticParamsType<typeof getStaticPaths>;
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { locale } = Astro.params as Params;
+const { page } = Astro.props as Props;
+---
+
+<Base locale={locale}>
+  <Blocks blocks={page.content} />
+</Base>

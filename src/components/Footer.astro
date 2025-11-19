@@ -1,4 +1,5 @@
 ---
+import { Button } from "@components";
 import type { HTMLAttributes } from "astro/types";
 
 type Props = HTMLAttributes<"footer">;
@@ -7,12 +8,38 @@ const { ...props } = Astro.props;
 ---
 
 <footer {...props}>
-  <p class="copyright-notice">
-    © 2025 Luuk Brauckmann.&nbsp;<a
-      href="https://creativecommons.org/licenses/by-sa/4.0/"
-      target="_blank">CC BY-SA 4.0</a
-    >
-  </p>
+  <div class="footer__bottom">
+    <p class="copyright-notice">
+      © 2025 Luuk Brauckmann.&nbsp;<a
+        href="https://creativecommons.org/licenses/by-sa/4.0/"
+        target="_blank">CC BY-SA 4.0</a
+      >
+    </p>
+
+    <span class="social-links">
+      <Button
+        as="a"
+        icon="github"
+        iconOnly
+        variant="link"
+        href="https://github.com/slimluccii">GitHub</Button
+      >
+      <Button
+        as="a"
+        icon="codepen"
+        iconOnly
+        variant="link"
+        href="https://codepen.io/slimluccii">CodePen</Button
+      >
+      <Button
+        as="a"
+        icon="linkedin"
+        iconOnly
+        variant="link"
+        href="https://www.linkedin.com/in/luukbrauckmann">LinkedIn</Button
+      >
+    </span>
+  </div>
 </footer>
 
 <style>
@@ -24,12 +51,25 @@ const { ...props } = Astro.props;
       var(--spacing-lg);
   }
 
-  .copyright-notice {
+  .footer__bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-size-m);
     font-size: var(--text-size-sm);
-    text-align: center;
   }
 
   a {
     color: #ffd166;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #ffffff;
+  }
+
+  .social-links {
+    display: inline-flex;
+    gap: var(--spacing-size-xs);
   }
 </style>

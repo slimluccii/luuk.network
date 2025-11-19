@@ -1,9 +1,18 @@
-/* Nunito Font Family */
 @font-face {
   font-style: normal;
-  font-weight: 200;
-  src: url("/fonts/Nunito/Nunito-ExtraLight.woff2") format("woff2");
-  font-family: "Nunito";
+  font-weight: 200 900;
+  src: url("/fonts/source-sans.woff2") format("woff2");
+  font-family: "Source Sans";
+  font-display: swap;
+  font-feature-settings: "kern" 1;
+  unicode-range: U+0020-007F, U+00A0-00FF;
+}
+
+@font-face {
+  font-style: italic;
+  font-weight: 200 900;
+  src: url("/fonts/source-sans-italic.woff2") format("woff2");
+  font-family: "Source Sans";
   font-display: swap;
   font-feature-settings: "kern" 1;
   unicode-range: U+0020-007F, U+00A0-00FF;
@@ -11,165 +20,25 @@
 
 @font-face {
   font-style: normal;
-  font-weight: 300;
-  src: url("/fonts/Nunito/Nunito-Light.woff2") format("woff2");
-  font-family: "Nunito";
-  font-display: swap;
-  font-feature-settings: "kern" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 400;
-  src: url("/fonts/Nunito/Nunito-Regular.woff2") format("woff2");
-  font-family: "Nunito";
-  font-display: swap;
-  font-feature-settings: "kern" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 500;
-  src: url("/fonts/Nunito/Nunito-Medium.woff2") format("woff2");
-  font-family: "Nunito";
-  font-display: swap;
-  font-feature-settings: "kern" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 600;
-  src: url("/fonts/Nunito/Nunito-SemiBold.woff2") format("woff2");
-  font-family: "Nunito";
-  font-display: swap;
-  font-feature-settings: "kern" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 700;
-  src: url("/fonts/Nunito/Nunito-Bold.woff2") format("woff2");
-  font-family: "Nunito";
-  font-display: swap;
-  font-feature-settings: "kern" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 800;
-  src: url("/fonts/Nunito/Nunito-ExtraBold.woff2") format("woff2");
-  font-family: "Nunito";
-  font-display: swap;
-  font-feature-settings: "kern" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 900;
-  src: url("/fonts/Nunito/Nunito-Black.woff2") format("woff2");
-  font-family: "Nunito";
-  font-display: swap;
-  font-feature-settings: "kern" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-/* Dash Font Family */
-@font-face {
-  font-style: normal;
-  font-weight: 100;
-  src: url("/fonts/Dash/DashCasualL-Hairline.woff2") format("woff2");
-  font-family: "Dash";
+  font-weight: 1 700;
+  src: url("/fonts/Dash Casual.woff2") format("woff2");
+  font-family: "Dash Casual";
   font-display: swap;
   font-feature-settings:
     "kern" 1,
     "liga" 1,
-    "clig" 1,
-    "locl" 1;
+    "calt" 1,
+    "locl" 1,
+    "mark" 1,
+    "mkmk" 1,
+    "case" 1;
   unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 200;
-  src: url("/fonts/Dash/DashCasualL-Thin.woff2") format("woff2");
-  font-family: "Dash";
-  font-display: swap;
-  font-feature-settings:
-    "kern" 1,
-    "liga" 1,
-    "clig" 1,
-    "locl" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 300;
-  src: url("/fonts/Dash/DashCasualL-Extralight.woff2") format("woff2");
-  font-family: "Dash";
-  font-display: swap;
-  font-feature-settings:
-    "kern" 1,
-    "liga" 1,
-    "clig" 1,
-    "locl" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 400;
-  src: url("/fonts/Dash/DashCasualL-Light.woff2") format("woff2");
-  font-family: "Dash";
-  font-display: swap;
-  font-feature-settings:
-    "kern" 1,
-    "liga" 1,
-    "clig" 1,
-    "locl" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 500;
-  src: url("/fonts/Dash/DashCasualL-Regular.woff2") format("woff2");
-  font-family: "Dash";
-  font-display: swap;
-  font-feature-settings:
-    "kern" 1,
-    "liga" 1,
-    "clig" 1,
-    "locl" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-@font-face {
-  font-style: normal;
-  font-weight: 700;
-  src: url("/fonts/Dash/DashCasualL-Bold.woff2") format("woff2");
-  font-family: "Dash";
-  font-display: swap;
-  font-feature-settings:
-    "kern" 1,
-    "liga" 1,
-    "clig" 1,
-    "locl" 1;
-  unicode-range: U+0020-007F, U+00A0-00FF;
-}
-
-html {
-  font-size: var(--text-size-md);
+  /*font-variation-settings: "TRCK" 200;*/
 }
 
 body {
-  font-family: "Nunito", system-ui, sans-serif;
+  font-size: var(--typography-size-body);
+  font-family: "Source Sans", system-ui, sans-serif;
 }
 
 h1,
@@ -178,30 +47,24 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 500;
-  font-family: "Dash", system-ui, sans-serif;
+  font-weight: 350;
+  font-family: "Dash Casual", system-ui, serif;
 }
 
 h1 {
-  font-size: var(--text-size-4xl);
+  font-size: var(--typography-size-display);
 }
 
 h2 {
-  font-size: var(--text-size-3xl);
+  font-size: var(--typography-size-title);
 }
 
 h3 {
-  font-size: var(--text-size-2xl);
+  font-size: var(--typography-size-heading);
 }
 
-h4 {
-  font-size: var(--text-size-xl);
-}
-
-h5 {
-  font-size: var(--text-size-lg);
-}
-
+h4,
+h5,
 h6 {
-  font-size: var(--text-size-md);
+  font-size: var(--typography-size-body);
 }

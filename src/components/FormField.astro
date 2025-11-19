@@ -1,0 +1,53 @@
+---
+import type { HTMLAttributes, HTMLTag } from "astro/types";
+import { FormMessage } from "@components";
+
+type Props = HTMLAttributes<HTMLTag>;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<form-field {...props} class:list={["form-field", className]}>
+  <slot />
+  <FormMessage type="error" class="form-field__error"></FormMessage>
+</form-field>
+
+<script>
+  class FormField extends HTMLElement {
+    inputElement:
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | HTMLSelectElement
+      | null = null;
+    errorElement: HTMLParagraphElement | null = null;
+
+    connectedCallback() {
+      this.inputElement = this.querySelector("input, textarea, select");
+      this.errorElement = this.querySelector(".form-message--error");
+
+      this.inputElement?.addEventListener("input", () => {
+        this.inputElement?.checkValidity();
+      });
+      this.inputElement?.addEventListener("blur", () => {
+        this.inputElement?.checkValidity();
+      });
+      this.inputElement?.addEventListener("invalid", async (event) => {
+        event.preventDefault();
+      });
+    }
+  }
+
+  customElements.define("form-field", FormField);
+</script>
+
+<style>
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .form-field:global(& .form-field__error) {
+      display: none;
+  }
+</style>

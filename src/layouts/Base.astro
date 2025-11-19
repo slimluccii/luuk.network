@@ -8,24 +8,14 @@ import "@styles/a11y.css";
 import "@styles/reset.css";
 import "@styles/theme.css";
 import "@styles/typography.css";
-import { Seo, type SeoTitleTag, type SeoOrFaviconTag } from "@datocms/astro";
+
 import { useTranslations } from "src/i18n/utils";
 
 type Props = {
   locale: SiteLocale;
-  seo: SeoOrFaviconTag[];
-  menu: {
-    items: Array<{
-      title: string;
-      page: {
-        path: string;
-      };
-    }>;
-  };
 };
 
-const { locale, seo, menu } = Astro.props;
-const title = seo.shift() as SeoTitleTag;
+const { locale } = Astro.props;
 const { t } = useTranslations(locale);
 ---
 
@@ -41,7 +31,7 @@ const { t } = useTranslations(locale);
       content="upgrade-insecure-requests"
     />
     <!-- Page title -->
-    <title>{title.content}</title>
+    <!-- <title>{title.content}</title> -->
     <!-- Preconnect -->
     <link rel="preconnect" href="https://www.datocms-assets.com" />
     <!-- Asynchronous JS -->
@@ -51,35 +41,28 @@ const { t } = useTranslations(locale);
     <!-- Preloads -->
     <link
       rel="preload"
-      href="/fonts/Nunito/Nunito-Regular.woff2"
+      href="/fonts/source-sans.woff2"
       as="font"
       type="font/woff2"
       crossorigin
     />
     <link
       rel="preload"
-      href="/fonts/Nunito/Nunito-Bold.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/Dash/DashCasualL-Regular.woff2"
+      href="/fonts/Dash Casual.woff2"
       as="font"
       type="font/woff2"
       crossorigin
     />
     <!-- Prefetch & Prerender -->
     <!-- Everything else (meta tags, icons, open graphs, etc.) -->
-    <Seo data={seo} />
+    <!-- <Seo data={seo} /> -->
     <meta name="generator" content={Astro.generator} />
   </head>
   <body>
     <SkipLink href="#main-content">{t("skip_to_main_content")}</SkipLink>
 
     <div class="content-wrapper">
-      <Header class="header" menu={menu} />
+      <Header />
 
       <main id="main-content">
         <slot />

@@ -1,5 +1,3 @@
-#import '@components/Blocks/LinkBlock/LinkBlock.fragment.graphql'
-
 fragment SectionBlock on SectionBlockRecord {
   title
   content {
@@ -7,8 +5,5 @@ fragment SectionBlock on SectionBlockRecord {
     inlineBlocks
     links
     value
-  }
-  links {
-    ...LinkBlock
   }
 }

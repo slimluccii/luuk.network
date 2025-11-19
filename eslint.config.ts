@@ -1,23 +1,13 @@
-import ts from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
-import astro from "eslint-plugin-astro";
+import ts from "typescript-eslint";
+import css from "@eslint/css";
+import astro from 'eslint-plugin-astro';
 
-const config = ts.config([
+export default defineConfig([
   js.configs.recommended,
-  ts.configs.recommendedTypeChecked,
-  astro.configs["flat/recommended"],
-  astro.configs["flat/jsx-a11y-strict"],
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname
-      }
-    }
-  },
-  {
-    ignores: ["**.astro/**"]
-  }
+  ts.configs.recommended,
+  css.configs.recommended,
+  astro.configs['flat/all'],
+  astro.configs["flat/jsx-a11y-strict"]
 ]);
-
-export default config;

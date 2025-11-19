@@ -11,19 +11,20 @@
     "update": "npx npm-check-updates --target minor -u"
   },
   "dependencies": {
-    "@astrojs/node": "9.4.3",
+    "@astrojs/node": "9.5.1",
     "@datocms/astro": "0.6.2",
     "@datocms/cda-client": "0.2.7",
     "@datocms/cma-client-node": "4.0.2",
-    "astro": "5.13.9",
+    "@graphql-typed-document-node/core": "3.2.0",
+    "astro": "5.15.9",
     "graphql": "16.11.0"
   },
   "devDependencies": {
+    "@eslint/css": "0.14.1",
     "@graphql-codegen/cli": "5.0.7",
     "@graphql-codegen/typed-document-node": "5.1.2",
     "@graphql-codegen/typescript": "4.1.6",
     "@graphql-codegen/typescript-operations": "4.6.1",
-    "@graphql-typed-document-node/core": "3.2.0",
     "@parcel/watcher": "2.5.1",
     "@rollup/plugin-graphql": "2.0.5",
     "@types/culori": "4.0.1",

@@ -1,0 +1,13 @@
+#import '@components/Blocks/HeroBlock/HeroBlock.fragment.graphql'
+#import '@components/Blocks/SectionBlock/SectionBlock.fragment.graphql'
+
+fragment Page on PageRecord {
+    id
+    title
+    path
+    content {
+      __typename
+      ...HeroBlock
+      ...SectionBlock
+    }
+}
