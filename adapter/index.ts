@@ -11,6 +11,11 @@ export default function createIntegration(): AstroIntegration {
             server: new URL(config.outDir),
             serverEntry: "handler.mjs",
             redirects: false,
+          },
+          vite: {
+            ssr: {
+              noExternal: ['@astrojs/internal-helpers'],
+            }
           }
         });
       },
@@ -30,7 +35,7 @@ export default function createIntegration(): AstroIntegration {
             edgeMiddleware: false,
           },
         });
-      },
+      }
     },
   };
 }
