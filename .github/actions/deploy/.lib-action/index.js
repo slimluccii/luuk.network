@@ -30039,6 +30039,7 @@ const getNamespace = async () => {
             "X-Auth-Token": secretKey,
         }),
     });
+    console.log(response);
     const { namespaces } = await response.json();
     return namespaces
         ? namespaces.find(({ name }) => name === _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo)
