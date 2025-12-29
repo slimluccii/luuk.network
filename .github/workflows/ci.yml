@@ -21,6 +21,8 @@ jobs:
       - name: Build
         id: build
         run: npm run build
+        env:
+          DATOCMS_TOKEN: ${{ secrets.DATOCMS_TOKEN }}
 
       - name: Zip
         id: zip
