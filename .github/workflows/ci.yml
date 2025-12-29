@@ -1,0 +1,35 @@
+name: Continious Integration
+
+on:
+  push:
+    branches: ["*"]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        id: build
+        run: npm run build
+
+      - name: Zip
+        id: zip
+        run: |
+          cd dist && zip -r ../function.zip .
+
+      - name: Deploy to Scaleway Functions
+        id: deploy
+        uses: ./.github/actions/deploy
+        with:
+          scw_secret_key: ${{ secrets.SCW_SECRET_KEY }}
+          scw_project_id: ${{ secrets.SCW_PROJECT_ID }}
