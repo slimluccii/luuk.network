@@ -21,5 +21,7 @@ export const createNamespace = async () => {
     }),
   });
 
+  console.log(response)
+
   return await response.json();
 };
