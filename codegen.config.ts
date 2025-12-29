@@ -7,7 +7,7 @@ const config: CodegenConfig = {
   schema: {
     "https://graphql.datocms.com": {
       headers: {
-        Authorization: DATOCMS_TOKEN
+        Authorization: `Bearer ${DATOCMS_TOKEN}`
       }
     }
   },
