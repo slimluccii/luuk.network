@@ -29950,7 +29950,6 @@ const createNamespace = async () => {
             project_id: projectId,
         }),
     });
-    console.log(response);
     return await response.json();
 };
 
