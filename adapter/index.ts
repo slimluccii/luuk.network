@@ -31,10 +31,10 @@ export default function createIntegration(): AstroIntegration {
           },
         });
       },
-      // "astro:build:setup": ({ vite }) => {
-      //   vite.ssr ||= {};
-      //   vite.ssr.noExternal = true;
-      // }
+      "astro:build:setup": ({ vite }) => {
+        vite.ssr ||= {};
+        vite.ssr.noExternal = true;
+      }
     },
   };
 }
