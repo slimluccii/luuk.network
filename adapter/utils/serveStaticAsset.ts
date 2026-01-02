@@ -32,11 +32,11 @@ export async function getStaticAsset(request: Request) {
   let contentType = "text/html";
 
   if (hasExtension) {
-    staticPath = join(__dirname, "..", "static", url.pathname);
+    staticPath = join(__dirname, "..", "static", decodeURIComponent(url.pathname));
     contentType =
       MIME_TYPES[extension.toLowerCase()] || "application/octet-stream";
   } else {
-    staticPath = join(__dirname, "..", "static", url.pathname, "index.html");
+    staticPath = join(__dirname, "..", "static", decodeURIComponent(url.pathname), "index.html");
   }
 
   if (existsSync(staticPath)) {
