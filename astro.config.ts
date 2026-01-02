@@ -1,5 +1,5 @@
 import { defineConfig, envField } from "astro/config";
-import node from "@astrojs/node";
+import scaleway from "./adapter";
 import graphql from "@rollup/plugin-graphql";
 import codegen from "./integrations/codegen";
 import datocms from "./integrations/datocms";
@@ -10,9 +10,7 @@ import config from "./codegen.config";
 
 export default defineConfig({
   site: "https://luuk.network",
-  adapter: node({
-    mode: "standalone"
-  }),
+  adapter: scaleway(),
   prefetch: true,
   integrations: [
     codegen(config),
