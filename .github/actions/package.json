@@ -1,4 +1,6 @@
 {
   "private": true,
-  "workspaces": ["deploy"]
+  "workspaces": [
+    "deploy"
+  ]
 }

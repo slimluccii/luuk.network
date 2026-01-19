@@ -7,8 +7,8 @@ export default function createIntegration(): AstroIntegration {
       "astro:config:setup": ({ updateConfig, config }) => {
         updateConfig({
           build: {
-            client: new URL(`./static/`, config.outDir),
-            server: new URL(config.outDir),
+            client: new URL(`./client/`, config.outDir),
+            server: new URL(`./function/`, config.outDir),
             serverEntry: "handler.mjs",
             redirects: false
           }

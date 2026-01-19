@@ -11,11 +11,14 @@
     "update": "npx npm-check-updates --target minor -u"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.966.0",
     "@datocms/astro": "0.6.4",
     "@datocms/cda-client": "0.2.10",
     "@datocms/cma-client-node": "5.2.2",
+    "@scaleway/sdk": "3.1.4",
     "@scaleway/serverless-functions": "1.1.2",
     "astro": "5.16.6",
+    "aws4": "1.13.2",
     "graphql": "16.12.0"
   },
   "devDependencies": {
