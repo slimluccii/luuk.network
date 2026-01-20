@@ -16,6 +16,8 @@ export const getNamespace = async () => {
     }),
   });
 
+  console.log(response)
+
   const { namespaces } = await response.json();
 
   console.log(namespaces)
