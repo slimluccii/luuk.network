@@ -1,0 +1,19 @@
+name: Delete
+author: Luuk Brauckmann
+description: Use this action to delete a Scaleway Function
+
+inputs:
+   scw_secret_key:
+    description: The sercret key for your Scaleway account
+    required: true
+   scw_project_id:
+    description: The id of the Scaleway project
+    required: true
+
+runs:
+  using: "node20"
+  main: ".lib-action/index.js"
+
+branding:
+  color: purple
+  icon: delete
