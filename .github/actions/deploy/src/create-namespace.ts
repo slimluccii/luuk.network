@@ -1,5 +1,6 @@
 import { getInput } from "@actions/core";
 import { context } from "@actions/github";
+import { sanitizeName } from "./utils/sanitizeName";
 
 export const createNamespace = async () => {
   const secretKey = getInput("scw_secret_key");
@@ -16,7 +17,7 @@ export const createNamespace = async () => {
       "Content-Type": "application/json",
     }),
     body: JSON.stringify({
-      name: context.repo.repo,
+      name: sanitizeName(context.repo.repo),
       project_id: projectId,
     }),
   });

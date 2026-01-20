@@ -1,7 +1,8 @@
 import { getInput } from "@actions/core";
 import { context } from "@actions/github";
+import { sanitizeName } from "./utils/sanitizeName";
 
-export const getServerlessFunction = async ({ namespacId }: { namespacId: string }) => {
+export const getServerlessFunction = async ({ namespaceId }: { namespaceId: string }) => {
   const secretKey = getInput('scw_secret_key');
   const branchName = context.ref.replace('refs/heads/', '');
 
@@ -9,8 +10,8 @@ export const getServerlessFunction = async ({ namespacId }: { namespacId: string
     "https://api.scaleway.com/functions/v1beta1/regions/nl-ams/functions",
   );
 
-  url.searchParams.append("namespace_id", namespacId);
-  url.searchParams.append("name", branchName);
+  url.searchParams.append("namespace_id", namespaceId);
+  url.searchParams.append("name", sanitizeName(branchName));
 
   const response = await fetch(url, {
     method: "GET",

@@ -1,7 +1,8 @@
 import { getInput } from "@actions/core";
 import { context } from "@actions/github";
+import { sanitizeName } from "./utils/sanitizeName";
 
-export const createServerlessFunction = async ({ namespacId }: { namespacId: string }) => {
+export const createServerlessFunction = async ({ namespaceId }: { namespaceId: string }) => {
   const secretKey = getInput("scw_secret_key");
   const branchName = context.ref.replace("refs/heads/", "");
 
@@ -16,8 +17,8 @@ export const createServerlessFunction = async ({ namespacId }: { namespacId: str
       "Content-Type": "application/json",
     }),
     body: JSON.stringify({
-      name: branchName,
-      namespace_id: namespacId,
+      name: sanitizeName(branchName),
+      namespace_id: namespaceId,
       runtime: "node22",
     }),
   });

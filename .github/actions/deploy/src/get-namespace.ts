@@ -1,5 +1,6 @@
 import { getInput } from "@actions/core";
 import { context } from "@actions/github";
+import { sanitizeName } from "./utils/sanitizeName";
 
 export const getNamespace = async () => {
   const secretKey = getInput("scw_secret_key");
@@ -18,6 +19,6 @@ export const getNamespace = async () => {
   const { namespaces } = await response.json();
 
   return namespaces
-    ? namespaces.find(({ name }) => name === context.repo.repo)
+    ? namespaces.find(({ name }) => name === sanitizeName(context.repo.repo))
     : undefined;
 };

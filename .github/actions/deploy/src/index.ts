@@ -11,11 +11,10 @@ if(!namespace) {
   namespace = await createNamespace();
 }
 
-let serverlessFunction = await getServerlessFunction({ namespacId: namespace.id });
-
+let serverlessFunction = await getServerlessFunction({ namespaceId: namespace.id });
 
 if (!serverlessFunction) {
-  serverlessFunction = await createServerlessFunction({ namespacId: namespace.id });
+  serverlessFunction = await createServerlessFunction({ namespaceId: namespace.id });
 }
 
 if (serverlessFunction) {
