@@ -30082,8 +30082,9 @@ const getServerlessFunction = async ({ namespaceId }) => {
         }),
     });
     const { functions } = await response.json();
+    console.log(JSON.stringify(functions, null, 2));
     return functions
-        ? functions.find(({ name }) => name === branchName)
+        ? functions.find(({ name }) => name === (0,_utils_sanitizeName__WEBPACK_IMPORTED_MODULE_2__/* .sanitizeName */ .r)(branchName))
         : undefined;
 };
 
@@ -30116,6 +30117,7 @@ let serverlessFunction = await (0,_get_serverless_function__WEBPACK_IMPORTED_MOD
 if (!serverlessFunction) {
     serverlessFunction = await (0,_create_serverless_function__WEBPACK_IMPORTED_MODULE_3__/* .createServerlessFunction */ .N)({ namespaceId: namespace.id });
 }
+console.log(serverlessFunction);
 if (serverlessFunction) {
     await (0,_upload_serverless_function__WEBPACK_IMPORTED_MODULE_4__/* .uploadServerlessFunction */ .u)({ functionId: serverlessFunction.id });
     await (0,_deploy_serverless_function__WEBPACK_IMPORTED_MODULE_5__/* .deployServerlessFunction */ .e)({ functionId: serverlessFunction.id });
