@@ -30156,6 +30156,7 @@ const uploadServerlessFunction = async ({ functionId }) => {
         }),
     });
     const { url: uploadUrl, headers: uploadHeaders } = await response.json();
+    console.log(uploadUrl);
     await fetch(uploadUrl, {
         method: "PUT",
         headers: uploadHeaders,
