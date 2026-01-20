@@ -30045,10 +30045,7 @@ const getNamespace = async () => {
             "X-Auth-Token": secretKey,
         }),
     });
-    console.log(response);
     const { namespaces } = await response.json();
-    console.log(namespaces);
-    console.log((0,_utils_sanitizeName__WEBPACK_IMPORTED_MODULE_2__/* .sanitizeName */ .r)(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo));
     return namespaces
         ? namespaces.find(({ name }) => name === (0,_utils_sanitizeName__WEBPACK_IMPORTED_MODULE_2__/* .sanitizeName */ .r)(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo))
         : undefined;
@@ -30085,7 +30082,6 @@ const getServerlessFunction = async ({ namespaceId }) => {
         }),
     });
     const { functions } = await response.json();
-    console.log(JSON.stringify(functions, null, 2));
     return functions
         ? functions.find(({ name }) => name === (0,_utils_sanitizeName__WEBPACK_IMPORTED_MODULE_2__/* .sanitizeName */ .r)(branchName))
         : undefined;
@@ -30120,7 +30116,6 @@ let serverlessFunction = await (0,_get_serverless_function__WEBPACK_IMPORTED_MOD
 if (!serverlessFunction) {
     serverlessFunction = await (0,_create_serverless_function__WEBPACK_IMPORTED_MODULE_3__/* .createServerlessFunction */ .N)({ namespaceId: namespace.id });
 }
-console.log(serverlessFunction);
 if (serverlessFunction) {
     await (0,_upload_serverless_function__WEBPACK_IMPORTED_MODULE_4__/* .uploadServerlessFunction */ .u)({ functionId: serverlessFunction.id });
     await (0,_deploy_serverless_function__WEBPACK_IMPORTED_MODULE_5__/* .deployServerlessFunction */ .e)({ functionId: serverlessFunction.id });
@@ -30160,8 +30155,6 @@ const uploadServerlessFunction = async ({ functionId }) => {
             "X-Auth-Token": secretKey,
         }),
     });
-    console.log(response);
-    console.log(await response.json());
     const { url: uploadUrl, headers: uploadHeaders } = await response.json();
     await fetch(uploadUrl, {
         method: "PUT",

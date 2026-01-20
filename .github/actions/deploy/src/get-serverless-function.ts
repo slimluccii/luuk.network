@@ -22,8 +22,6 @@ export const getServerlessFunction = async ({ namespaceId }: { namespaceId: stri
 
   const { functions } = await response.json();
 
-  console.log(JSON.stringify(functions, null, 2))
-
   return functions
     ? functions.find(({ name }) => name === sanitizeName(branchName))
     : undefined;

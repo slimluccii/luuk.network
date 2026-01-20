@@ -16,12 +16,7 @@ export const getNamespace = async () => {
     }),
   });
 
-  console.log(response)
-
   const { namespaces } = await response.json();
-
-  console.log(namespaces)
-  console.log(sanitizeName(context.repo.repo))
 
   return namespaces
     ? namespaces.find(({ name }) => name === sanitizeName(context.repo.repo))

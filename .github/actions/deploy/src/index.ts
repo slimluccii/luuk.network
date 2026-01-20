@@ -17,8 +17,6 @@ if (!serverlessFunction) {
   serverlessFunction = await createServerlessFunction({ namespaceId: namespace.id });
 }
 
-console.log(serverlessFunction)
-
 if (serverlessFunction) {
   await uploadServerlessFunction({ functionId: serverlessFunction.id});
   await deployServerlessFunction({ functionId: serverlessFunction.id});
