@@ -27,7 +27,7 @@ jobs:
       - name: Zip
         id: zip
         run: |
-          cd dist && zip -r ../function.zip .
+          cd dist/function && zip -r ../function.zip .
 
       - name: Deploy to Scaleway Functions
         id: deploy
