@@ -22,9 +22,10 @@ export const uploadServerlessFunction = async ({ functionId }: { functionId: str
     }),
   });
 
-  const { url: uploadUrl, headers: uploadHeaders } = await response.json();
+  console.log(response);
+  console.log(await response.json())
 
-  console.log(uploadUrl)
+  const { url: uploadUrl, headers: uploadHeaders } = await response.json();
 
   await fetch(uploadUrl, {
     method: "PUT",

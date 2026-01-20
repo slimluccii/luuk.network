@@ -30155,8 +30155,9 @@ const uploadServerlessFunction = async ({ functionId }) => {
             "X-Auth-Token": secretKey,
         }),
     });
+    console.log(response);
+    console.log(await response.json());
     const { url: uploadUrl, headers: uploadHeaders } = await response.json();
-    console.log(uploadUrl);
     await fetch(uploadUrl, {
         method: "PUT",
         headers: uploadHeaders,
