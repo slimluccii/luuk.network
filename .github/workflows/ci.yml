@@ -15,6 +15,13 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Build local adapter
+        run: |
+          cd astrojs-scaleway-adapter
+          npm install
+          npm run build
+          cd ..
+
       - name: Install dependencies
         run: npm install
 
