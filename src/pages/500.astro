@@ -1,4 +1,7 @@
 ---
+import type { SiteLocale } from "@generated/datocms";
+import { Base } from "@layouts";
+
 export const prerender = false;
 
 interface Props {
@@ -7,4 +10,6 @@ interface Props {
 
 const { error } = Astro.props;
 ---
-<div>{error instanceof Error ? error.message : "Unknown error"}</div>
+<Base locale={'en' as SiteLocale}>
+    <div>{error instanceof Error ? error.message : "Unknown error"}</div>
+</Base>

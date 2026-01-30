@@ -1,0 +1,36 @@
+{
+  "name": "@voorhoede/astrojs-scaleway-adapter",
+  "version": "0.0.1",
+  "type": "module",
+  "author": "Voorhoede",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./handler.js": {
+      "types": "./dist/handler.d.ts",
+      "import": "./dist/handler.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node ./scripts/build.mjs && tsc"
+  },
+  "devDependencies": {
+    "@scaleway/serverless-functions": "1.1.2",
+    "@types/mime-types": "3.0.1",
+    "@types/node": "20.0.0",
+    "astro": "5.16.11",
+    "esbuild": "0.27.2",
+    "glob": "13.0.0",
+    "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "mime-types": "3.0.2"
+  }
+}

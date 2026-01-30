@@ -3,8 +3,10 @@ import type { SiteLocale } from "@generated/datocms";
 import { Base } from "@layouts";
 
 export const prerender = false;
+
+const { locale } = Astro.params as { locale: SiteLocale };
 ---
 
-<Base locale={'en' as SiteLocale}>
-    <h1>Not Found</h1>
+<Base locale={locale}>
+{Math.random()}
 </Base>

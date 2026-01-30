@@ -30864,18 +30864,15 @@ const getNamespace = async () => {
 /* harmony export */ });
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(7484);
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(3228);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _utils_sanitizeName__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(1841);
-
+/* harmony import */ var _utils_sanitizeName__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(1841);
 
 
 const getServerlessFunction = async ({ namespaceId }) => {
     const secretKey = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('scw_secret_key');
-    const branchName = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.ref.replace('refs/heads/', '');
+    const branchName = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('branch_name');
     const url = new URL("https://api.scaleway.com/functions/v1beta1/regions/nl-ams/functions");
     url.searchParams.append("namespace_id", namespaceId);
-    url.searchParams.append("name", (0,_utils_sanitizeName__WEBPACK_IMPORTED_MODULE_2__/* .sanitizeName */ .r)(branchName));
+    url.searchParams.append("name", (0,_utils_sanitizeName__WEBPACK_IMPORTED_MODULE_1__/* .sanitizeName */ .r)(branchName));
     const response = await fetch(url, {
         method: "GET",
         headers: new Headers({
@@ -30884,7 +30881,7 @@ const getServerlessFunction = async ({ namespaceId }) => {
     });
     const { functions } = await response.json();
     return functions
-        ? functions.find(({ name }) => name === (0,_utils_sanitizeName__WEBPACK_IMPORTED_MODULE_2__/* .sanitizeName */ .r)(branchName))
+        ? functions.find(({ name }) => name === (0,_utils_sanitizeName__WEBPACK_IMPORTED_MODULE_1__/* .sanitizeName */ .r)(branchName))
         : undefined;
 };
 

@@ -17,6 +17,7 @@
     "@datocms/cma-client-node": "5.2.2",
     "@scaleway/sdk": "3.1.4",
     "@scaleway/serverless-functions": "1.1.2",
+    "@voorhoede/astrojs-scaleway-adapter": "file:./astrojs-scaleway-adapter",
     "astro": "5.16.6",
     "aws4": "1.13.2",
     "graphql": "16.12.0"

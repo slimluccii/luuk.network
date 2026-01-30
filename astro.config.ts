@@ -1,5 +1,5 @@
 import { defineConfig, envField } from "astro/config";
-import scaleway from "./adapter";
+import scaleway from "@voorhoede/astrojs-scaleway-adapter";
 import graphql from "@rollup/plugin-graphql";
 import codegen from "./integrations/codegen";
 import datocms from "./integrations/datocms";
