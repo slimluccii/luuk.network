@@ -15,7 +15,7 @@
     "update": "npx npm-check-updates --target minor -u"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "3.966.0",
+    "@aws-sdk/client-s3": "3.995.0",
     "@datocms/astro": "0.6.4",
     "@datocms/cda-client": "0.2.10",
     "@datocms/cma-client-node": "5.2.2",
