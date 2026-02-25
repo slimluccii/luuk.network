@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    uses: voorhoede/scaleway-functions-deploy-action/.github/workflows/deploy.yml@main
+    uses: slimluccii/scaleway-functions-deploy-action/.github/workflows/deploy.yml@main
     with:
       region: nl-ams
       scw_project_id: ae27d7c2-4a23-40f8-aa8b-15b28f6bb59f
