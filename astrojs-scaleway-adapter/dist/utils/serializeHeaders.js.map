@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/utils/serializeHeaders.ts"],
+  "sourcesContent": ["export function serializeHeaders(headers: Headers): Record<string, string> {\n  const result: Record<string, string> = {};\n\n  headers.forEach((value, key) => {\n    // FIX: Forceer Content-Type naar Pascal-Case.\n    // Dit zorgt dat Scaleway zijn default 'application/json' overschrijft\n    // in plaats van samenvoegt.\n    if (key.toLowerCase() === 'content-type') {\n      result['Content-Type'] = value;\n    } else {\n      result[key] = value;\n    }\n  });\n\n  // Speciale Set-Cookie afhandeling (zoals eerder besproken)\n  if ('getSetCookie' in headers && typeof headers.getSetCookie === 'function') {\n    const cookies = headers.getSetCookie();\n    if (cookies.length > 0) {\n      result['Set-Cookie'] = cookies.join(', '); // Ook Set-Cookie netjes met hoofdletters\n    }\n  }\n\n  return result;\n}\n"],
+  "mappings": "AAAO,SAASA,EAAiBC,EAA0C,CACzE,IAAMC,EAAiC,CAAC,EAcxC,GAZAD,EAAQ,QAAQ,CAACE,EAAOC,IAAQ,CAI1BA,EAAI,YAAY,IAAM,eACxBF,EAAO,cAAc,EAAIC,EAEzBD,EAAOE,CAAG,EAAID,CAElB,CAAC,EAGG,iBAAkBF,GAAW,OAAOA,EAAQ,cAAiB,WAAY,CAC3E,IAAMI,EAAUJ,EAAQ,aAAa,EACjCI,EAAQ,OAAS,IACnBH,EAAO,YAAY,EAAIG,EAAQ,KAAK,IAAI,EAE5C,CAEA,OAAOH,CACT",
+  "names": ["serializeHeaders", "headers", "result", "value", "key", "cookies"]
+}

@@ -1,0 +1,2 @@
+function d({httpMethod:a,headers:n,path:l,queryStringParameters:c,body:t,isBase64Encoded:f}){let e={};n&&Object.entries(n).forEach(([o,r])=>{e[o]=String(r)});let u=e["X-Forwarded-Proto"]||"https",h=e.host||"localhost",i=new URL(l,`${u}://${h}`);c&&Object.entries(c).forEach(([o,r])=>{i.searchParams.set(o,r)});let s=null;return t&&(f?s=atob(t):s=t),new Request(i,{method:a,headers:new Headers(e),body:s})}export{d as eventToRequest};
+//# sourceMappingURL=event-to-request.js.map

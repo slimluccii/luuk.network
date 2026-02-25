@@ -1,0 +1,1 @@
+{"version":3,"file":"serveStaticAsset.d.ts","sourceRoot":"","sources":["../../src/utils/serveStaticAsset.ts"],"names":[],"mappings":"AAGA,UAAU,aAAa;IACrB,UAAU,EAAE,MAAM,CAAC;IACnB,OAAO,EAAE,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,CAAC;IAChC,IAAI,EAAE,MAAM,CAAC;IACb,eAAe,CAAC,EAAE,OAAO,CAAC;CAC3B;AAED,wBAAsB,gBAAgB,CACpC,OAAO,EAAE,MAAM,EACf,cAAc,EAAE,MAAM,GACrB,OAAO,CAAC,aAAa,CAAC,CA4CxB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"event-to-request.d.ts","sourceRoot":"","sources":["../../src/utils/event-to-request.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,KAAK,EAAE,MAAM,qEAAqE,CAAC;AAEjG,wBAAgB,cAAc,CAAC,EAC7B,UAAU,EACV,OAAO,EACP,IAAI,EACJ,qBAAqB,EACrB,IAAI,EACJ,eAAe,GAChB,EAAE,KAAK,GAAG,OAAO,CAgCjB"}
