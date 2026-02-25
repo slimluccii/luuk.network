@@ -15,4 +15,3 @@ jobs:
     secrets:
       scw_access_key_id: ${{ secrets.scw_access_key_id }}
       scw_secret_access_key: ${{ secrets.scw_secret_access_key }}
-
