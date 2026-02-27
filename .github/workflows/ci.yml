@@ -50,7 +50,7 @@ jobs:
       - name: Deploy static files to Scaleway
         uses: voorhoede/scaleway-functions-deploy-action/actions/deploy-storage@main
         with:
-          region: ${{ secrets.SCW_REGION }}
+          scw_region: ${{ secrets.SCW_REGION }}
           scw_access_key_id: ${{ secrets.SCW_ACCESS_KEY_ID }}
           scw_secret_access_key: ${{ secrets.SCW_SECRET_ACCESS_KEY }}
           scw_project_id: ${{ secrets.SCW_PROJECT_ID }}
@@ -74,7 +74,7 @@ jobs:
       - name: Deploy function to Scaleway
         uses: voorhoede/scaleway-functions-deploy-action/actions/deploy-function@main
         with:
-          region: ${{ secrets.SCW_REGION }}
+          scw_region: ${{ secrets.SCW_REGION }}
           scw_secret_access_key: ${{ secrets.SCW_SECRET_ACCESS_KEY }}
           scw_project_id: ${{ secrets.SCW_PROJECT_ID }}
           dist_path: dist
