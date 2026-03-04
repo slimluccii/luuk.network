@@ -1,0 +1,6 @@
+query Footer($locale: SiteLocale) {
+  footer(locale: $locale) {
+    title
+    text
+  }
+}

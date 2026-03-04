@@ -22,7 +22,7 @@ export default function datocms(): AstroIntegration {
               prefixDefaultLocale: true,
               redirectToDefaultLocale: true,
               fallbackType: "redirect"
-            }
+            },
           }
         });
 

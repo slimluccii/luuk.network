@@ -1,9 +1,9 @@
 ---
-import type { FooterRecord } from "@generated/datocms";
+import type { FooterQuery } from "@generated/datocms";
 import type { HTMLAttributes } from "astro/types";
 import { Button, Logo, Voorhoede } from "@components";
 
-type Props = HTMLAttributes<"footer"> & FooterRecord;
+type Props = HTMLAttributes<"footer"> & FooterQuery['footer'];
 
 const { title, text, ...props } = Astro.props;
 ---

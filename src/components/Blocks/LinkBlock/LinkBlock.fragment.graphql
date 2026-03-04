@@ -3,7 +3,4 @@ fragment LinkBlock on LinkBlockRecord {
   icon {
     name
   }
-  page {
-    path
-  }
 }

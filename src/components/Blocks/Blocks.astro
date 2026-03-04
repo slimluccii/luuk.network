@@ -1,8 +1,8 @@
 ---
-import type { PageQuery } from "@generated/datocms";
+import type { PageFragment } from "@generated/datocms";
 
 type Props = {
-  blocks: NonNullable<PageQuery["page"]>["body"];
+  blocks: PageFragment["content"];
 };
 
 const { blocks } = Astro.props;

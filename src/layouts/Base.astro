@@ -1,6 +1,6 @@
 ---
 import type { ComponentProps } from "astro/types";
-import type { FooterRecord, SiteLocale } from "@generated/datocms";
+import type { FooterQuery, SiteLocale } from "@generated/datocms";
 import { Footer, Header, IconsSprite, SkipLink } from "@components";
 import { Seo } from "@datocms/astro";
 
@@ -16,7 +16,7 @@ import { useTranslations } from "src/i18n/utils";
 type Props = {
   locale: SiteLocale;
   seo: ComponentProps<typeof Seo>["data"];
-  footer: FooterRecord;
+  footer: FooterQuery['footer'];
 };
 
 const { footer, locale, seo } = Astro.props;

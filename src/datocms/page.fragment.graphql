@@ -7,9 +7,8 @@ fragment Page on PageRecord {
     content
     tag
   }
-  id
   title
-  path
+  slug
   content {
     __typename
     ...HeroBlock
