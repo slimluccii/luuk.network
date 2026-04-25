@@ -19,5 +19,10 @@
   },
   "overrides": {
     "vite": "^7"
+  },
+  "devDependencies": {
+    "@types/culori": "^4.0.1",
+    "culori": "^4.0.2",
+    "style-dictionary": "^5.4.0"
   }
 }
