@@ -1,0 +1,107 @@
+---
+import Border from "~/components/Border.astro";
+import Navigation from "~/components/Navigation.astro";
+
+import "~/generated/tokens.css";
+import "~/styles/a11y.css";
+import "~/styles/reset.css";
+import "~/styles/typography.css";
+
+type Props = {
+  seo: {
+    title: string;
+    description: string;
+  };
+};
+
+const { seo } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{seo.title} • Luuk Brauckmann</title>
+    <meta name="description" content={seo.description} />
+  </head>
+  <body>
+    <aside class="navigation">
+      <Navigation />
+    </aside>
+    <div class="content">
+      <Border class="content__border">
+        <header>
+          <h1>lb</h1>
+        </header>
+
+        <main>
+          <slot />
+        </main>
+
+        <footer class="footer">
+          <Border class="footer__border" color="secondary">
+            <p>
+              &copy; 2026 Luuk Brauckmann. <a
+                href="https://creativecommons.org/licenses/by-sa/4.0/"
+                >CC BY-SA 4.0</a
+              >
+            </p>
+          </Border>
+        </footer>
+      </Border>
+    </div>
+  </body>
+</html>
+
+<style>
+  html {
+    color-scheme: dark;
+    background-color: var(--color-surface-canvas);
+  }
+
+  body {
+    min-block-size: 100dvh;
+
+    @media (min-width: 800px) {
+      display: grid;
+      justify-content: center;
+      grid-template-columns: minmax(0, 200px) min(600px, 100%);
+      grid-template-areas: "left center";
+    }
+
+    @media (min-width: 1000px) {
+      grid-template-columns: minmax(0, 200px) min(600px, 100%) minmax(0, 200px);
+      grid-template-areas: "left center right";
+    }
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-size-xxs);
+  }
+
+  .content {
+    grid-area: center;
+    padding: var(--spacing-size-xs);
+  }
+
+  .content__border {
+    block-size: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .navigation {
+    grid-area: left;
+  }
+
+  .footer__border {
+    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-s);
+    background-color: var(--color-surface-raised);
+  }
+</style>
