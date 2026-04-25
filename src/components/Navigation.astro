@@ -1,0 +1,63 @@
+---
+const { pathname } = Astro.url;
+---
+
+<nav class="navigation">
+  <ul class="navigation-list">
+    <li>
+      <a
+        class="navigation-list-item"
+        href="/"
+        aria-current={pathname === "/" ? "page" : undefined}>Home</a>
+    </li>
+    <li>
+      <a
+        class="navigation-list-item"
+        href="/blog"
+        aria-current={pathname === "/blog" ? "page" : undefined}>Blog</a>
+    </li>
+    <li>
+      <a
+        class="navigation-list-item"
+        href="/projects"
+        aria-current={pathname === "/projects" ? "page" : undefined}
+        >Projects</a>
+    </li>
+  </ul>
+</nav>
+
+<style>
+  .navigation {
+    position: sticky;
+    top: 0;
+    block-size: 100dvh;
+    display: flex;
+    align-items: center;
+  }
+
+  .navigation-list {
+    list-style-type: "";
+    padding: 0px;
+    flex: 1;
+  }
+
+  .navigation-list-item {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.3em;
+    color: inherit;
+    padding: var(--spacing-size-xs) var(--spacing-size-m);
+    display: block;
+    opacity: 0.8;
+    transition: var(--motion-feedback) ease;
+
+    &:hover {
+      opacity: 1;
+      text-decoration-color: currentColor;
+    }
+
+    &[aria-current="page"] {
+      opacity: 1;
+    }
+  }
+</style>

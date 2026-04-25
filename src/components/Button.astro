@@ -1,0 +1,40 @@
+---
+import type { Polymorphic } from "astro/types";
+
+type Props<Tag extends "button" | "a"> = Polymorphic<{
+  as: Tag;
+  variant?: "primary" | "secondary" | "transparent" | "link";
+}>;
+const { as: Tag = "button", variant, class: className, ...props } = Astro.props;
+---
+
+<Tag
+  class:list={["button", { [`button--${variant}`]: variant }, className]}
+  {...props}
+>
+  <slot />
+</Tag>
+
+<style>
+  .button {
+    background-color: var(--color-brand-primary);
+    border: 1px solid var(--color-brand-primary);
+    padding: var(--spacing-size-xs) var(--spacing-size-m);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-gap-tight);
+    transition:
+      background var(--motion-feedback),
+      border var(--motion-feedback),
+      color var(--motion-feedback);
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .button--secondary {
+    background-color: var(--color-brand-secondary);
+    border-color: var(--color-brand-secondary);
+    color: #000;
+  }
+</style>
