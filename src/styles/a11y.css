@@ -1,0 +1,23 @@
+.sr-only,
+.kb-only:not(:focus) {
+  position: absolute;
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+[target="_blank"]::after {
+  position: absolute;
+  margin: -1px;
+  padding: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  content: " (opens in new tab)";
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
