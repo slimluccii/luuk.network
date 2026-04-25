@@ -1,17 +1,114 @@
 ---
+import { Picture } from "astro:assets";
+import Base from "~/layouts/Base.astro";
+import Border from "~/components/Border.astro";
+import Button from "~/components/Button.astro";
 
+import image from "~/images/me.jpeg";
+
+const seo = {
+  title: "Home",
+  description:
+    "Welcome to my personal website! Here you can find information about me, my projects, and how to contact me.",
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base seo={seo}>
+  <Border class="hero">
+    <div class="hero__visual"></div>
+    <div class="hero__content">
+      <div class="hero-content__top">
+        <Picture
+          class="hero__image"
+          formats={["avif", "webp", "png"]}
+          height={400}
+          width={400}
+          src={image}
+          alt=""
+        />
+
+        <Button as="a" variant="secondary" href="https://github.com/slimluccii">GitHub</Button>
+      </div>
+
+      <div class="hero-content__bottom">
+        <h1 class="hero__title">Luuk Brauckmann</h1>
+        <p>
+          Cum laude graduate in Front-end Design & Development. I build
+          accessible and performant web experiences. My work is guided by
+          digital sovereignty, responsible AI, and managing complexity.
+        </p>
+      </div>
+    </div>
+  </Border>
+
+  <Border>
+    <section class="section">
+      <h2>Now</h2>
+      <p>Coming soon...</p>
+    </section>
+  </Border>
+
+  <Border>
+    <section class="section">
+      <h2>Selected work</h2>
+      <p>Coming soon...</p>
+    </section>
+  </Border>
+
+  <Border>
+    <section class="section">
+      <h2>Recent writing</h2>
+      <p>Coming soon...</p>
+    </section>
+  </Border>
+
+  <Border>
+    <section class="section">
+      <h2>Principles</h2>
+      <p>Coming soon...</p>
+    </section>
+  </Border>
+</Base>
+
+<style>
+  .hero__visual {
+    height: 200px;
+  }
+
+  .hero__content {
+    background-color: var(--color-surface-base);
+    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-xxl) ;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-l);
+  }
+
+  .hero-content__top {
+    display: flex;
+    position: relative;
+    justify-content: flex-end;
+  }
+
+  .hero__image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    position: absolute;
+    inset-block-end: 0px;
+    inset-inline-start: 0px;
+  }
+
+  .hero-content__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-gap-tight);
+  }
+
+  .hero__title {
+    font-size: var(--typography-scale-display);
+  }
+
+  .section {
+    padding: var(--spacing-size-xxl) var(--spacing-size-l);
+  }
+</style>
