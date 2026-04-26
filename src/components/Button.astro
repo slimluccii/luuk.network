@@ -3,7 +3,7 @@ import type { Polymorphic } from "astro/types";
 import type { IconName } from "~/generated/icon-sprite";
 import Icon from "~/components/Icon.astro";
 
-type Props<Tag extends "button" | "a"> = Polymorphic<{
+type Props<Tag extends "button" | "a" = "button"> = Polymorphic<{
   as: Tag;
   variant?: "primary" | "secondary" | "transparent" | "link";
   icon?: IconName;
