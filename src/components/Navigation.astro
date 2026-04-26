@@ -1,5 +1,7 @@
 ---
+import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
+import Logo from "~/components/Logo.astro";
 
 const { pathname } = Astro.url;
 ---
@@ -8,36 +10,48 @@ const { pathname } = Astro.url;
   <Button
     class="ln-nav-trigger"
     type="button"
+    icon="bars"
     popovertarget="ln-nav-menu"
     aria-controls="ln-nav-menu"
-    aria-expanded="false">Menu</Button>
+    aria-expanded="false">Menu</Button
+  >
 
   <nav id="ln-nav-menu" popover class="ln-nav-menu" aria-label="Main">
+    <Border class="ln-nav-header__border">
+      <header class="ln-nav-header">
+        <Logo />
+      </header>
+    </Border>
     <ul class="ln-nav-list">
       <li>
         <a
           class="ln-nav-link"
           href="/"
-          aria-current={pathname === "/" ? "page" : undefined}>Home</a>
+          aria-current={pathname === "/" ? "page" : undefined}>Home</a
+        >
       </li>
       <li>
         <a
           class="ln-nav-link"
           href="/blog"
-          aria-current={pathname === "/blog" ? "page" : undefined}>Blog</a>
+          aria-current={pathname === "/blog" ? "page" : undefined}>Blog</a
+        >
       </li>
       <li>
         <a
           class="ln-nav-link"
           href="/projects"
           aria-current={pathname === "/projects" ? "page" : undefined}
-          >Projects</a>
+          >Projects</a
+        >
       </li>
     </ul>
     <Button
       class="ln-nav-close"
       type="button"
-      popovertarget="ln-nav-menu">Close</Button>
+      icon="xmark"
+      popovertarget="ln-nav-menu">Close</Button
+    >
   </nav>
 </ln-navigation>
 
@@ -103,8 +117,8 @@ const { pathname } = Astro.url;
   .ln-nav-trigger,
   .ln-nav-close {
     position: fixed;
-    inset-block-end: max(var(--spacing-size-m), env(safe-area-inset-bottom));
-    inset-inline-end: var(--spacing-size-m);
+    inset-block-end: max(var(--spacing-size-l), env(safe-area-inset-bottom));
+    inset-inline-end: var(--spacing-size-l);
   }
 
   .ln-nav-trigger:focus-visible,
@@ -123,13 +137,13 @@ const { pathname } = Astro.url;
     /* Override UA centered-modal defaults for full-screen overlay. */
     inset: 0;
     margin: 0;
-    inline-size: 100dvw;
-    block-size: 100dvh;
+    inline-size: 100%;
+    block-size: 100%;
     max-inline-size: none;
     max-block-size: none;
     border: 0;
-    padding: var(--spacing-size-l);
-    background-color: var(--color-surface-canvas);
+    padding: 0;
+    background-color: var(--color-surface-overlay);
     color: inherit;
     overflow: auto;
     overscroll-behavior: contain;
@@ -145,8 +159,11 @@ const { pathname } = Astro.url;
     margin: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     min-block-size: 100%;
+
+    @media (min-width: 800px) {
+      justify-content: center;
+    }
   }
 
   .ln-nav-link {
@@ -201,8 +218,16 @@ const { pathname } = Astro.url;
     }
 
     .ln-nav-trigger,
-    .ln-nav-close {
+    .ln-nav-close,
+    .ln-nav-header__border {
       display: none;
     }
+  }
+
+  .ln-nav-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-size-xxs);
   }
 </style>

@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 
 import cloudflare from '@astrojs/cloudflare';
 import designTokens from './integrations/design-tokens';
+import iconSprite from './integrations/icon-sprite';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,7 +12,8 @@ export default defineConfig({
     imageService: "compile"
   }),
   integrations: [
-    designTokens()
+    designTokens(),
+    iconSprite()
   ],
   devToolbar: {
     enabled: false

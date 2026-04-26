@@ -22,7 +22,10 @@
   },
   "devDependencies": {
     "@types/culori": "^4.0.1",
+    "@types/node": "^25.6.0",
+    "@types/svg-sprite": "^0.0.39",
     "culori": "^4.0.2",
-    "style-dictionary": "^5.4.0"
+    "style-dictionary": "^5.4.0",
+    "svg-sprite": "^2.0.4"
   }
 }
