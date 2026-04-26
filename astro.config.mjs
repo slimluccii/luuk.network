@@ -7,7 +7,9 @@ import designTokens from './integrations/design-tokens';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://luuk.network',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: "cloudflare"
+  }),
   integrations: [
     designTokens()
   ],
