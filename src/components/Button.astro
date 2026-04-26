@@ -8,7 +8,13 @@ type Props<Tag extends "button" | "a" = "button"> = Polymorphic<{
   variant?: "primary" | "secondary" | "transparent" | "link";
   icon?: IconName;
 }>;
-const { as: Tag = "button", variant, icon, class: className, ...props } = Astro.props;
+const {
+  as: Tag = "button",
+  variant,
+  icon,
+  class: className,
+  ...props
+} = Astro.props;
 ---
 
 <Tag
@@ -23,9 +29,6 @@ const { as: Tag = "button", variant, icon, class: className, ...props } = Astro.
 
 <style>
   .button {
-    background-color: var(--color-brand-primary);
-    border: 1px solid var(--color-brand-primary);
-    padding: var(--spacing-size-xs) var(--spacing-size-m);
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-gap-tight);
@@ -34,14 +37,17 @@ const { as: Tag = "button", variant, icon, class: className, ...props } = Astro.
       border var(--motion-feedback),
       color var(--motion-feedback);
     cursor: pointer;
+    border: 1px solid var(--color-brand-primary);
+    background-color: var(--color-brand-primary);
+    padding: var(--spacing-size-xs) var(--spacing-size-m);
+    color: #fff;
     font-weight: 500;
     text-decoration: none;
-    color: #fff;
   }
 
   .button--secondary {
-    background-color: var(--color-brand-secondary);
     border-color: var(--color-brand-secondary);
+    background-color: var(--color-brand-secondary);
     color: #000;
   }
 </style>

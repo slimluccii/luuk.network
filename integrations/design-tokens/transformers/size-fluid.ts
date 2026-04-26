@@ -4,7 +4,7 @@ const sizeFluid: Transform = {
   name: "size/fluid",
   type: "value",
   filter: (token) => token.$type === "dimension",
-  transform: (token) => {}
+  transform: (token) => {},
 };
 
 export default sizeFluid;

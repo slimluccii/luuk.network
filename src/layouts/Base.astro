@@ -120,7 +120,7 @@ const { seo } = Astro.props;
             root: null,
             rootMargin: "0px",
             threshold: [0, 1],
-          },
+          }
         );
 
         this.observer.observe(this);
@@ -138,9 +138,9 @@ const { seo } = Astro.props;
 
 <style>
   html {
-    color-scheme: dark;
     background-color: var(--color-surface-canvas);
     scrollbar-gutter: stable;
+    color-scheme: dark;
   }
 
   body {
@@ -148,9 +148,9 @@ const { seo } = Astro.props;
 
     @media (min-width: 800px) {
       display: grid;
-      justify-content: center;
       grid-template-columns: minmax(0, 200px) min(600px, 100%);
       grid-template-areas: "left center";
+      justify-content: center;
     }
 
     @media (min-width: 1000px) {
@@ -185,9 +185,9 @@ const { seo } = Astro.props;
   }
 
   .header__border {
-    border-block-end-color: transparent;
     transition: opacity ease;
     transition-duration: var(--motion-transition);
+    border-block-end-color: transparent;
   }
 
   .header--scrolled::after {
@@ -204,10 +204,10 @@ const { seo } = Astro.props;
 
   header {
     display: flex;
-    align-items: center;
     justify-content: center;
-    padding: var(--spacing-size-xxs);
+    align-items: center;
     background-color: var(--color-surface-canvas);
+    padding: var(--spacing-size-xxs);
   }
 
   .content {
@@ -219,9 +219,9 @@ const { seo } = Astro.props;
   }
 
   .content__border {
-    block-size: 100%;
     display: grid;
     grid-template-rows: auto 1fr auto;
+    block-size: 100%;
   }
 
   .navigation {
@@ -229,25 +229,25 @@ const { seo } = Astro.props;
   }
 
   .footer {
-    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-s);
-    background-color: var(--color-surface-raised);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-size-xl);
+    background-color: var(--color-surface-raised);
+    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-s);
   }
 
   .logo__end {
-    font-size: var(--typography-scale-caption);
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    font-size: var(--typography-scale-caption);
   }
 
   .social-links {
-    padding: 0px;
-    list-style-type: "";
     display: flex;
     gap: var(--spacing-size-xs);
+    padding: 0px;
+    list-style-type: "";
   }
 </style>

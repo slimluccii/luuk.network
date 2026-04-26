@@ -11,7 +11,7 @@ const colorOklch: Transform = {
     } catch {
       return token.$value;
     }
-  }
+  },
 };
 
 export default colorOklch;

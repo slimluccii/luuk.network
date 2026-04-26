@@ -18,14 +18,14 @@ export default function designTokens(): AstroIntegration {
                 files: [
                   {
                     destination: "tokens.css",
-                    format: "css/variables"
-                  }
-                ]
-              }
-            }
+                    format: "css/variables",
+                  },
+                ],
+              },
+            },
           },
           {
-            verbosity: "silent"
+            verbosity: "silent",
           }
         );
 
@@ -33,7 +33,7 @@ export default function designTokens(): AstroIntegration {
 
         await sb.buildAllPlatforms();
         logger.info("Generated");
-      }
-    }
+      },
+    },
   };
 }

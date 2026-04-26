@@ -1,21 +1,18 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
-import cloudflare from '@astrojs/cloudflare';
-import designTokens from './integrations/design-tokens';
-import iconSprite from './integrations/icon-sprite';
+import cloudflare from "@astrojs/cloudflare";
+import designTokens from "./integrations/design-tokens";
+import iconSprite from "./integrations/icon-sprite";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://luuk.network',
+  site: "https://luuk.network",
   adapter: cloudflare({
-    imageService: "compile"
+    imageService: "compile",
   }),
-  integrations: [
-    designTokens(),
-    iconSprite()
-  ],
+  integrations: [designTokens(), iconSprite()],
   devToolbar: {
-    enabled: false
-  }
+    enabled: false,
+  },
 });
