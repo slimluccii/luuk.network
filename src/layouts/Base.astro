@@ -1,5 +1,6 @@
 ---
 import Border from "~/components/Border.astro";
+import Logo from "~/components/Logo.astro";
 import Navigation from "~/components/Navigation.astro";
 
 import "~/generated/tokens.css";
@@ -36,7 +37,7 @@ const { seo } = Astro.props;
         <ln-header class="header">
           <Border class="header__border">
             <header>
-              <h1>lb</h1>
+              <Logo />
             </header>
           </Border>
         </ln-header>
@@ -45,16 +46,36 @@ const { seo } = Astro.props;
           <slot />
         </main>
 
-        <footer class="footer">
-          <Border class="footer__border" color="secondary">
-            <p>
-              &copy; 2026 Luuk Brauckmann. <a
-                href="https://creativecommons.org/licenses/by-sa/4.0/"
-                >CC BY-SA 4.0</a
-              >
-            </p>
-          </Border>
-        </footer>
+        <Border class="footer__border" color="secondary">
+          <footer class="footer">
+            <div>
+              <Logo size="large" />
+            </div>
+            <div class="logo__end">
+              <p class="copyright">
+                &copy; 2026 Luuk Brauckmann. <a
+                  href="https://creativecommons.org/licenses/by-sa/4.0/"
+                  >CC BY-SA 4.0</a
+                >
+              </p>
+
+              <ul class="social-links">
+                <li>
+                  <a href="">GitHub</a>
+                </li>
+                <li>
+                  <a href="">CodePen</a>
+                </li>
+                <li>
+                  <a href="">Bluesky</a>
+                </li>
+                <li>
+                  <a href="">LinkedIn</a>
+                </li>
+              </ul>
+            </div>
+          </footer>
+        </Border>
       </Border>
     </div>
   </body>
@@ -192,8 +213,25 @@ const { seo } = Astro.props;
     grid-area: left;
   }
 
-  .footer__border {
+  .footer {
     padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-s);
     background-color: var(--color-surface-raised);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-xl);
+  }
+
+  .logo__end {
+    font-size: var(--typography-scale-caption);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .social-links {
+    padding: 0px;
+    list-style-type: "";
+    display: flex;
+    gap: var(--spacing-size-xs);
   }
 </style>
