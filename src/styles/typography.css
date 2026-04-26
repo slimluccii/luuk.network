@@ -52,7 +52,7 @@ h6 {
 
 a {
   color: #ffd166;
-  text-decoration: none;
+  text-underline-offset: 0.25em;
 
   &:hover {
     color: #fff;
