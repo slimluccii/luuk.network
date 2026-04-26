@@ -8,7 +8,7 @@ import designTokens from './integrations/design-tokens';
 export default defineConfig({
   site: 'https://luuk.network',
   adapter: cloudflare({
-    imageService: "cloudflare"
+    imageService: "compile"
   }),
   integrations: [
     designTokens()
