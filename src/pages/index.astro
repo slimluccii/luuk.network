@@ -22,7 +22,7 @@ const seo = {
           class="hero__image"
           formats={["avif", "webp", "png"]}
           height={400}
-          width={400}
+          widths={[300, 400]}
           src={image}
           alt=""
         />
@@ -72,7 +72,11 @@ const seo = {
 
 <style>
   .hero__visual {
-    height: 200px;
+    height: 100px;
+
+    @media (min-width: 600px) {
+      height: 200px;
+    }
   }
 
   .hero__content {
@@ -90,12 +94,17 @@ const seo = {
   }
 
   .hero__image {
-    width: 200px;
-    height: 200px;
+    inline-size: 100px;
+    block-size: 100px;
     object-fit: cover;
     position: absolute;
     inset-block-end: 0px;
     inset-inline-start: 0px;
+
+    @media (min-width: 600px) {
+      inline-size: 200px;
+      block-size: 200px;
+    }
   }
 
   .hero-content__bottom {

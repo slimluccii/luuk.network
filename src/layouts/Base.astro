@@ -33,9 +33,13 @@ const { seo } = Astro.props;
     </aside>
     <div class="content">
       <Border class="content__border">
-        <header>
-          <h1>lb</h1>
-        </header>
+        <ln-header class="header">
+          <Border class="header__border">
+            <header>
+              <h1>lb</h1>
+            </header>
+          </Border>
+        </ln-header>
 
         <main>
           <slot />
@@ -56,10 +60,51 @@ const { seo } = Astro.props;
   </body>
 </html>
 
+<script>
+  class LnHeader extends HTMLElement {
+    observer: IntersectionObserver | null = null;
+
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      if (this) {
+        this.observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.intersectionRatio < 1) {
+                this?.classList.add("header--scrolled");
+              } else {
+                this?.classList.remove("header--scrolled");
+              }
+            });
+          },
+          {
+            root: null,
+            rootMargin: "0px",
+            threshold: [0, 1],
+          },
+        );
+
+        this.observer.observe(this);
+      }
+    }
+
+    disconnectedCallback() {
+      if (this.observer) {
+        this.observer.disconnect();
+      }
+    }
+  }
+  customElements.define("ln-header", LnHeader);
+</script>
+
 <style>
   html {
     color-scheme: dark;
     background-color: var(--color-surface-canvas);
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -78,16 +123,63 @@ const { seo } = Astro.props;
     }
   }
 
+  .header {
+    display: block;
+    position: sticky;
+    z-index: 999;
+    inset-block-start: -1px;
+
+    &::after {
+      position: absolute;
+      transform: translateY(100%);
+      opacity: 0;
+      transition: opacity ease;
+      transition-duration: var(--motion-transition);
+      inset-block-end: 0px;
+      inset-inline: 0px;
+      background: linear-gradient(
+        to bottom,
+        var(--color-surface-base),
+        transparent
+      );
+      height: var(--spacing-size-l);
+      pointer-events: none;
+      content: "";
+    }
+  }
+
+  .header__border {
+    border-block-end-color: transparent;
+    transition: opacity ease;
+    transition-duration: var(--motion-transition);
+  }
+
+  .header--scrolled::after {
+    opacity: 1;
+  }
+
+  .header--scrolled .header__border {
+    border-block-end-color: var(--color-surface-base);
+  }
+
+  .header--scrolled .header__border {
+    border-block-end-color: var(--color-surface-base);
+  }
+
   header {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: var(--spacing-size-xxs);
+    background-color: var(--color-surface-canvas);
   }
 
   .content {
     grid-area: center;
-    padding: var(--spacing-size-xs);
+
+    @media (min-width: 800px) {
+      padding: var(--spacing-size-xs);
+    }
   }
 
   .content__border {
