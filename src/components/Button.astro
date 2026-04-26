@@ -1,18 +1,24 @@
 ---
 import type { Polymorphic } from "astro/types";
+import type { IconName } from "~/generated/icon-sprite";
+import Icon from "~/components/Icon.astro";
 
 type Props<Tag extends "button" | "a"> = Polymorphic<{
   as: Tag;
   variant?: "primary" | "secondary" | "transparent" | "link";
+  icon?: IconName;
 }>;
-const { as: Tag = "button", variant, class: className, ...props } = Astro.props;
+const { as: Tag = "button", variant, icon, class: className, ...props } = Astro.props;
 ---
 
 <Tag
   class:list={["button", { [`button--${variant}`]: variant }, className]}
   {...props}
 >
-  <slot />
+  {icon && <Icon class="button__icon" name={icon} />}
+  <span class="button__label">
+    <slot />
+  </span>
 </Tag>
 
 <style>

@@ -1,5 +1,7 @@
 ---
 import Border from "~/components/Border.astro";
+import Icon from "~/components/Icon.astro";
+import IconSprite from "~/components/IconSprite.astro";
 import Logo from "~/components/Logo.astro";
 import Navigation from "~/components/Navigation.astro";
 
@@ -37,7 +39,10 @@ const { seo } = Astro.props;
         <ln-header class="header">
           <Border class="header__border">
             <header>
-              <Logo />
+              <a href="/">
+                <Logo />
+                <span class="sr-only">Luuk Brauckmann</span>
+              </a>
             </header>
           </Border>
         </ln-header>
@@ -61,16 +66,24 @@ const { seo } = Astro.props;
 
               <ul class="social-links">
                 <li>
-                  <a href="https://github.com/slimluccii">GitHub</a>
+                  <a href="https://github.com/slimluccii">
+                    <Icon name="github" title="GitHub" />
+                  </a>
                 </li>
                 <li>
-                  <a href="https://codepen.io/slimluccii">CodePen</a>
+                  <a href="https://codepen.io/slimluccii">
+                    <Icon name="codepen" title="CodePen" />
+                  </a>
                 </li>
                 <li>
-                  <a href="https://bsky.app/profile/luuk.network">Bluesky</a>
+                  <a href="https://bsky.app/profile/luuk.network">
+                    <Icon name="bluesky" title="Bluesky" />
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/luukbrauckmann/">LinkedIn</a>
+                  <a href="https://www.linkedin.com/in/luukbrauckmann/">
+                    <Icon name="linkedin" title="LinkedIn" />
+                  </a>
                 </li>
               </ul>
             </div>
@@ -78,6 +91,8 @@ const { seo } = Astro.props;
         </Border>
       </Border>
     </div>
+
+    <IconSprite />
   </body>
 </html>
 
@@ -225,6 +240,7 @@ const { seo } = Astro.props;
     font-size: var(--typography-scale-caption);
     display: flex;
     justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
   }
 

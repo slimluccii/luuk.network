@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { IconName } from "~/generated/icon-sprite";
+
+type Props = HTMLAttributes<"svg"> & {
+  name: IconName;
+  title?: string;
+};
+
+const { name, title, class: className, ...props } = Astro.props;
+---
+
+<svg
+  {...props}
+  class:list={["icon", `icon--${name}`, className]}
+  aria-hidden={!title}
+  role={title ? "img" : "presentation"}
+>
+  {title && <title>{title}</title>}
+  <use href={`#${name}`}></use>
+</svg>
+
+<style>
+  .icon {
+    fill: currentColor;
+    max-width: unset;
+    inline-size: 1lh;
+    block-size: 1lh;
+  }
+</style>
