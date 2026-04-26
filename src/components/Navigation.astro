@@ -134,19 +134,19 @@ const { pathname } = Astro.url;
   }
 
   .ln-nav-menu {
+    margin: 0;
     /* Override UA centered-modal defaults for full-screen overlay. */
     inset: 0;
-    margin: 0;
-    inline-size: 100%;
-    block-size: 100%;
-    max-inline-size: none;
-    max-block-size: none;
     border: 0;
-    padding: 0;
     background-color: var(--color-surface-overlay);
-    color: inherit;
+    padding: 0;
+    inline-size: 100%;
+    max-inline-size: none;
+    block-size: 100%;
+    max-block-size: none;
     overflow: auto;
     overscroll-behavior: contain;
+    color: inherit;
   }
 
   .ln-nav-menu::backdrop {
@@ -154,12 +154,12 @@ const { pathname } = Astro.url;
   }
 
   .ln-nav-list {
-    list-style-type: "";
-    padding: 0;
-    margin: 0;
     display: flex;
     flex-direction: column;
+    margin: 0;
+    padding: 0;
     min-block-size: 100%;
+    list-style-type: "";
 
     @media (min-width: 800px) {
       justify-content: center;
@@ -167,13 +167,13 @@ const { pathname } = Astro.url;
   }
 
   .ln-nav-link {
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    color: inherit;
-    padding: var(--spacing-size-s) var(--spacing-size-m);
     display: block;
     opacity: 0.8;
     transition: var(--motion-feedback) ease;
+    padding: var(--spacing-size-s) var(--spacing-size-m);
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: transparent;
 
     &:hover {
       opacity: 1;
@@ -196,21 +196,21 @@ const { pathname } = Astro.url;
 
     .ln-nav-menu {
       position: sticky;
-      inset: 0;
-      inline-size: auto;
-      block-size: 100dvh;
-      max-inline-size: none;
-      max-block-size: none;
-      padding: 0;
-      background-color: transparent;
-      overflow: visible;
       align-items: center;
+      inset: 0;
+      background-color: transparent;
+      padding: 0;
+      inline-size: auto;
+      max-inline-size: none;
+      block-size: 100dvh;
+      max-block-size: none;
+      overflow: visible;
     }
 
     .ln-nav-list {
       flex: 1;
-      min-block-size: 0;
       justify-content: flex-start;
+      min-block-size: 0;
     }
 
     .ln-nav-link {
@@ -226,8 +226,8 @@ const { pathname } = Astro.url;
 
   .ln-nav-header {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     padding: var(--spacing-size-xxs);
   }
 </style>

@@ -34,11 +34,11 @@ export default function iconSprite(): AstroIntegration {
         await mkdir(outputDir, { recursive: true });
         await writeFile(
           join(outputDir, "icon-sprite.svg"),
-          result.symbol.sprite.contents,
+          result.symbol.sprite.contents
         );
         await writeFile(
           join(outputDir, "icon-sprite.ts"),
-          `export type IconName = ${names.map((name) => `'${name}'`).join(" | ")}`,
+          `export type IconName = ${names.map((name) => `'${name}'`).join(" | ")}`
         );
 
         logger.info("Generated");
