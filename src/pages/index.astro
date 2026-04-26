@@ -20,9 +20,9 @@ const seo = {
       <div class="hero-content__top">
         <Picture
           class="hero__image"
-          formats={["avif", "webp", "png"]}
-          height={400}
-          widths={[300, 400]}
+          formats={["avif", "webp"]}
+          widths={[200, 300, 400, 600]}
+          sizes="(min-width: 600px) 200px, (min-width: 400px) 150px, 100px"
           src={image}
           alt=""
         />
@@ -72,10 +72,14 @@ const seo = {
 
 <style>
   .hero__visual {
-    height: 100px;
+    block-size: 100px;
+
+    @media (min-width: 400px) {
+      block-size: 150px;
+    }
 
     @media (min-width: 600px) {
-      height: 200px;
+      block-size: 200px;
     }
   }
 
@@ -100,6 +104,11 @@ const seo = {
     position: absolute;
     inset-block-end: 0px;
     inset-inline-start: 0px;
+
+    @media (min-width: 400px) {
+      inline-size: 150px;
+      block-size: 150px;
+    }
 
     @media (min-width: 600px) {
       inline-size: 200px;
