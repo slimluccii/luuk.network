@@ -2,8 +2,6 @@
 import Border from "~/components/Border.astro";
 import Icon from "~/components/Icon.astro";
 import Logo from "~/components/Logo.astro";
-import PageSpeed from "~/components/PageSpeed.astro";
-import PageSpeedFallback from "~/components/PageSpeedFallback.astro";
 import { navLinks } from "~/data/nav";
 
 const socialLinks = [
@@ -63,13 +61,6 @@ const { pathname } = Astro.url;
     </div>
 
     <div class="footer__bottom">
-      <section class="footer__page-speed" aria-labelledby="page-speed-heading">
-        <h3 id="page-speed-heading" class="sr-only">PageSpeed scores</h3>
-        <PageSpeed url={new URL(Astro.url.pathname, Astro.site)} server:defer>
-          <PageSpeedFallback slot="fallback" state="loading" />
-        </PageSpeed>
-      </section>
-
       <div class="footer__meta">
         <p class="copyright">
           &copy; 2026 Luuk Brauckmann. <a
