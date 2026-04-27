@@ -20,13 +20,8 @@ export default defineConfig({
     schema: {
       PAGESPEED_API_KEY: envField.string({
         context: "server",
-        access: "secret",
+        access: "secret"
       }),
     },
-  },
-  vite: {
-    define: {
-      __BUILD_ID__: JSON.stringify(Date.now().toString(36)),
-    },
-  },
+  }
 });
