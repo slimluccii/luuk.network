@@ -41,17 +41,32 @@
 body {
   font-family: var(--typography-typeface-body);
   font-size: var(--typography-scale-body);
+  font-weight: 250;
 }
 
-h1,
-h2,
 h3,
 h4,
 h5,
 h6 {
   font-weight: 350;
+}
+
+h1,
+h2{
   font-family: var(--typography-typeface-heading);
+  font-weight: 400;
+}
+
+h1 {
+  font-size: var(--typography-scale-display);
+}
+
+h2 {
   font-size: var(--typography-scale-heading);
+}
+
+h3 {
+  font-size: var(--typography-scale-subtitle);
 }
 
 a {
