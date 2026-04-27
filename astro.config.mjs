@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 
 import cloudflare from "@astrojs/cloudflare";
+import sitemap from "@astrojs/sitemap";
 import designTokens from "./integrations/design-tokens";
 import iconSprite from "./integrations/icon-sprite";
 
@@ -11,7 +12,7 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "compile",
   }),
-  integrations: [designTokens(), iconSprite()],
+  integrations: [designTokens(), iconSprite(), sitemap()],
   devToolbar: {
     enabled: false,
   },
