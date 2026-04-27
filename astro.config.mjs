@@ -13,9 +13,6 @@ export default defineConfig({
     imageService: "compile",
   }),
   integrations: [designTokens(), iconSprite(), sitemap()],
-  security: {
-    csp: true,
-  },
   devToolbar: {
     enabled: false,
   },
