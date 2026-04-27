@@ -52,6 +52,7 @@ const { pathname } = Astro.url;
     private menu: HTMLElement | null = null;
     private trigger: HTMLButtonElement | null = null;
     private desktopQuery = window.matchMedia("(min-width: 800px)");
+    private footerObserver: IntersectionObserver | null = null;
 
     connectedCallback() {
       this.menu = this.querySelector<HTMLElement>("[popover]");
@@ -60,11 +61,25 @@ const { pathname } = Astro.url;
 
       this.menu.addEventListener("toggle", this.handleToggle);
       this.desktopQuery.addEventListener("change", this.handleMediaChange);
+
+      const footerNav = document.querySelector<HTMLElement>("[data-footer-nav]");
+      if (footerNav) {
+        this.footerObserver = new IntersectionObserver(
+          ([entry]) => {
+            this.classList.toggle(
+              "ln-nav--footer-visible",
+              entry.isIntersecting
+            );
+          }
+        );
+        this.footerObserver.observe(footerNav);
+      }
     }
 
     disconnectedCallback() {
       this.menu?.removeEventListener("toggle", this.handleToggle);
       this.desktopQuery.removeEventListener("change", this.handleMediaChange);
+      this.footerObserver?.disconnect();
     }
 
     private handleToggle = (event: Event) => {
@@ -109,8 +124,12 @@ const { pathname } = Astro.url;
   .ln-nav-trigger,
   .ln-nav-close {
     position: fixed;
+    z-index: 1000;
     inset-block-end: max(var(--spacing-size-l), env(safe-area-inset-bottom));
     inset-inline-end: var(--spacing-size-l);
+    transition:
+      opacity var(--motion-transition) ease,
+      visibility 0s linear 0s;
   }
 
   .ln-nav-trigger:focus-visible,
@@ -123,6 +142,15 @@ const { pathname } = Astro.url;
   /* Hide the outside trigger while the menu is open. */
   ln-navigation:has(:popover-open) .ln-nav-trigger {
     display: none;
+  }
+
+  /* Hide the floating trigger when the footer nav is in view. */
+  ln-navigation.ln-nav--footer-visible .ln-nav-trigger {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--motion-transition) ease,
+      visibility 0s linear var(--motion-transition);
   }
 
   .ln-nav-menu {
@@ -152,6 +180,7 @@ const { pathname } = Astro.url;
     padding: 0;
     min-block-size: 100%;
     list-style-type: "";
+    gap: var(--spacing-size-s);
 
     @media (min-width: 800px) {
       justify-content: center;
@@ -160,9 +189,8 @@ const { pathname } = Astro.url;
 
   .ln-nav-link {
     display: block;
-    opacity: 0.8;
+    opacity: 0.6;
     transition: var(--motion-feedback) ease;
-    padding: var(--spacing-size-s) var(--spacing-size-m);
     color: inherit;
     text-decoration: underline;
     text-decoration-color: transparent;
@@ -203,10 +231,6 @@ const { pathname } = Astro.url;
       flex: 1;
       justify-content: flex-start;
       min-block-size: 0;
-    }
-
-    .ln-nav-link {
-      padding: var(--spacing-size-xs) var(--spacing-size-m);
     }
 
     .ln-nav-trigger,
