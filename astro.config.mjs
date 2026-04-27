@@ -16,6 +16,19 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  security: {
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "img-src 'self' data:",
+        "font-src 'self'",
+        "connect-src 'self'",
+        "base-uri 'self'",
+        "form-action 'self'",
+        "object-src 'none'",
+      ],
+    },
+  },
   env: {
     schema: {
       PAGESPEED_API_KEY: envField.string({
