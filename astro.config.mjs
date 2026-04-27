@@ -12,9 +12,6 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "compile",
   }),
-  build: {
-    inlineStylesheets: "always",
-  },
   integrations: [designTokens(), iconSprite(), sitemap()],
   devToolbar: {
     enabled: false,
