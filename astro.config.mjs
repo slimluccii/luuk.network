@@ -20,7 +20,8 @@ export default defineConfig({
     schema: {
       PAGESPEED_API_KEY: envField.string({
         context: "server",
-        access: "public"
+        access: "secret",
+        optional: true,
       }),
     },
   }
