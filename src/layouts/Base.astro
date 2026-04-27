@@ -1,6 +1,6 @@
 ---
 import Border from "~/components/Border.astro";
-import Icon from "~/components/Icon.astro";
+import Footer from "~/components/Footer.astro";
 import IconSprite from "~/components/IconSprite.astro";
 import Logo from "~/components/Logo.astro";
 import Navigation from "~/components/Navigation.astro";
@@ -67,44 +67,7 @@ const { seo } = Astro.props;
           <slot />
         </main>
 
-        <Border class="footer__border" color="secondary">
-          <footer class="footer">
-            <div>
-              <Logo size="large" />
-            </div>
-            <div class="logo__end">
-              <p class="copyright">
-                &copy; 2026 Luuk Brauckmann. <a
-                  href="https://creativecommons.org/licenses/by-sa/4.0/"
-                  >CC BY-SA 4.0</a
-                >
-              </p>
-
-              <ul class="social-links">
-                <li>
-                  <a href="https://github.com/slimluccii">
-                    <Icon name="github" title="GitHub" />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://codepen.io/slimluccii">
-                    <Icon name="codepen" title="CodePen" />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://bsky.app/profile/luuk.network">
-                    <Icon name="bluesky" title="Bluesky" />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.linkedin.com/in/luukbrauckmann/">
-                    <Icon name="linkedin" title="LinkedIn" />
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </footer>
-        </Border>
+        <Footer />
       </Border>
     </div>
 
@@ -242,28 +205,5 @@ const { seo } = Astro.props;
 
   .navigation {
     grid-area: left;
-  }
-
-  .footer {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-xl);
-    background-color: var(--color-surface-raised);
-    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-s);
-  }
-
-  .logo__end {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    font-size: var(--typography-scale-caption);
-  }
-
-  .social-links {
-    display: flex;
-    gap: var(--spacing-size-xs);
-    padding: 0px;
-    list-style-type: "";
   }
 </style>
