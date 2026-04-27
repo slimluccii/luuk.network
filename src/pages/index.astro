@@ -11,12 +11,38 @@ const seo = {
   description:
     "Cum laude graduate in Front-end Design & Development. I build accessible and performant web experiences. My work is guided by digital sovereignty, responsible AI, and managing complexity.",
 };
+
+const selectedWork = [
+  {
+    title: "PostNL Design System",
+    href: null,
+    description:
+      "Building Stamp, PostNL's new design system bridging style, accessibility, and tech across teams.",
+    stack: "Angular, React, Web Components, TypeScript",
+  },
+  {
+    title: "dutchdigitalagencies.com",
+    href: "https://dutchdigitalagencies.com",
+    description:
+      "Corporate website for the Dutch Digital Agencies, built on Voorhoede's head-start template. Headless setup where member agencies self-manage their own pages, with a focus on flexible architecture and an intuitive admin experience.",
+    stack: "Astro, DatoCMS, Cloudflare",
+  },
+  {
+    title: "fellowdigitals.com",
+    href: "https://fellowdigitals.com",
+    description:
+      "Headless corporate site built on Voorhoede's head-start template. Scalable building-block system focused on conversion, accessibility, and SEO.",
+    stack: "Astro, Web Components, DatoCMS, Cloudflare",
+  },
+];
 ---
 
 <Base seo={seo}>
   <Border class="hero">
     <div class="hero__visual"></div>
     <div class="hero__content">
+      <h1 class="sr-only">Luuk Brauckmann, Front-end Designer & Developer</h1>
+
       <div class="hero-content__top">
         <Picture
           class="hero__image"
@@ -38,7 +64,7 @@ const seo = {
       </div>
 
       <div class="hero-content__bottom">
-        <h1 class="hero__title">Luuk Brauckmann</h1>
+        <p class="hero__title" aria-hidden="true">Luuk Brauckmann</p>
         <p>
           Cum laude graduate in Front-end Design & Development. I build
           accessible and performant web experiences. My work is guided by
@@ -50,29 +76,45 @@ const seo = {
 
   <Border>
     <section class="section">
-      <h2>Now</h2>
-      <p>Coming soon...</p>
+      <h2>About</h2>
+      <p>
+        I started studying Applicatie Ontwikkeling at MBO College Hilversum
+        in 2017. Two years in, I joined Simple Soft Products as an intern and
+        stayed on part-time after, working on Angular apps for education,
+        public services, and industrial software. I later went on to study
+        Front-end Design & Development at Hogeschool van Amsterdam,
+        graduating cum laude in 2024.
+      </p>
+      <p>
+        Toward the end of my degree I joined De Voorhoede in Amsterdam as an
+        intern, and stayed on after the internship ended. There I work on
+        accessible websites, design systems, and open source tooling. The
+        stack varies per project, and I enjoy moving between them.
+      </p>
+      <p>
+        I believe in simple, standards-driven solutions. When picking tools,
+        I aim for the least powerful one that does the job. My focus lies
+        increasingly on digital sovereignty and an open, European web.
+      </p>
     </section>
   </Border>
 
   <Border>
     <section class="section">
       <h2>Selected work</h2>
-      <p>Coming soon...</p>
-    </section>
-  </Border>
-
-  <Border>
-    <section class="section">
-      <h2>Recent writing</h2>
-      <p>Coming soon...</p>
-    </section>
-  </Border>
-
-  <Border>
-    <section class="section">
-      <h2>Principles</h2>
-      <p>Coming soon...</p>
+      <ul class="work-list">
+        {
+          selectedWork.map(({ title, href, description, stack }) => (
+            <li class="work-item">
+              <h3 class="work-item__title">
+                {href ? <a href={href}>{title}</a> : title}
+              </h3>
+              <p class="work-item__description">{description}</p>
+              <p class="work-item__stack">{stack}</p>
+            </li>
+          ))
+        }
+      </ul>
     </section>
   </Border>
 </Base>
@@ -130,10 +172,46 @@ const seo = {
   }
 
   .hero__title {
+    margin: 0;
+    font-weight: 350;
+    font-family: var(--typography-typeface-heading);
     font-size: var(--typography-scale-display);
   }
 
   .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
     padding: var(--spacing-size-xxl) var(--spacing-size-l);
+  }
+
+  .work-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-l);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .work-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-gap-tight);
+  }
+
+  .work-item__title {
+    margin: 0;
+    font-size: var(--typography-scale-subtitle);
+  }
+
+  .work-item__description {
+    margin: 0;
+  }
+
+  .work-item__stack {
+    margin: 0;
+    font-size: var(--typography-scale-caption);
+    opacity: 0.75;
   }
 </style>

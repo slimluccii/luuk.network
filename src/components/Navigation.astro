@@ -82,7 +82,10 @@ const { pathname } = Astro.url;
 
     disconnectedCallback() {
       this.menu?.removeEventListener("toggle", this.handlePopoverToggle);
-      this.desktopQuery.removeEventListener("change", this.handleViewportChange);
+      this.desktopQuery.removeEventListener(
+        "change",
+        this.handleViewportChange
+      );
       this.footerObserver?.disconnect();
     }
 
@@ -109,7 +112,8 @@ const { pathname } = Astro.url;
 
     /** Hide the floating trigger when the footer nav is visible. */
     private observeFooter() {
-      const footerNav = document.querySelector<HTMLElement>(FOOTER_NAV_SELECTOR);
+      const footerNav =
+        document.querySelector<HTMLElement>(FOOTER_NAV_SELECTOR);
       if (!footerNav) return;
 
       this.footerObserver = new IntersectionObserver(([entry]) => {
@@ -162,8 +166,8 @@ const { pathname } = Astro.url;
   }
 
   ln-navigation.ln-nav--footer-visible .ln-nav-trigger {
-    opacity: 0;
     visibility: hidden;
+    opacity: 0;
     transition:
       opacity var(--motion-transition) ease,
       visibility 0s linear var(--motion-transition);
@@ -220,11 +224,11 @@ const { pathname } = Astro.url;
 
   .ln-nav-link {
     display: block;
+    opacity: 0.75;
     transition: var(--motion-feedback) ease;
     color: inherit;
     text-decoration: underline;
     text-decoration-color: transparent;
-    opacity: 0.75;
 
     &:hover {
       opacity: 1;
@@ -233,6 +237,7 @@ const { pathname } = Astro.url;
 
     &[aria-current="page"] {
       opacity: 1;
+      font-weight: 400;
     }
   }
 
