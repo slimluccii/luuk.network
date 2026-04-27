@@ -1,0 +1,88 @@
+---
+import { PAGESPEED_API_KEY } from "astro:env/server";
+import PageSpeedScore from "~/components/PageSpeedScore.astro";
+import PageSpeedFallback from "~/components/PageSpeedFallback.astro";
+
+type Props = {
+  url: URL;
+};
+
+const { url } = Astro.props;
+
+if (["localhost", "127.0.0.1"].includes(url.hostname)) {
+  return new Response(null, { status: 204 });
+}
+
+const fetchURL = new URL(
+  "https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
+);
+fetchURL.searchParams.set("url", url.toString());
+fetchURL.searchParams.set("key", PAGESPEED_API_KEY);
+fetchURL.searchParams.set("locale", "en");
+fetchURL.searchParams.append("category", "PERFORMANCE");
+fetchURL.searchParams.append("category", "ACCESSIBILITY");
+fetchURL.searchParams.append("category", "SEO");
+fetchURL.searchParams.append("category", "BEST_PRACTICES");
+
+type Category = { score: number; title: string };
+type Categories = {
+  performance: Category;
+  accessibility: Category;
+  seo: Category;
+  "best-practices": Category;
+};
+
+let categories: Categories | null = null;
+try {
+  const res = await fetch(fetchURL, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) throw new Error(`PageSpeed API responded with ${res.status}`);
+  const data = await res.json();
+  if (!data?.lighthouseResult?.categories) {
+    throw new Error("Unexpected PageSpeed API response shape");
+  }
+  categories = data.lighthouseResult.categories as Categories;
+} catch (err) {
+  console.error("PageSpeed fetch failed:", err);
+}
+---
+
+{
+  categories ? (
+    <ul class="page-speed">
+      <li class="page-speed__item">
+        <PageSpeedScore {...categories.performance} />
+      </li>
+      <li class="page-speed__item">
+        <PageSpeedScore {...categories.accessibility} />
+      </li>
+      <li class="page-speed__item">
+        <PageSpeedScore {...categories["best-practices"]} />
+      </li>
+      <li class="page-speed__item">
+        <PageSpeedScore {...categories.seo} />
+      </li>
+    </ul>
+  ) : (
+    <PageSpeedFallback state="error" />
+  )
+}
+
+<style>
+  .page-speed {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-size-s);
+    padding: 0;
+    list-style-type: "";
+  }
+
+  .page-speed__item {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+</style>

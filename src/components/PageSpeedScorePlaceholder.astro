@@ -1,0 +1,149 @@
+---
+type Props = {
+  state: "loading" | "error";
+  title: string;
+};
+
+const { state, title } = Astro.props;
+---
+
+<div class:list={["page-speed-score-placeholder", `is-${state}`]}>
+  <div class="page-speed-score-placeholder__circle">
+    {
+      state === "loading" ? (
+        <random-number
+          class="page-speed-score-placeholder__count"
+          aria-hidden="true"
+          data-min="0"
+          data-max="100"
+          data-interval="200"
+        />
+      ) : (
+        <span class="page-speed-score-placeholder__dashes" aria-hidden="true">
+          —
+        </span>
+      )
+    }
+    <span class="sr-only">
+      {state === "loading" ? `Loading ${title} score` : `${title} score unavailable`}
+    </span>
+  </div>
+  <span class="page-speed-score-placeholder__title" aria-hidden="true"></span>
+</div>
+
+<script>
+  class RandomNumber extends HTMLElement {
+    #timer: ReturnType<typeof setInterval> | undefined;
+
+    connectedCallback() {
+      const min = Number(this.dataset.min ?? 0);
+      const max = Number(this.dataset.max ?? 100);
+      const interval = Number(this.dataset.interval ?? 200);
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const tick = () => {
+        this.textContent = String(
+          Math.floor(Math.random() * (max - min + 1)) + min
+        );
+      };
+
+      tick();
+      if (!reduced) {
+        this.#timer = setInterval(tick, interval);
+      }
+    }
+
+    disconnectedCallback() {
+      if (this.#timer) clearInterval(this.#timer);
+    }
+  }
+
+  if (!customElements.get("random-number")) {
+    customElements.define("random-number", RandomNumber);
+  }
+</script>
+
+<style>
+  .page-speed-score-placeholder {
+    --placeholder-color: color-mix(
+      in oklch,
+      currentColor 18%,
+      transparent
+    );
+    --placeholder-color-strong: color-mix(
+      in oklch,
+      currentColor 35%,
+      transparent
+    );
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-size-xxs);
+    font-size: var(--typography-scale-caption);
+  }
+
+  .page-speed-score-placeholder__circle {
+    --thickness: 3px;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1e4px;
+    padding: var(--spacing-size-xxs);
+    color: var(--placeholder-color-strong);
+
+    &::before {
+      position: absolute;
+      mask: radial-gradient(
+        circle closest-side,
+        transparent calc(100% - var(--thickness)),
+        #000 calc(100% - var(--thickness) + 0.5px)
+      );
+      inset: 0;
+      border-radius: inherit;
+      background: var(--placeholder-color);
+      content: "";
+    }
+  }
+
+  .is-loading .page-speed-score-placeholder__circle::before {
+    animation: placeholder-pulse 1.4s ease-in-out infinite;
+  }
+
+  .page-speed-score-placeholder__count,
+  .page-speed-score-placeholder__dashes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    inline-size: 3ch;
+    block-size: 3ch;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .page-speed-score-placeholder__title {
+    display: block;
+    inline-size: 100%;
+    block-size: 1em;
+    background: var(--placeholder-color);
+
+    @media (max-width: 411px) {
+      display: none;
+    }
+  }
+
+  .is-loading .page-speed-score-placeholder__title {
+    animation: placeholder-pulse 1.4s ease-in-out infinite;
+  }
+
+  @keyframes placeholder-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.55;
+    }
+  }
+</style>
+</style>

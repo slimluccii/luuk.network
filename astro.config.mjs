@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 import cloudflare from "@astrojs/cloudflare";
 import sitemap from "@astrojs/sitemap";
@@ -15,5 +15,18 @@ export default defineConfig({
   integrations: [designTokens(), iconSprite(), sitemap()],
   devToolbar: {
     enabled: false,
+  },
+  env: {
+    schema: {
+      PAGESPEED_API_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+    },
+  },
+  vite: {
+    define: {
+      __BUILD_ID__: JSON.stringify(Date.now().toString(36)),
+    },
   },
 });

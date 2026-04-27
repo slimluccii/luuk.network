@@ -1,0 +1,96 @@
+---
+type Props = {
+  score: number;
+  title: string;
+};
+
+const { score, title } = Astro.props;
+
+const formatScore = (score: number) => {
+  return Math.round(score * 100);
+};
+
+const outcome = score >= 0.9 ? "pass" : score >= 0.5 ? "average" : "fail";
+---
+
+<div
+  class:list={["page-speed-score", `page-speed-score--${outcome}`]}
+  style={{ "--score": score }}
+>
+  <div class="page-speed-score__circle">
+    <span class="page-speed-score__score">{formatScore(score)}</span>
+  </div>
+  <span class="page-speed-score__title sr-only">{title}</span>
+</div>
+
+<style>
+  .page-speed-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-size-xxs);
+    inline-size: fit-content;
+    font-size: var(--typography-scale-caption);
+
+    &.page-speed-score--pass {
+      --score-color: var(--color-intent-success);
+    }
+
+    &.page-speed-score--average {
+      --score-color: var(--color-intent-caution);
+    }
+
+    &.page-speed-score--fail {
+      --score-color: var(--color-intent-critical);
+    }
+  }
+
+  .page-speed-score__circle {
+    --angle: calc(var(--score, 0) * 360deg);
+    --track: color-mix(in oklch, var(--score-color) 15%, transparent);
+    --thickness: 3px;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1e4px;
+    padding: var(--spacing-size-xxs);
+
+    &::before {
+      position: absolute;
+      mask: radial-gradient(
+        circle closest-side,
+        transparent calc(100% - var(--thickness)),
+        #000 calc(100% - var(--thickness) + 0.5px)
+      );
+      inset: 0;
+      border-radius: inherit;
+      background: conic-gradient(
+        var(--score-color) 0 var(--angle),
+        var(--track) var(--angle) 360deg
+      );
+      content: "";
+    }
+  }
+
+  .page-speed-score__score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    inline-size: 3ch;
+    block-size: 3ch;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .page-speed-score__title {
+    @media (min-width: 412px) {
+      position: static;
+      clip: auto;
+      margin: 0;
+      inline-size: auto;
+      block-size: auto;
+      overflow: visible;
+      text-align: center;
+    }
+  }
+</style>
