@@ -48,61 +48,75 @@ const { pathname } = Astro.url;
 </ln-navigation>
 
 <script>
+  const DESKTOP_QUERY = "(min-width: 800px)";
+  const FOOTER_NAV_SELECTOR = "[data-footer-nav]";
+  const SCROLL_LOCK_CLASS = "ln-nav-scroll-locked";
+  const FOOTER_VISIBLE_CLASS = "ln-nav--footer-visible";
+
+  /** Make every direct child of <body> (except this element's branch) inert. */
+  function setSiblingsInert(self: HTMLElement, inert: boolean) {
+    for (const child of document.body.children) {
+      if (!child.contains(self)) {
+        (child as HTMLElement).inert = inert;
+      }
+    }
+  }
+
   class LnNavigation extends HTMLElement {
-    private menu: HTMLElement | null = null;
-    private trigger: HTMLButtonElement | null = null;
-    private desktopQuery = window.matchMedia("(min-width: 800px)");
+    private menu!: HTMLElement;
+    private trigger!: HTMLButtonElement;
+    private desktopQuery = window.matchMedia(DESKTOP_QUERY);
     private footerObserver: IntersectionObserver | null = null;
 
     connectedCallback() {
-      this.menu = this.querySelector<HTMLElement>("[popover]");
-      this.trigger = this.querySelector<HTMLButtonElement>(".ln-nav-trigger");
-      if (!this.menu || !this.trigger) return;
+      const menu = this.querySelector<HTMLElement>("[popover]");
+      const trigger = this.querySelector<HTMLButtonElement>(".ln-nav-trigger");
+      if (!menu || !trigger) return;
+      this.menu = menu;
+      this.trigger = trigger;
 
-      this.menu.addEventListener("toggle", this.handleToggle);
-      this.desktopQuery.addEventListener("change", this.handleMediaChange);
-
-      const footerNav = document.querySelector<HTMLElement>("[data-footer-nav]");
-      if (footerNav) {
-        this.footerObserver = new IntersectionObserver(
-          ([entry]) => {
-            this.classList.toggle(
-              "ln-nav--footer-visible",
-              entry.isIntersecting
-            );
-          }
-        );
-        this.footerObserver.observe(footerNav);
-      }
+      this.menu.addEventListener("toggle", this.handlePopoverToggle);
+      this.desktopQuery.addEventListener("change", this.handleViewportChange);
+      this.observeFooter();
     }
 
     disconnectedCallback() {
-      this.menu?.removeEventListener("toggle", this.handleToggle);
-      this.desktopQuery.removeEventListener("change", this.handleMediaChange);
+      this.menu?.removeEventListener("toggle", this.handlePopoverToggle);
+      this.desktopQuery.removeEventListener("change", this.handleViewportChange);
       this.footerObserver?.disconnect();
     }
 
-    private handleToggle = (event: Event) => {
+    /** Sync side effects whenever the popover opens or closes. */
+    private handlePopoverToggle = (event: Event) => {
       const open = (event as ToggleEvent).newState === "open";
-      this.trigger?.setAttribute("aria-expanded", String(open));
-      document.documentElement.classList.toggle("ln-nav-scroll-locked", open);
-      for (const child of Array.from(document.body.children)) {
-        if (!child.contains(this)) {
-          (child as HTMLElement).inert = open;
-        }
-      }
-      if (open) {
-        this.menu?.querySelector<HTMLElement>(".ln-nav-link")?.focus();
-      } else {
-        this.trigger?.focus();
-      }
+
+      this.trigger.setAttribute("aria-expanded", String(open));
+      document.documentElement.classList.toggle(SCROLL_LOCK_CLASS, open);
+      setSiblingsInert(this, open);
+
+      const focusTarget = open
+        ? this.menu.querySelector<HTMLElement>(".ln-nav-link")
+        : this.trigger;
+      focusTarget?.focus();
     };
 
-    private handleMediaChange = () => {
-      if (this.desktopQuery.matches && this.menu?.matches(":popover-open")) {
+    /** On resize to desktop, the popover should never stay open. */
+    private handleViewportChange = () => {
+      if (this.desktopQuery.matches && this.menu.matches(":popover-open")) {
         this.menu.hidePopover();
       }
     };
+
+    /** Hide the floating trigger when the footer nav is visible. */
+    private observeFooter() {
+      const footerNav = document.querySelector<HTMLElement>(FOOTER_NAV_SELECTOR);
+      if (!footerNav) return;
+
+      this.footerObserver = new IntersectionObserver(([entry]) => {
+        this.classList.toggle(FOOTER_VISIBLE_CLASS, entry.isIntersecting);
+      });
+      this.footerObserver.observe(footerNav);
+    }
   }
 
   if (!customElements.get("ln-navigation")) {
@@ -117,9 +131,13 @@ const { pathname } = Astro.url;
 </style>
 
 <style>
+  /* --- Root ----------------------------------------------------------- */
+
   ln-navigation {
     display: contents;
   }
+
+  /* --- Floating buttons (mobile trigger + close) ---------------------- */
 
   .ln-nav-trigger,
   .ln-nav-close {
@@ -127,16 +145,6 @@ const { pathname } = Astro.url;
     z-index: 1000;
     inset-block-end: max(var(--spacing-size-l), env(safe-area-inset-bottom));
     inset-inline-end: var(--spacing-size-l);
-    transition:
-      opacity var(--motion-transition) ease,
-      visibility 0s linear 0s;
-  }
-
-  .ln-nav-trigger:focus-visible,
-  .ln-nav-close:focus-visible,
-  .ln-nav-link:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
   }
 
   /* Hide the outside trigger while the menu is open. */
@@ -144,7 +152,15 @@ const { pathname } = Astro.url;
     display: none;
   }
 
-  /* Hide the floating trigger when the footer nav is in view. */
+  /* Fade the floating trigger out while the footer nav is in view.
+     Visibility flips instantly when showing, but waits for the fade
+     when hiding so the button stays focusable until it's gone. */
+  .ln-nav-trigger {
+    transition:
+      opacity var(--motion-transition) ease,
+      visibility 0s linear 0s;
+  }
+
   ln-navigation.ln-nav--footer-visible .ln-nav-trigger {
     opacity: 0;
     visibility: hidden;
@@ -153,9 +169,20 @@ const { pathname } = Astro.url;
       visibility 0s linear var(--motion-transition);
   }
 
+  /* --- Focus ---------------------------------------------------------- */
+
+  .ln-nav-trigger:focus-visible,
+  .ln-nav-close:focus-visible,
+  .ln-nav-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  /* --- Mobile menu (full-screen popover) ------------------------------ */
+
   .ln-nav-menu {
-    margin: 0;
     /* Override UA centered-modal defaults for full-screen overlay. */
+    margin: 0;
     inset: 0;
     border: 0;
     background-color: var(--color-surface-overlay);
@@ -173,27 +200,31 @@ const { pathname } = Astro.url;
     background-color: transparent;
   }
 
+  /* --- Nav list ------------------------------------------------------- */
+
   .ln-nav-list {
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-size-s);
     margin: 0;
     padding: 0;
     min-block-size: 100%;
     list-style-type: "";
-    gap: var(--spacing-size-s);
 
     @media (min-width: 800px) {
       justify-content: center;
     }
   }
 
+  /* --- Nav link ------------------------------------------------------- */
+
   .ln-nav-link {
     display: block;
-    opacity: 0.6;
     transition: var(--motion-feedback) ease;
     color: inherit;
     text-decoration: underline;
     text-decoration-color: transparent;
+    opacity: 0.6;
 
     &:hover {
       opacity: 1;
@@ -205,7 +236,16 @@ const { pathname } = Astro.url;
     }
   }
 
-  /* --- Desktop: sidebar --- */
+  /* --- Header (logo, mobile only) ------------------------------------- */
+
+  .ln-nav-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-size-xxs);
+  }
+
+  /* --- Desktop: sticky sidebar ---------------------------------------- */
 
   @media (min-width: 800px) {
     /* Override UA `[popover]:not(:popover-open) { display: none }`.
@@ -238,12 +278,5 @@ const { pathname } = Astro.url;
     .ln-nav-header__border {
       display: none;
     }
-  }
-
-  .ln-nav-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: var(--spacing-size-xxs);
   }
 </style>
