@@ -1,0 +1,174 @@
+---
+import Border from "~/components/Border.astro";
+import Icon from "~/components/Icon.astro";
+import Logo from "~/components/Logo.astro";
+import PageSpeed from "~/components/PageSpeed.astro";
+import PageSpeedFallback from "~/components/PageSpeedFallback.astro";
+import { navLinks } from "~/data/nav";
+
+const socialLinks = [
+  { href: "https://github.com/slimluccii", icon: "github", title: "GitHub" },
+  { href: "https://codepen.io/slimluccii", icon: "codepen", title: "CodePen" },
+  {
+    href: "https://bsky.app/profile/luuk.network",
+    icon: "bluesky",
+    title: "Bluesky",
+  },
+  {
+    href: "https://www.linkedin.com/in/luukbrauckmann/",
+    icon: "linkedin",
+    title: "LinkedIn",
+  },
+] as const;
+
+const { pathname } = Astro.url;
+---
+
+<Border class="footer__border" color="secondary">
+  <footer class="footer">
+    <h2 class="sr-only">Site footer</h2>
+
+    <div class="footer__intro">
+      <div class="footer__logo">
+        <Logo size="large" />
+      </div>
+
+      <p class="footer__about">
+        I’m Luuk, a front-end developer from the Netherlands, dedicated to
+        building fast, accessible, and inclusive web experiences.
+      </p>
+
+      <nav
+        class="footer-nav"
+        aria-labelledby="footer-nav-heading"
+        data-footer-nav
+      >
+        <h3 id="footer-nav-heading" class="sr-only">Pages</h3>
+        <ul class="footer-nav__list">
+          {
+            navLinks.map(({ href, label }) => (
+              <li>
+                <a
+                  class="footer-nav__link"
+                  href={href}
+                  aria-current={pathname === href ? "page" : undefined}
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer__bottom">
+      <section class="footer__page-speed" aria-labelledby="page-speed-heading">
+        <h3 id="page-speed-heading" class="sr-only">PageSpeed scores</h3>
+        <PageSpeed url={new URL(Astro.url.pathname, Astro.site)} server:defer>
+          <PageSpeedFallback slot="fallback" state="loading" />
+        </PageSpeed>
+      </section>
+
+      <div class="footer__meta">
+        <p class="copyright">
+          &copy; 2026 Luuk Brauckmann. <a
+            href="https://creativecommons.org/licenses/by-sa/4.0/"
+            >CC BY-SA 4.0</a
+          >
+        </p>
+
+        <ul class="social-links">
+          {
+            socialLinks.map(({ href, icon, title }) => (
+              <li>
+                <a href={href}>
+                  <Icon name={icon} title={title} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </footer>
+</Border>
+
+<style>
+  .footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-xl);
+    background-color: var(--color-surface-raised);
+    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-s);
+  }
+
+  .footer__intro {
+    display: grid;
+    gap: var(--spacing-size-m) var(--spacing-size-l);
+
+    @media (min-width: 600px) {
+      grid-template-columns: 1fr 150px;
+      align-items: start;
+    }
+  }
+
+  .footer__logo {
+    @media (min-width: 600px) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .footer__about {
+    margin: 0;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
+  }
+
+  .footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-size-s);
+    font-size: var(--typography-scale-caption);
+  }
+
+  .social-links {
+    display: flex;
+    gap: var(--spacing-size-xs);
+    padding: 0px;
+    list-style-type: "";
+  }
+
+  .footer-nav__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style-type: "";
+    gap: var(--spacing-size-s);
+  }
+
+  .footer-nav__link {
+    display: block;
+    opacity: 0.6;
+    transition: var(--motion-feedback) ease;
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+
+    &:hover {
+      opacity: 1;
+      text-decoration-color: currentColor;
+    }
+
+    &[aria-current="page"] {
+      opacity: 1;
+    }
+  }
+</style>
