@@ -27,6 +27,12 @@ export default defineConfig({
         "form-action 'self'",
         "object-src 'none'",
       ],
+      scriptDirective: {
+        resources: ["'self'", "'unsafe-inline'"],
+      },
+      styleDirective: {
+        resources: ["'self'", "'unsafe-inline'"],
+      },
     },
   },
   env: {
