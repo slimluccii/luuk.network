@@ -1,13 +1,15 @@
 ---
+import PageHeader from "~/components/PageHeader.astro";
 import Base from "~/layouts/Base.astro";
 
 const seo = {
   title: "Blog",
-  description:
-    "Welcome to my personal website! Here you can find information about me, my projects, and how to contact me.",
+  description: "",
 };
 ---
 
 <Base seo={seo}>
-  <h1>Blog</h1>
+  <PageHeader>
+    <h1>Blog</h1>
+  </PageHeader>
 </Base>
