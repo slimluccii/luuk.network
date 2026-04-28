@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__c1117ed5-8ce0-4dce-8cac-5615141ff66b__search_astro_docs",
-      "Bash(npm run *)"
-    ]
-  }
-}
