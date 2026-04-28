@@ -1,0 +1,23 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"div">;
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<div class:list={["empty-state", className]} {...attrs}>
+  <slot />
+</div>
+
+<style>
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-gap-tight);
+    padding: var(--spacing-size-xl) var(--spacing-size-l);
+    text-align: center;
+    opacity: 0.75;
+  }
+</style>
