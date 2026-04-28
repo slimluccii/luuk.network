@@ -152,7 +152,7 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
 
       list.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", this.updateOverflow);
-      this.updateOverflow();
+      requestAnimationFrame(() => this.updateOverflow!());
     }
 
     setActive(index: number) {
