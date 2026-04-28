@@ -3,9 +3,10 @@ import { getCollection } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
-import EntryList from "~/components/EntryList.astro";
+import Carousel from "~/components/Carousel.astro";
 import Hero from "~/components/Hero.astro";
 import Section from "~/components/Section.astro";
+import SectionActions from "~/components/SectionActions.astro";
 import SectionContent from "~/components/SectionContent.astro";
 import SectionTitle from "~/components/SectionTitle.astro";
 
@@ -21,16 +22,16 @@ const selectedWork = (
   await getCollection("projects", ({ data }) => data.featured)
 ).sort((a, b) => a.data.order - b.data.order);
 
-const workEntries = selectedWork.map(({ id, data }) => ({
+const workItems = selectedWork.map(({ id, data }) => ({
   href: `/projects/${id}/`,
   title: data.title,
   description: data.description,
-  meta: data.stack.join(", "),
+  cover: data.cover,
 }));
 ---
 
 <Base seo={seo}>
-  <Hero subject={image} subjectAlt="">
+  <Hero subject={image}>
     <Button
       slot="action"
       as="a"
@@ -78,7 +79,12 @@ const workEntries = selectedWork.map(({ id, data }) => ({
   <Border>
     <Section>
       <SectionTitle>Selected work</SectionTitle>
-      <EntryList entries={workEntries} headingLevel={3} />
+      <Carousel items={workItems} />
+      <SectionActions>
+        <Button as="a" icon="arrow-right" href="/projects/">
+          See all projects
+        </Button>
+      </SectionActions>
     </Section>
   </Border>
 </Base>

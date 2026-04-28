@@ -1,0 +1,316 @@
+---
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import Link from "~/components/Link.astro";
+import LinkArea from "~/components/LinkArea.astro";
+
+type CarouselItem = {
+  href: string;
+  title: string;
+  description: string;
+  cover: ImageMetadata | string;
+  linkLabel?: string;
+};
+
+interface Props {
+  items: CarouselItem[];
+  headingLevel?: 2 | 3;
+}
+
+const { items, headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as "h2" | "h3";
+---
+
+<ln-carousel class="carousel">
+  <div class="carousel__viewport">
+    <ul class="carousel__list" tabindex="0">
+    {
+      items.map(
+        ({
+          href,
+          title,
+          description,
+          cover,
+          linkLabel = "Read more",
+        }) => (
+          <li class="carousel__item">
+            <LinkArea>
+              {cover &&
+                (typeof cover === "string" ? (
+                  <img class="carousel__cover" src={cover} alt="" loading="lazy" />
+                ) : (
+                  <Picture
+                    class="carousel__cover"
+                    formats={["avif", "webp"]}
+                    widths={[500, 1000, 1500]}
+                    sizes="(min-width: 800px) 500px, 100vw"
+                    src={cover}
+                    alt=""
+                    loading="lazy"
+                  />
+                ))}
+              <div class="carousel__body">
+                <div class="carousel__text">
+                  <Heading class="carousel__title">{title}</Heading>
+                  <p class="carousel__description">{description}</p>
+                </div>
+                <Link href={href} icon="arrow-right">
+                  {linkLabel}
+                  <span class="sr-only"> about {title}</span>
+                </Link>
+              </div>
+            </LinkArea>
+          </li>
+        )
+      )
+    }
+    </ul>
+  </div>
+
+  <ol class="carousel__indicators" aria-label="Carousel navigation">
+    {
+      items.map(({ title }, index) => (
+        <li>
+          <button
+            class="carousel__indicator"
+            type="button"
+            data-index={index}
+          >
+            <span class="sr-only">Go to {title}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+</ln-carousel>
+
+<script>
+  class LnCarousel extends HTMLElement {
+    observer: IntersectionObserver | null = null;
+    items: HTMLElement[] = [];
+    indicators: HTMLButtonElement[] = [];
+    list: HTMLElement | null = null;
+    updateOverflow: (() => void) | null = null;
+
+    connectedCallback() {
+      const list = this.querySelector<HTMLElement>(".carousel__list");
+      if (!list) return;
+
+      this.items = Array.from(
+        list.querySelectorAll<HTMLElement>(".carousel__item")
+      );
+      this.indicators = Array.from(
+        this.querySelectorAll<HTMLButtonElement>(".carousel__indicator")
+      );
+
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      );
+
+      this.indicators.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          this.items[index]?.scrollIntoView({
+            behavior: reduceMotion.matches ? "auto" : "smooth",
+            inline: "center",
+            block: "nearest",
+          });
+        });
+      });
+
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.intersectionRatio >= 0.5) {
+              const index = this.items.indexOf(entry.target as HTMLElement);
+              this.setActive(index);
+            }
+          });
+        },
+        { root: list, threshold: [0.5, 0.75, 1] }
+      );
+
+      this.items.forEach((item) => this.observer!.observe(item));
+      this.setActive(0);
+
+      this.list = list;
+      this.updateOverflow = () => {
+        const { scrollLeft, scrollWidth, clientWidth } = list;
+        const atStart = scrollLeft <= 0;
+        const atEnd = scrollLeft + clientWidth >= scrollWidth - 1;
+        this.classList.toggle("carousel--overflow-start", !atStart);
+        this.classList.toggle("carousel--overflow-end", !atEnd);
+      };
+
+      let frame = 0;
+      const onScroll = () => {
+        if (frame) return;
+        frame = requestAnimationFrame(() => {
+          frame = 0;
+          this.updateOverflow!();
+        });
+      };
+
+      list.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", this.updateOverflow);
+      this.updateOverflow();
+    }
+
+    setActive(index: number) {
+      this.indicators.forEach((button, i) => {
+        const active = i === index;
+        button.classList.toggle("carousel__indicator--active", active);
+        if (active) {
+          button.setAttribute("aria-current", "true");
+        } else {
+          button.removeAttribute("aria-current");
+        }
+      });
+    }
+
+    disconnectedCallback() {
+      this.observer?.disconnect();
+      if (this.updateOverflow) {
+        window.removeEventListener("resize", this.updateOverflow);
+      }
+    }
+  }
+
+  customElements.define("ln-carousel", LnCarousel);
+</script>
+
+<style>
+  .carousel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
+  }
+
+  .carousel__viewport {
+    position: relative;
+    margin-inline: calc(var(--spacing-size-l) * -1);
+  }
+
+  .carousel__viewport::before,
+  .carousel__viewport::after {
+    position: absolute;
+    inset-block: 0;
+    z-index: 1;
+    inline-size: var(--spacing-size-l);
+    opacity: 0;
+    transition: opacity ease var(--motion-transition);
+    pointer-events: none;
+    content: "";
+  }
+
+  .carousel__viewport::before {
+    inset-inline-start: 0;
+    background: linear-gradient(
+      to right,
+      var(--color-surface-base),
+      transparent
+    );
+  }
+
+  .carousel__viewport::after {
+    inset-inline-end: 0;
+    background: linear-gradient(
+      to left,
+      var(--color-surface-base),
+      transparent
+    );
+  }
+
+  .carousel--overflow-start .carousel__viewport::before,
+  .carousel--overflow-end .carousel__viewport::after {
+    opacity: 1;
+  }
+
+  .carousel__list {
+    display: flex;
+    gap: var(--spacing-size-m);
+    margin: 0;
+    padding-inline: var(--spacing-size-l);
+    padding-block: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    list-style: none;
+  }
+
+  .carousel__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel__list:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .carousel__item {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+  }
+
+  .carousel__cover {
+    display: block;
+    aspect-ratio: 16 / 9;
+    inline-size: 100%;
+    block-size: auto;
+    object-fit: cover;
+  }
+
+  .carousel__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
+    border: 1px solid var(--color-surface-raised);
+    background-color: var(--color-surface-raised);
+    padding: var(--spacing-size-m);
+  }
+
+  .carousel__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-s);
+  }
+
+  .carousel__title {
+    margin: 0;
+  }
+
+  .carousel__description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    min-block-size: 3lh;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .carousel__indicators {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-size-s);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .carousel__indicator {
+    display: block;
+    border: 0;
+    border-radius: 50%;
+    background-color: white;
+    cursor: pointer;
+    opacity: 0.4;
+    padding: 0;
+    inline-size: 8px;
+    block-size: 8px;
+    transition: opacity ease var(--motion-transition);
+  }
+
+  .carousel__indicator--active {
+    opacity: 1;
+  }
+
+</style>
