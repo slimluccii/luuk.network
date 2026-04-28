@@ -117,6 +117,10 @@ const { seo } = Astro.props;
 
 <style>
   html {
+    --ln-header-height: calc(
+      var(--typography-scale-subtitle) + var(--spacing-size-xxs) * 2
+    );
+
     background-color: var(--color-surface-canvas);
     scrollbar-gutter: stable;
     color-scheme: dark;
@@ -140,6 +144,8 @@ const { seo } = Astro.props;
 
   .header {
     display: block;
+    grid-area: stack;
+    align-self: start;
     position: sticky;
     z-index: 999;
     inset-block-start: -1px;
@@ -181,8 +187,18 @@ const { seo } = Astro.props;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--color-surface-canvas);
+    transition: background-color ease;
+    transition-duration: var(--motion-transition);
     padding: var(--spacing-size-xxs);
+  }
+
+  .header--scrolled header {
+    background-color: var(--color-surface-canvas);
+  }
+
+  main {
+    grid-area: stack;
+    overflow: hidden;
   }
 
   .content {
@@ -195,7 +211,10 @@ const { seo } = Astro.props;
 
   .content__border {
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "stack"
+      "footer";
     block-size: 100%;
   }
 
