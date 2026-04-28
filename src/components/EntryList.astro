@@ -1,0 +1,81 @@
+---
+import Link from "~/components/Link.astro";
+import LinkArea from "~/components/LinkArea.astro";
+
+type Entry = {
+  href: string;
+  title: string;
+  description?: string;
+  meta?: string;
+  linkLabel?: string;
+};
+
+interface Props {
+  entries: Entry[];
+  headingLevel?: 2 | 3;
+}
+
+const { entries, headingLevel = 2 } = Astro.props;
+const Heading = `h${headingLevel}` as "h2" | "h3";
+---
+
+<ul class="entry-list">
+  {
+    entries.map(
+      ({ href, title, description, meta, linkLabel = "Read more" }) => (
+        <li class="entry">
+          <LinkArea>
+            <Heading class="entry__title">{title}</Heading>
+            {description && <p class="entry__description">{description}</p>}
+            {meta && <p class="entry__meta">{meta}</p>}
+            <Link
+              class="entry__link"
+              href={href}
+              icon="arrow-right"
+              aria-label={`${linkLabel}: ${title}`}
+            >
+              {linkLabel}
+            </Link>
+          </LinkArea>
+        </li>
+      )
+    )
+  }
+</ul>
+
+<style>
+  .entry-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-l);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-gap-tight);
+  }
+
+  .entry__title {
+    margin: 0;
+    font-size: var(--typography-scale-subtitle);
+  }
+
+  .entry__description {
+    margin: 0;
+  }
+
+  .entry__meta {
+    opacity: 0.75;
+    margin: 0;
+    font-size: var(--typography-scale-caption);
+  }
+
+  .entry__link {
+    align-self: flex-start;
+    margin-block-start: var(--spacing-size-xxs);
+  }
+</style>

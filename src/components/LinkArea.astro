@@ -1,0 +1,109 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"div">;
+
+const { class: className, ...props } = Astro.props;
+---
+
+<link-area class:list={["link-area", className]} {...props}>
+  <slot />
+</link-area>
+
+<script>
+  // Events the host element forwards to the anchor so listeners on the
+  // anchor (e.g. Astro's prefetch) fire when the user hovers/taps/focuses
+  // anywhere inside the area.
+  const PROXIED_EVENTS = [
+    "mouseenter",
+    "mouseleave",
+    "mousedown",
+    "touchstart",
+    "focusin",
+    "focusout",
+  ] as const;
+
+  class LinkArea extends HTMLElement {
+    // The first <a> inside the slot is treated as the canonical link.
+    // Cards with multiple anchors will route all events to this one,
+    // so keep cards single-link (use a single primary action).
+    private anchor: HTMLAnchorElement | null = null;
+
+    private proxyEvent = (event: Event) => {
+      if (!this.anchor || event.target === this.anchor) return;
+      this.anchor.dispatchEvent(cloneEvent(event));
+    };
+
+    private handleClick = (event: MouseEvent) => {
+      if (!this.anchor || event.target === this.anchor) return;
+
+      // Don't navigate if the user is selecting text inside the area.
+      const hasTextSelected = window.getSelection()?.toString().trim().length;
+      if (hasTextSelected) return;
+
+      this.anchor.click();
+    };
+
+    connectedCallback() {
+      this.anchor = this.querySelector("a");
+      if (!this.anchor) return;
+
+      this.classList.add("link-area--is-linked");
+
+      this.addEventListener("click", this.handleClick);
+      PROXIED_EVENTS.forEach((eventType) => {
+        this.addEventListener(eventType, this.proxyEvent);
+      });
+    }
+
+    disconnectedCallback() {
+      this.removeEventListener("click", this.handleClick);
+      PROXIED_EVENTS.forEach((eventType) => {
+        this.removeEventListener(eventType, this.proxyEvent);
+      });
+    }
+  }
+
+  // Re-create an event of the same kind on the anchor. Type-specific
+  // constructors preserve coordinates, button state, etc. so listeners
+  // (analytics, ripple effects, prefetch with pointer info) still work.
+  function cloneEvent(event: Event): Event {
+    const init: EventInit = { bubbles: true, cancelable: true };
+
+    if (event instanceof MouseEvent) {
+      return new MouseEvent(event.type, {
+        ...init,
+        clientX: event.clientX,
+        clientY: event.clientY,
+        screenX: event.screenX,
+        screenY: event.screenY,
+        button: event.button,
+        buttons: event.buttons,
+        ctrlKey: event.ctrlKey,
+        shiftKey: event.shiftKey,
+        altKey: event.altKey,
+        metaKey: event.metaKey,
+      });
+    }
+
+    if (event instanceof FocusEvent) {
+      return new FocusEvent(event.type, init);
+    }
+
+    return new Event(event.type, init);
+  }
+
+  if (!customElements.get("link-area")) {
+    customElements.define("link-area", LinkArea);
+  }
+</script>
+
+<style>
+  .link-area {
+    display: contents;
+  }
+
+  .link-area--is-linked {
+    cursor: pointer;
+  }
+</style>

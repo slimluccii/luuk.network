@@ -1,0 +1,27 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { IconName } from "~/generated/icon-sprite";
+import Icon from "~/components/Icon.astro";
+
+type Props = HTMLAttributes<"a"> & {
+  icon?: IconName;
+};
+
+const { icon, class: className, ...attrs } = Astro.props;
+---
+
+<a class:list={["link", className]} {...attrs}>
+  {icon && <Icon class="link__icon" name={icon} />}
+  <span class="link__label">
+    <slot />
+  </span>
+</a>
+
+<style>
+  .link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-gap-tight);
+    color: inherit;
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"div">;
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<div class:list={["section-actions", className]} {...attrs}>
+  <slot />
+</div>
+
+<style>
+  .section-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-size-s);
+  }
+</style>

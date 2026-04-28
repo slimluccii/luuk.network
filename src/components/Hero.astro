@@ -1,0 +1,85 @@
+---
+import Border from "~/components/Border.astro";
+---
+
+<Border class="hero">
+  <div class="hero__visual"></div>
+  <div class="hero__content">
+    <div class="hero-content__top">
+      <slot name="image" />
+      <slot name="action" />
+    </div>
+
+    <div class="hero-content__bottom">
+      <slot />
+    </div>
+  </div>
+</Border>
+
+<style>
+  .hero__visual {
+    block-size: 100px;
+
+    @media (min-width: 400px) {
+      block-size: 150px;
+    }
+
+    @media (min-width: 600px) {
+      block-size: 200px;
+    }
+  }
+
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-l);
+    background-color: var(--color-surface-base);
+    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-xxl);
+  }
+
+  .hero-content__top {
+    display: flex;
+    position: relative;
+    justify-content: flex-end;
+  }
+
+  .hero-content__bottom {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-gap-tight);
+  }
+</style>
+
+<style is:global>
+  .hero__image {
+    position: absolute;
+    inset-block-end: 0px;
+    inset-inline-start: 0px;
+    inline-size: 100px;
+    block-size: 100px;
+    object-fit: cover;
+
+    @media (min-width: 400px) {
+      inline-size: 150px;
+      block-size: 150px;
+    }
+
+    @media (min-width: 600px) {
+      inline-size: 200px;
+      block-size: 200px;
+    }
+  }
+
+  .hero__title {
+    margin: 0;
+    font-weight: 350;
+    font-size: var(--typography-scale-display);
+    font-family: var(--typography-typeface-heading);
+  }
+
+  .hero__meta {
+    opacity: 0.75;
+    margin: 0;
+    font-size: var(--typography-scale-caption);
+  }
+</style>

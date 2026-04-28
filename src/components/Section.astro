@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"section">;
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<section class:list={["section", className]} {...attrs}>
+  <slot />
+</section>
+
+<style>
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-l);
+    padding: var(--spacing-size-xxl) var(--spacing-size-l);
+  }
+</style>
