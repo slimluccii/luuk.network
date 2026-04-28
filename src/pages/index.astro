@@ -1,5 +1,4 @@
 ---
-import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import Border from "~/components/Border.astro";
@@ -31,19 +30,7 @@ const workEntries = selectedWork.map(({ id, data }) => ({
 ---
 
 <Base seo={seo}>
-  <Hero>
-    <Picture
-      slot="image"
-      class="hero__image"
-      formats={["avif", "webp"]}
-      widths={[200, 300, 400, 600]}
-      sizes="(min-width: 600px) 200px, (min-width: 400px) 150px, 100px"
-      src={image}
-      alt=""
-      loading="eager"
-      fetchpriority="high"
-    />
-
+  <Hero subject={image} subjectAlt="">
     <Button
       slot="action"
       as="a"
