@@ -6,6 +6,8 @@ href: "https://dutchdigitalagencies.com"
 year: "2024 - present"
 featured: true
 order: 2
+subject: ../../images/dda-logo.png
+cover: ../../images/dda-cover.png
 ---
 
 import Hero from "~/components/Hero.astro";
@@ -13,10 +15,10 @@ import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
 import Button from "~/components/Button.astro";
 
-<Hero
-  subject="/logos/dutchdigitalagencies.svg"
-  subjectAlt="Dutch Digital Agencies logo"
->
+import logo from "~/images/dda-logo.png";
+import cover from "~/images/dda-cover.png";
+
+<Hero subject={logo} cover={cover}>
 <Button
   slot="action"
   as="a"

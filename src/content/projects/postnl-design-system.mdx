@@ -2,19 +2,32 @@
 title: "PostNL Design System"
 description: "Building Stamp, PostNL's new design system bridging style, accessibility, and tech across teams."
 stack: ["Angular", "React", "Web Components", "TypeScript"]
+href: "https://www.postnl.nl/"
 year: "2024 - present"
 featured: true
 order: 1
+subject: ../../images/postnl-logo.png
+cover: ../../images/postnl-cover.png
 ---
 
 import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
+import Button from "~/components/Button.astro";
 
-<Hero
-  subject="/logos/postnl-design-system.svg"
-  subjectAlt="PostNL Design System logo"
->
+import logo from "~/images/postnl-logo.png";
+import cover from "~/images/postnl-cover.png";
+
+<Hero subject={logo} cover={cover}>
+  <Button
+    slot="action"
+    as="a"
+    variant="secondary"
+    href="https://www.postnl.nl/"
+  >
+    Visit site
+  </Button>
+
   <HeroMeta>2024 - present</HeroMeta>
   <HeroTitle>PostNL Design System</HeroTitle>
   <p>Building Stamp, PostNL's new design system bridging style, accessibility, and tech across teams.</p>
