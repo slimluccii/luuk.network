@@ -4,7 +4,7 @@ import { defineConfig, envField } from "astro/config";
 import cloudflare from "@astrojs/cloudflare";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-import { beasties } from "vite-plugin-beasties";
+import beasties from "astro-beasties";
 import designTokens from "./integrations/design-tokens";
 import iconSprite from "./integrations/icon-sprite";
 
@@ -14,16 +14,16 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "compile",
   }),
-  integrations: [designTokens(), iconSprite(), mdx(), sitemap()],
-  vite: {
-    plugins: [
-      beasties({
-        options: {
-          preload: "swap",
-        },
-      }),
-    ],
-  },
+  integrations: [
+    designTokens(),
+    iconSprite(),
+    mdx(),
+    sitemap(),
+    beasties({
+      preload: "swap",
+      inlineFonts: true,
+    }),
+  ],
   devToolbar: {
     enabled: false,
   }
