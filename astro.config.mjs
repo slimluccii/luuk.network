@@ -16,13 +16,5 @@ export default defineConfig({
   integrations: [designTokens(), iconSprite(), mdx(), sitemap()],
   devToolbar: {
     enabled: false,
-  },
-  env: {
-    schema: {
-      PAGESPEED_API_KEY: envField.string({
-        context: "server",
-        access: "public",
-      }),
-    },
-  },
+  }
 });
