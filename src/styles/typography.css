@@ -70,7 +70,7 @@ h3 {
 }
 
 a {
-  color: #ffd166;
+  color: var(--color-brand-highlight);
   text-underline-offset: 0.25em;
 
   &:hover {
