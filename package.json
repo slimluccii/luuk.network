@@ -31,6 +31,7 @@
     "prettier-plugin-astro": "0.14.1",
     "prettier-plugin-css-order": "^2.2.0",
     "style-dictionary": "^5.4.0",
-    "svg-sprite": "^2.0.4"
+    "svg-sprite": "^2.0.4",
+    "vite-plugin-beasties": "^0.4.2"
   }
 }
