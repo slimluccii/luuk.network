@@ -28,13 +28,9 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
             <Heading class="entry__title">{title}</Heading>
             {description && <p class="entry__description">{description}</p>}
             {meta && <p class="entry__meta">{meta}</p>}
-            <Link
-              class="entry__link"
-              href={href}
-              icon="arrow-right"
-              aria-label={`${linkLabel}: ${title}`}
-            >
+            <Link class="entry__link" href={href} icon="arrow-right">
               {linkLabel}
+              <span class="sr-only"> about {title}</span>
             </Link>
           </LinkArea>
         </li>
