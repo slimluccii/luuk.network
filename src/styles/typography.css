@@ -39,9 +39,9 @@
 }
 
 body {
-  font-family: var(--typography-typeface-body);
-  font-size: var(--typography-scale-body);
   font-weight: 250;
+  font-size: var(--typography-scale-body);
+  font-family: var(--typography-typeface-body);
 }
 
 h3,
@@ -52,9 +52,9 @@ h6 {
 }
 
 h1,
-h2{
-  font-family: var(--typography-typeface-heading);
+h2 {
   font-weight: 400;
+  font-family: var(--typography-typeface-heading);
 }
 
 h1 {
