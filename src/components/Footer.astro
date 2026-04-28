@@ -2,7 +2,7 @@
 import Border from "~/components/Border.astro";
 import Icon from "~/components/Icon.astro";
 import Logo from "~/components/Logo.astro";
-import { navLinks } from "~/data/nav";
+import NavList from "~/components/NavList.astro";
 
 const socialLinks = [
   { href: "https://github.com/slimluccii", icon: "github", title: "GitHub" },
@@ -18,8 +18,6 @@ const socialLinks = [
     title: "LinkedIn",
   },
 ] as const;
-
-const { pathname } = Astro.url;
 ---
 
 <Border class="footer__border" color="secondary">
@@ -42,21 +40,7 @@ const { pathname } = Astro.url;
         data-footer-nav
       >
         <h3 id="footer-nav-heading" class="sr-only">Pages</h3>
-        <ul class="footer-nav__list">
-          {
-            navLinks.map(({ href, label }) => (
-              <li>
-                <a
-                  class="footer-nav__link"
-                  href={href}
-                  aria-current={pathname === href ? "page" : undefined}
-                >
-                  {label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+        <NavList markActive={false} />
       </nav>
     </div>
 
@@ -134,32 +118,5 @@ const { pathname } = Astro.url;
     gap: var(--spacing-size-xs);
     padding: 0px;
     list-style-type: "";
-  }
-
-  .footer-nav__list {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-    list-style-type: "";
-    gap: var(--spacing-size-s);
-  }
-
-  .footer-nav__link {
-    display: block;
-    opacity: 0.75;
-    transition: var(--motion-feedback) ease;
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-
-    &:hover {
-      opacity: 1;
-      text-decoration-color: currentColor;
-    }
-
-    &[aria-current="page"] {
-      opacity: 1;
-    }
   }
 </style>
