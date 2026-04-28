@@ -4,13 +4,14 @@ import type { ImageMetadata } from "astro";
 import Border from "~/components/Border.astro";
 
 interface Props {
-  subject?: ImageMetadata;
-  subjectAlt?: string;
+  subject: ImageMetadata | string;
+  subjectAlt: string;
   cover?: ImageMetadata;
   coverAlt?: string;
 }
 
-const { subject, subjectAlt = "", cover, coverAlt = "" } = Astro.props;
+const { subject, subjectAlt, cover, coverAlt = "" } = Astro.props;
+const subjectIsRemote = typeof subject === "string";
 ---
 
 <Border class="hero">
@@ -33,7 +34,15 @@ const { subject, subjectAlt = "", cover, coverAlt = "" } = Astro.props;
   <div class="hero__content">
     <div class="hero-content__top">
       {
-        subject && (
+        subjectIsRemote ? (
+          <img
+            class="hero__image"
+            src={subject}
+            alt={subjectAlt}
+            loading="eager"
+            fetchpriority="high"
+          />
+        ) : (
           <Picture
             class="hero__image"
             formats={["avif", "webp"]}
