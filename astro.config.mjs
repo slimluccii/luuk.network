@@ -2,6 +2,7 @@
 import { defineConfig, envField } from "astro/config";
 
 import cloudflare from "@astrojs/cloudflare";
+import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import designTokens from "./integrations/design-tokens";
 import iconSprite from "./integrations/icon-sprite";
@@ -12,7 +13,7 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "compile",
   }),
-  integrations: [designTokens(), iconSprite(), sitemap()],
+  integrations: [designTokens(), iconSprite(), mdx(), sitemap()],
   devToolbar: {
     enabled: false,
   },
@@ -20,8 +21,8 @@ export default defineConfig({
     schema: {
       PAGESPEED_API_KEY: envField.string({
         context: "server",
-        access: "public"
+        access: "public",
       }),
     },
-  }
+  },
 });
