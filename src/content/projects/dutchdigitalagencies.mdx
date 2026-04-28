@@ -1,0 +1,32 @@
+---
+title: "dutchdigitalagencies.com"
+description: "Corporate website for the Dutch Digital Agencies, built on Voorhoede's head-start template. Headless setup where member agencies self-manage their own pages, with a focus on flexible architecture and an intuitive admin experience."
+stack: ["Astro", "DatoCMS", "Cloudflare"]
+href: "https://dutchdigitalagencies.com"
+year: "2024 - present"
+featured: true
+order: 2
+---
+
+import Hero from "~/components/Hero.astro";
+import HeroTitle from "~/components/HeroTitle.astro";
+import HeroMeta from "~/components/HeroMeta.astro";
+import Button from "~/components/Button.astro";
+
+<Hero>
+  <img slot="image" class="hero__image" src="/logos/dutchdigitalagencies.svg" alt="Dutch Digital Agencies logo" />
+
+<Button
+  slot="action"
+  as="a"
+  variant="secondary"
+  href="https://dutchdigitalagencies.com"
+>
+  Visit site
+</Button>
+
+  <HeroMeta>2024 - present</HeroMeta>
+  <HeroTitle>dutchdigitalagencies.com</HeroTitle>
+  <p>Corporate website for the Dutch Digital Agencies, built on Voorhoede's head-start template. Headless setup where member agencies self-manage their own pages, with a focus on flexible architecture and an intuitive admin experience.</p>
+  <HeroMeta>Astro, DatoCMS, Cloudflare</HeroMeta>
+</Hero>

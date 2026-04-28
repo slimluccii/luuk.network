@@ -1,0 +1,32 @@
+---
+title: "dierenasiels.com"
+description: "Public Angular application with a Firebase backend for animal shelters in the Netherlands."
+stack: ["Angular", "TypeScript", "AngularFire", "Firebase"]
+href: "https://dierenasiels.com"
+year: "2019 - 2023"
+featured: false
+order: 8
+---
+
+import Hero from "~/components/Hero.astro";
+import HeroTitle from "~/components/HeroTitle.astro";
+import HeroMeta from "~/components/HeroMeta.astro";
+import Button from "~/components/Button.astro";
+
+<Hero>
+  <img slot="image" class="hero__image" src="/logos/dierenasiels.svg" alt="dierenasiels.com logo" />
+
+<Button
+  slot="action"
+  as="a"
+  variant="secondary"
+  href="https://dierenasiels.com"
+>
+  Visit site
+</Button>
+
+  <HeroMeta>2019 - 2023</HeroMeta>
+  <HeroTitle>dierenasiels.com</HeroTitle>
+  <p>Public Angular application with a Firebase backend for animal shelters in the Netherlands.</p>
+  <HeroMeta>Angular, TypeScript, AngularFire, Firebase</HeroMeta>
+</Hero>

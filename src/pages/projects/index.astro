@@ -1,13 +1,34 @@
 ---
+import { getCollection } from "astro:content";
 import Base from "~/layouts/Base.astro";
+import EntryList from "~/components/EntryList.astro";
+import PageHeader from "~/components/PageHeader.astro";
+import Section from "~/components/Section.astro";
+
+const projects = (await getCollection("projects")).sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return a.data.order - b.data.order;
+});
+
+const entries = projects.map(({ id, data }) => ({
+  href: `/projects/${id}/`,
+  title: data.title,
+  description: data.description,
+  meta: data.stack.join(", "),
+}));
 
 const seo = {
   title: "Projects",
-  description:
-    "Welcome to my personal website! Here you can find information about me, my projects, and how to contact me.",
+  description: "An overview of projects I've worked on.",
 };
 ---
 
 <Base seo={seo}>
-  <h1>Projects</h1>
+  <PageHeader>
+    <h1>Projects</h1>
+  </PageHeader>
+  <Section>
+    <h2 class="sr-only">All projects</h2>
+    <EntryList entries={entries} headingLevel={3} />
+  </Section>
 </Base>
