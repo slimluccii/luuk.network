@@ -2,16 +2,20 @@
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
 import Logo from "~/components/Logo.astro";
-import { navLinks } from "~/data/nav";
+import NavList from "~/components/NavList.astro";
 
-const { pathname } = Astro.url;
+interface Props {
+  currentPageTitle?: string;
+}
+
+const { currentPageTitle } = Astro.props;
 ---
 
 <ln-navigation>
   <Button
     class="ln-nav-trigger"
     type="button"
-    icon="bars"
+    icon="menu"
     popovertarget="ln-nav-menu"
     aria-controls="ln-nav-menu"
     aria-expanded="false">Menu</Button
@@ -23,25 +27,11 @@ const { pathname } = Astro.url;
         <Logo />
       </header>
     </Border>
-    <ul class="ln-nav-list">
-      {
-        navLinks.map(({ href, label }) => (
-          <li>
-            <a
-              class="ln-nav-link"
-              href={href}
-              aria-current={pathname === href ? "page" : undefined}
-            >
-              {label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <NavList currentPageTitle={currentPageTitle} showSubList />
     <Button
       class="ln-nav-close"
       type="button"
-      icon="xmark"
+      icon="x"
       popovertarget="ln-nav-menu">Close</Button
     >
   </nav>
@@ -98,7 +88,7 @@ const { pathname } = Astro.url;
       setSiblingsInert(this, open);
 
       const focusTarget = open
-        ? this.menu.querySelector<HTMLElement>(".ln-nav-link")
+        ? this.menu.querySelector<HTMLElement>(".nav-list__link")
         : this.trigger;
       focusTarget?.focus();
     };
@@ -176,8 +166,7 @@ const { pathname } = Astro.url;
   /* --- Focus ---------------------------------------------------------- */
 
   .ln-nav-trigger:focus-visible,
-  .ln-nav-close:focus-visible,
-  .ln-nav-link:focus-visible {
+  .ln-nav-close:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 2px;
   }
@@ -204,41 +193,8 @@ const { pathname } = Astro.url;
     background-color: transparent;
   }
 
-  /* --- Nav list ------------------------------------------------------- */
-
-  .ln-nav-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-s);
-    margin: 0;
-    padding: 0;
-    min-block-size: 100%;
-    list-style-type: "";
-
-    @media (min-width: 800px) {
-      justify-content: center;
-    }
-  }
-
-  /* --- Nav link ------------------------------------------------------- */
-
-  .ln-nav-link {
-    display: block;
-    opacity: 0.75;
-    transition: var(--motion-feedback) ease;
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-color: transparent;
-
-    &:hover {
-      opacity: 1;
-      text-decoration-color: currentColor;
-    }
-
-    &[aria-current="page"] {
-      opacity: 1;
-      font-weight: 400;
-    }
+  .ln-nav-menu :global(.nav-list) {
+    padding: var(--spacing-size-l);
   }
 
   /* --- Header (logo, mobile only) ------------------------------------- */
@@ -272,9 +228,10 @@ const { pathname } = Astro.url;
       overflow: visible;
     }
 
-    .ln-nav-list {
+    .ln-nav-menu :global(.nav-list) {
       flex: 1;
       justify-content: flex-start;
+      padding: 0;
       min-block-size: 0;
     }
 
