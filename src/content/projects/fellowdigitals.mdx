@@ -6,6 +6,8 @@ href: "https://fellowdigitals.com"
 year: "2024"
 featured: true
 order: 3
+subject: ../../images/fellowdigitals-logo.jpeg
+cover: ../../images/fellowdigitals-cover.png
 ---
 
 import Hero from "~/components/Hero.astro";
@@ -13,10 +15,10 @@ import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
 import Button from "~/components/Button.astro";
 
-<Hero
-  subject="/logos/fellowdigitals.svg"
-  subjectAlt="fellowdigitals logo"
->
+import logo from "~/images/fellowdigitals-logo.jpeg";
+import cover from "~/images/fellowdigitals-cover.png";
+
+<Hero subject={logo} cover={cover}>
 <Button
   slot="action"
   as="a"
