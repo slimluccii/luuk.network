@@ -1,8 +1,14 @@
 ---
 import { Picture } from "astro:assets";
+import { getCollection } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
+import EntryList from "~/components/EntryList.astro";
+import Hero from "~/components/Hero.astro";
+import Section from "~/components/Section.astro";
+import SectionContent from "~/components/SectionContent.astro";
+import SectionTitle from "~/components/SectionTitle.astro";
 
 import image from "~/images/me.jpeg";
 
@@ -12,206 +18,80 @@ const seo = {
     "Cum laude graduate in Front-end Design & Development. I build accessible and performant web experiences. My work is guided by digital sovereignty, responsible AI, and managing complexity.",
 };
 
-const selectedWork = [
-  {
-    title: "PostNL Design System",
-    href: null,
-    description:
-      "Building Stamp, PostNL's new design system bridging style, accessibility, and tech across teams.",
-    stack: "Angular, React, Web Components, TypeScript",
-  },
-  {
-    title: "dutchdigitalagencies.com",
-    href: "https://dutchdigitalagencies.com",
-    description:
-      "Corporate website for the Dutch Digital Agencies, built on Voorhoede's head-start template. Headless setup where member agencies self-manage their own pages, with a focus on flexible architecture and an intuitive admin experience.",
-    stack: "Astro, DatoCMS, Cloudflare",
-  },
-  {
-    title: "fellowdigitals.com",
-    href: "https://fellowdigitals.com",
-    description:
-      "Headless corporate site built on Voorhoede's head-start template. Scalable building-block system focused on conversion, accessibility, and SEO.",
-    stack: "Astro, Web Components, DatoCMS, Cloudflare",
-  },
-];
+const selectedWork = (
+  await getCollection("projects", ({ data }) => data.featured)
+).sort((a, b) => a.data.order - b.data.order);
+
+const workEntries = selectedWork.map(({ id, data }) => ({
+  href: `/projects/${id}/`,
+  title: data.title,
+  description: data.description,
+  meta: data.stack.join(", "),
+}));
 ---
 
 <Base seo={seo}>
-  <Border class="hero">
-    <div class="hero__visual"></div>
-    <div class="hero__content">
-      <h1 class="sr-only">Luuk Brauckmann, Front-end Designer & Developer</h1>
+  <Hero>
+    <Picture
+      slot="image"
+      class="hero__image"
+      formats={["avif", "webp"]}
+      widths={[200, 300, 400, 600]}
+      sizes="(min-width: 600px) 200px, (min-width: 400px) 150px, 100px"
+      src={image}
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+    />
 
-      <div class="hero-content__top">
-        <Picture
-          class="hero__image"
-          formats={["avif", "webp"]}
-          widths={[200, 300, 400, 600]}
-          sizes="(min-width: 600px) 200px, (min-width: 400px) 150px, 100px"
-          src={image}
-          alt=""
-          loading="eager"
-          fetchpriority="high"
-        />
+    <Button
+      slot="action"
+      as="a"
+      variant="secondary"
+      icon="github"
+      href="https://github.com/slimluccii">GitHub</Button
+    >
 
-        <Button
-          as="a"
-          variant="secondary"
-          icon="github"
-          href="https://github.com/slimluccii">GitHub</Button
-        >
-      </div>
+    <h1 class="sr-only">Luuk Brauckmann, Front-end Designer & Developer</h1>
+    <p class="hero__title" aria-hidden="true">Luuk Brauckmann</p>
+    <p>
+      Cum laude graduate in Front-end Design & Development. I build accessible
+      and performant web experiences. My work is guided by digital sovereignty,
+      responsible AI, and managing complexity.
+    </p>
+  </Hero>
 
-      <div class="hero-content__bottom">
-        <p class="hero__title" aria-hidden="true">Luuk Brauckmann</p>
+  <Border>
+    <Section>
+      <SectionTitle>About</SectionTitle>
+      <SectionContent>
         <p>
-          Cum laude graduate in Front-end Design & Development. I build
-          accessible and performant web experiences. My work is guided by
-          digital sovereignty, responsible AI, and managing complexity.
+          I started studying Applicatie Ontwikkeling at MBO College Hilversum in
+          2017. Two years in, I joined Simple Soft Products as an intern and
+          stayed on part-time after, working on Angular apps for education,
+          public services, and industrial software. I later went on to study
+          Front-end Design & Development at Hogeschool van Amsterdam, graduating
+          cum laude in 2024.
         </p>
-      </div>
-    </div>
+        <p>
+          Toward the end of my degree I joined De Voorhoede in Amsterdam as an
+          intern, and stayed on after the internship ended. There I work on
+          accessible websites, design systems, and open source tooling. The
+          stack varies per project, and I enjoy moving between them.
+        </p>
+        <p>
+          I believe in simple, standards-driven solutions. When picking tools, I
+          aim for the least powerful one that does the job. My focus lies
+          increasingly on digital sovereignty and an open, European web.
+        </p>
+      </SectionContent>
+    </Section>
   </Border>
 
   <Border>
-    <section class="section">
-      <h2>About</h2>
-      <p>
-        I started studying Applicatie Ontwikkeling at MBO College Hilversum
-        in 2017. Two years in, I joined Simple Soft Products as an intern and
-        stayed on part-time after, working on Angular apps for education,
-        public services, and industrial software. I later went on to study
-        Front-end Design & Development at Hogeschool van Amsterdam,
-        graduating cum laude in 2024.
-      </p>
-      <p>
-        Toward the end of my degree I joined De Voorhoede in Amsterdam as an
-        intern, and stayed on after the internship ended. There I work on
-        accessible websites, design systems, and open source tooling. The
-        stack varies per project, and I enjoy moving between them.
-      </p>
-      <p>
-        I believe in simple, standards-driven solutions. When picking tools,
-        I aim for the least powerful one that does the job. My focus lies
-        increasingly on digital sovereignty and an open, European web.
-      </p>
-    </section>
-  </Border>
-
-  <Border>
-    <section class="section">
-      <h2>Selected work</h2>
-      <ul class="work-list">
-        {
-          selectedWork.map(({ title, href, description, stack }) => (
-            <li class="work-item">
-              <h3 class="work-item__title">
-                {href ? <a href={href}>{title}</a> : title}
-              </h3>
-              <p class="work-item__description">{description}</p>
-              <p class="work-item__stack">{stack}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+    <Section>
+      <SectionTitle>Selected work</SectionTitle>
+      <EntryList entries={workEntries} headingLevel={3} />
+    </Section>
   </Border>
 </Base>
-
-<style>
-  .hero__visual {
-    block-size: 100px;
-
-    @media (min-width: 400px) {
-      block-size: 150px;
-    }
-
-    @media (min-width: 600px) {
-      block-size: 200px;
-    }
-  }
-
-  .hero__content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-l);
-    background-color: var(--color-surface-base);
-    padding: var(--spacing-size-l) var(--spacing-size-l) var(--spacing-size-xxl);
-  }
-
-  .hero-content__top {
-    display: flex;
-    position: relative;
-    justify-content: flex-end;
-  }
-
-  .hero__image {
-    position: absolute;
-    inset-block-end: 0px;
-    inset-inline-start: 0px;
-    inline-size: 100px;
-    block-size: 100px;
-    object-fit: cover;
-
-    @media (min-width: 400px) {
-      inline-size: 150px;
-      block-size: 150px;
-    }
-
-    @media (min-width: 600px) {
-      inline-size: 200px;
-      block-size: 200px;
-    }
-  }
-
-  .hero-content__bottom {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-gap-tight);
-  }
-
-  .hero__title {
-    margin: 0;
-    font-weight: 350;
-    font-family: var(--typography-typeface-heading);
-    font-size: var(--typography-scale-display);
-  }
-
-  .section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-m);
-    padding: var(--spacing-size-xxl) var(--spacing-size-l);
-  }
-
-  .work-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-l);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .work-item {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-gap-tight);
-  }
-
-  .work-item__title {
-    margin: 0;
-    font-size: var(--typography-scale-subtitle);
-  }
-
-  .work-item__description {
-    margin: 0;
-  }
-
-  .work-item__stack {
-    margin: 0;
-    font-size: var(--typography-scale-caption);
-    opacity: 0.75;
-  }
-</style>
