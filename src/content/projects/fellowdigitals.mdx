@@ -1,0 +1,32 @@
+---
+title: "fellowdigitals.com"
+description: "Headless corporate site built on Voorhoede's head-start template. Scalable building-block system focused on conversion, accessibility, and SEO."
+stack: ["Astro", "Web Components", "DatoCMS", "Cloudflare"]
+href: "https://fellowdigitals.com"
+year: "2024"
+featured: true
+order: 3
+---
+
+import Hero from "~/components/Hero.astro";
+import HeroTitle from "~/components/HeroTitle.astro";
+import HeroMeta from "~/components/HeroMeta.astro";
+import Button from "~/components/Button.astro";
+
+<Hero>
+  <img slot="image" class="hero__image" src="/logos/fellowdigitals.svg" alt="fellowdigitals logo" />
+
+<Button
+  slot="action"
+  as="a"
+  variant="secondary"
+  href="https://fellowdigitals.com"
+>
+  Visit site
+</Button>
+
+  <HeroMeta>2024</HeroMeta>
+  <HeroTitle>fellowdigitals.com</HeroTitle>
+  <p>Headless corporate site built on Voorhoede's head-start template. Scalable building-block system focused on conversion, accessibility, and SEO.</p>
+  <HeroMeta>Astro, Web Components, DatoCMS, Cloudflare</HeroMeta>
+</Hero>

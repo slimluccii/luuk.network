@@ -48,7 +48,7 @@ const { seo } = Astro.props;
   </head>
   <body>
     <aside class="navigation">
-      <Navigation />
+      <Navigation currentPageTitle={seo.title} />
     </aside>
     <div class="content">
       <Border class="content__border">
@@ -171,10 +171,6 @@ const { seo } = Astro.props;
 
   .header--scrolled::after {
     opacity: 1;
-  }
-
-  .header--scrolled .header__border {
-    border-block-end-color: var(--color-surface-base);
   }
 
   .header--scrolled .header__border {
