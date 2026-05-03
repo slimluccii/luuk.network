@@ -1,9 +1,10 @@
 ---
 import Base from "~/layouts/Base.astro";
-import Link from "~/components/Link.astro";
+import Button from "~/components/Button.astro";
 import PageHeader from "~/components/PageHeader.astro";
 import RouteSuggestions from "~/components/RouteSuggestions.astro";
 import Section from "~/components/Section.astro";
+import SectionActions from "~/components/SectionActions.astro";
 import SectionContent from "~/components/SectionContent.astro";
 import SectionTitle from "~/components/SectionTitle.astro";
 
@@ -20,8 +21,10 @@ const seo = {
   <Section>
     <SectionContent>
       <p>The page you're looking for doesn't exist.</p>
-      <Link href="/" icon="arrow-right">Back to home</Link>
     </SectionContent>
+    <SectionActions>
+      <Button as="a" icon="arrow-left" href="/">Back to home</Button>
+    </SectionActions>
     <SectionTitle>Did you mean</SectionTitle>
     <RouteSuggestions server:defer>
       <div

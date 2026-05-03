@@ -1,6 +1,5 @@
 ---
 import { getCollection } from "astro:content";
-import Link from "~/components/Link.astro";
 import { levenshtein } from "~/utils/levenshtein";
 
 interface Props {
@@ -43,9 +42,7 @@ const ranked = routes
     <ol class="route-suggestions__list" aria-label="Suggested pages">
       {ranked.map((route) => (
         <li>
-          <Link href={route.href} icon="arrow-right">
-            {route.title}
-          </Link>
+          <a href={route.href}>{route.title}</a>
         </li>
       ))}
     </ol>
