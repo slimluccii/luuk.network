@@ -19,7 +19,7 @@ import { formatDateRange } from "~/utils/date-range";
   subject="/logos/facta-remondis.svg"
 >
   <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
-  <HeroTitle>Facta / Remondis</HeroTitle>
-  <p>Angular front-end for a custom order administration system at a maintenance company for industrial motors, with REST integrations to backend systems.</p>
-  <HeroMeta>Angular, TypeScript, REST</HeroMeta>
+  <HeroTitle>{frontmatter.title}</HeroTitle>
+  <p>{frontmatter.description}</p>
+  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
 </Hero>

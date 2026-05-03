@@ -30,7 +30,7 @@ import cover from "~/images/dda-cover.png";
 </Button>
 
   <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
-  <HeroTitle>dutchdigitalagencies.com</HeroTitle>
-  <p>Corporate website for the Dutch Digital Agencies, built on Voorhoede's head-start template. Headless setup where member agencies self-manage their own pages, with a focus on flexible architecture and an intuitive admin experience.</p>
-  <HeroMeta>Astro, DatoCMS, Cloudflare</HeroMeta>
+  <HeroTitle>{frontmatter.title}</HeroTitle>
+  <p>{frontmatter.description}</p>
+  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
 </Hero>

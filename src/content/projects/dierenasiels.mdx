@@ -30,7 +30,7 @@ import { formatDateRange } from "~/utils/date-range";
 </Button>
 
   <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
-  <HeroTitle>dierenasiels.com</HeroTitle>
-  <p>Public Angular application with a Firebase backend for animal shelters in the Netherlands.</p>
-  <HeroMeta>Angular, TypeScript, AngularFire, Firebase</HeroMeta>
+  <HeroTitle>{frontmatter.title}</HeroTitle>
+  <p>{frontmatter.description}</p>
+  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
 </Hero>

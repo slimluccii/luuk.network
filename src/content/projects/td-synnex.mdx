@@ -16,7 +16,7 @@ import { formatDateRange } from "~/utils/date-range";
 
 <Hero>
   <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
-  <HeroTitle>TD Synnex</HeroTitle>
-  <p>Campaign pages and email marketing templates for the Apple and Google ecosystems within TD Synnex's distribution network.</p>
-  <HeroMeta>Nunjucks, DatoCMS, Google Spreadsheets, Netlify</HeroMeta>
+  <HeroTitle>{frontmatter.title}</HeroTitle>
+  <p>{frontmatter.description}</p>
+  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
 </Hero>
