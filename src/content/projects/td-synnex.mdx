@@ -2,7 +2,7 @@
 title: "TD Synnex"
 description: "Campaign pages and email marketing templates for the Apple and Google ecosystems within TD Synnex's distribution network."
 stack: ["Nunjucks", "DatoCMS", "Google Spreadsheets", "Netlify"]
-year: "2024 - present"
+startDate: 2024-01-01
 featured: false
 order: 5
 subject: ""
@@ -12,9 +12,10 @@ cover: ""
 import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
+import { formatDateRange } from "~/utils/date-range";
 
 <Hero>
-  <HeroMeta>2024 - present</HeroMeta>
+  <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
   <HeroTitle>TD Synnex</HeroTitle>
   <p>Campaign pages and email marketing templates for the Apple and Google ecosystems within TD Synnex's distribution network.</p>
   <HeroMeta>Nunjucks, DatoCMS, Google Spreadsheets, Netlify</HeroMeta>

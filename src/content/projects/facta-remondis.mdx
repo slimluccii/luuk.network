@@ -2,7 +2,8 @@
 title: "Facta / Remondis"
 description: "Angular front-end for a custom order administration system at a maintenance company for industrial motors, with REST integrations to backend systems."
 stack: ["Angular", "TypeScript", "REST"]
-year: "2019 - 2023"
+startDate: 2019-09-01
+endDate: 2023-08-31
 featured: false
 order: 6
 subject: ""
@@ -12,11 +13,12 @@ cover: ""
 import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
+import { formatDateRange } from "~/utils/date-range";
 
 <Hero
   subject="/logos/facta-remondis.svg"
 >
-  <HeroMeta>2019 - 2023</HeroMeta>
+  <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
   <HeroTitle>Facta / Remondis</HeroTitle>
   <p>Angular front-end for a custom order administration system at a maintenance company for industrial motors, with REST integrations to backend systems.</p>
   <HeroMeta>Angular, TypeScript, REST</HeroMeta>

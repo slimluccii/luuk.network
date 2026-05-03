@@ -2,7 +2,7 @@
 title: "Superstruct One Stop Shop"
 description: "Festival platform where users can (re)sell tickets through festival-specific shops."
 stack: ["React", "DatoCMS"]
-year: "2024 - present"
+startDate: 2024-01-01
 featured: false
 order: 4
 subject: ""
@@ -12,11 +12,12 @@ cover: ""
 import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
+import { formatDateRange } from "~/utils/date-range";
 
 <Hero
   subject="/logos/superstruct.svg"
 >
-  <HeroMeta>2024 - present</HeroMeta>
+  <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
   <HeroTitle>Superstruct One Stop Shop</HeroTitle>
   <p>Festival platform where users can (re)sell tickets through festival-specific shops.</p>
   <HeroMeta>React, DatoCMS</HeroMeta>
