@@ -1,9 +1,20 @@
-<div class="page-header">
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"header">;
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<header class:list={["page-header", className]} {...attrs}>
   <slot />
-</div>
+</header>
 
 <style>
   .page-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-xxs);
     padding-inline: var(--spacing-size-l);
     padding-block: calc(var(--ln-header-height) + var(--spacing-size-l)) 0px;
   }

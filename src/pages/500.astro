@@ -1,5 +1,7 @@
 ---
 import Base from "~/layouts/Base.astro";
+import PageHeader from "~/components/PageHeader.astro";
+import PageHeaderEyebrow from "~/components/PageHeaderEyebrow.astro";
 
 const seo = {
   title: "Server error",
@@ -9,11 +11,13 @@ const seo = {
 
 <Base seo={seo}>
   <article class="error-state">
-    <header class="error-state__header">
-      <p class="error-state__code">500</p>
+    <PageHeader>
+      <PageHeaderEyebrow>500</PageHeaderEyebrow>
       <h1 class="error-state__title">Server error</h1>
-    </header>
-    <p>Something went wrong on our end. Try again in a moment.</p>
+    </PageHeader>
+    <div class="error-state__body">
+      <p>Something went wrong on our end. Try again in a moment.</p>
+    </div>
   </article>
 </Base>
 
@@ -22,22 +26,7 @@ const seo = {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-size-m);
-    padding: calc(var(--ln-header-height) + var(--spacing-size-xl))
-      var(--spacing-size-l) var(--spacing-size-xxl);
-  }
-
-  .error-state__header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-xxs);
-  }
-
-  .error-state__code {
-    margin: 0;
-    opacity: 0.75;
-    font-size: var(--typography-scale-caption);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    padding-block-end: var(--spacing-size-xxl);
   }
 
   .error-state__title {
@@ -47,7 +36,14 @@ const seo = {
     font-family: var(--typography-typeface-body);
   }
 
-  .error-state p {
+  .error-state__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
+    padding-inline: var(--spacing-size-l);
+  }
+
+  .error-state__body p {
     margin: 0;
   }
 </style>

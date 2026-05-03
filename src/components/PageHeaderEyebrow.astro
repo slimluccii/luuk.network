@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"p">;
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<p class:list={["page-header__eyebrow", className]} {...attrs}>
+  <slot />
+</p>
+
+<style>
+  .page-header__eyebrow {
+    margin: 0;
+    opacity: 0.75;
+    font-size: var(--typography-scale-caption);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+</style>
