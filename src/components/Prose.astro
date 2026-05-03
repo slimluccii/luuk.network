@@ -1,0 +1,41 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"div">;
+
+const { class: className, ...attrs } = Astro.props;
+---
+
+<div class:list={["prose", className]} {...attrs}>
+  <slot />
+</div>
+
+<style is:global>
+  .prose {
+    padding-block: var(--spacing-size-xxl);
+  }
+
+  .prose > :not(.hero) {
+    padding-inline: var(--spacing-size-l);
+  }
+
+  .prose > * {
+    margin-block: 0;
+  }
+
+  .prose > * + * {
+    margin-block-start: var(--spacing-gap-regular);
+  }
+
+  .prose > * + :is(h2, h3) {
+    margin-block-start: var(--spacing-size-l);
+  }
+
+  .prose :is(ul, ol) {
+    padding-inline-start: var(--spacing-size-m);
+  }
+
+  .prose li + li {
+    margin-block-start: var(--spacing-gap-tight);
+  }
+</style>
