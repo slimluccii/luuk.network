@@ -27,11 +27,15 @@ const seo = {
         >
           <p class="route-suggestions__label">Looking for similar pages...</p>
           <ol class="route-suggestions__list" aria-hidden="true">
-            <li><span class="route-suggestions__skeleton-item" /></li>
-            <li><span class="route-suggestions__skeleton-item" /></li>
-            <li><span class="route-suggestions__skeleton-item" /></li>
-            <li><span class="route-suggestions__skeleton-item" /></li>
-            <li><span class="route-suggestions__skeleton-item" /></li>
+            {[0, 1, 2, 3, 4].map(() => (
+              <li>
+                <div class="route-suggestions__item">
+                  <span class="route-suggestions__skeleton-item route-suggestions__skeleton-item--title" />
+                  <span class="route-suggestions__skeleton-item route-suggestions__skeleton-item--description" />
+                  <span class="route-suggestions__skeleton-item route-suggestions__skeleton-item--path" />
+                </div>
+              </li>
+            ))}
           </ol>
         </div>
       </RouteSuggestions>
