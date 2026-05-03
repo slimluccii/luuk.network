@@ -1,0 +1,68 @@
+---
+import { getCollection } from "astro:content";
+import { levenshtein } from "~/utils/levenshtein";
+
+interface Props {
+  pathname: string;
+  limit?: number;
+}
+
+const { pathname, limit = 3 } = Astro.props;
+
+const projects = await getCollection("projects");
+
+type Route = { href: string; title: string };
+
+const routes: Route[] = [
+  { href: "/", title: "Home" },
+  { href: "/projects/", title: "Projects" },
+  { href: "/blog/", title: "Blog" },
+  ...projects.map((project) => ({
+    href: `/projects/${project.id}/`,
+    title: project.data.title,
+  })),
+];
+
+const target = pathname.replace(/\/+$/, "").toLowerCase();
+
+const ranked = routes
+  .map((route) => ({
+    route,
+    distance: levenshtein(target, route.href.replace(/\/+$/, "").toLowerCase()),
+  }))
+  .sort((a, b) => a.distance - b.distance)
+  .slice(0, limit)
+  .map((entry) => entry.route);
+---
+
+{
+  ranked.length > 0 && (
+    <div class="route-suggestions">
+      <p>Did you mean:</p>
+      <ul>
+        {ranked.map((route) => (
+          <li>
+            <a href={route.href}>{route.title}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  .route-suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-gap-tight);
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-gap-tight);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>
