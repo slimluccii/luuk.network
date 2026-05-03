@@ -39,7 +39,11 @@ const ranked = routes
 
 {
   pathname && (
-    <div class="route-suggestions">
+    <div
+      class="route-suggestions"
+      aria-live="polite"
+      aria-label="Suggested pages"
+    >
       <p>Did you mean:</p>
       <ul>
         {ranked.map((route) => (

@@ -20,9 +20,14 @@ const seo = {
     <EmptyState>
       <p>The page you're looking for doesn't exist.</p>
       <RouteSuggestions server:defer>
-        <div slot="fallback" class="route-suggestions">
+        <div
+          slot="fallback"
+          class="route-suggestions"
+          aria-busy="true"
+          aria-live="polite"
+        >
           <p>Looking for similar pages...</p>
-          <ul>
+          <ul aria-hidden="true">
             <li><span class="route-suggestions__skeleton-item" /></li>
             <li><span class="route-suggestions__skeleton-item" /></li>
             <li><span class="route-suggestions__skeleton-item" /></li>
