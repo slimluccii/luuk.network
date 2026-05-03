@@ -19,7 +19,18 @@ const seo = {
   <Section>
     <EmptyState>
       <p>The page you're looking for doesn't exist.</p>
-      <RouteSuggestions server:defer />
+      <RouteSuggestions server:defer>
+        <div slot="fallback" class="route-suggestions">
+          <p>Looking for similar pages...</p>
+          <ul>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+          </ul>
+        </div>
+      </RouteSuggestions>
       <Button as="a" icon="arrow-right" href="/">
         Back to home
       </Button>
