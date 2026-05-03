@@ -1,10 +1,11 @@
 ---
 import Base from "~/layouts/Base.astro";
-import Button from "~/components/Button.astro";
-import EmptyState from "~/components/EmptyState.astro";
+import Link from "~/components/Link.astro";
 import PageHeader from "~/components/PageHeader.astro";
 import RouteSuggestions from "~/components/RouteSuggestions.astro";
 import Section from "~/components/Section.astro";
+import SectionContent from "~/components/SectionContent.astro";
+import SectionTitle from "~/components/SectionTitle.astro";
 
 const seo = {
   title: "Not Found",
@@ -17,28 +18,29 @@ const seo = {
     <h1>Not Found</h1>
   </PageHeader>
   <Section>
-    <EmptyState>
+    <SectionContent>
       <p>The page you're looking for doesn't exist.</p>
-      <RouteSuggestions server:defer>
-        <div
-          slot="fallback"
-          class="route-suggestions"
-          aria-busy="true"
-          aria-live="polite"
-        >
-          <p>Looking for similar pages...</p>
-          <ul aria-hidden="true">
-            <li><span class="route-suggestions__skeleton-item" /></li>
-            <li><span class="route-suggestions__skeleton-item" /></li>
-            <li><span class="route-suggestions__skeleton-item" /></li>
-            <li><span class="route-suggestions__skeleton-item" /></li>
-            <li><span class="route-suggestions__skeleton-item" /></li>
-          </ul>
-        </div>
-      </RouteSuggestions>
-      <Button as="a" icon="arrow-right" href="/">
-        Back to home
-      </Button>
-    </EmptyState>
+      <Link href="/" icon="arrow-right">Back to home</Link>
+    </SectionContent>
+    <SectionTitle>Did you mean</SectionTitle>
+    <RouteSuggestions server:defer>
+      <div
+        slot="fallback"
+        class="route-suggestions"
+        aria-busy="true"
+        aria-live="polite"
+      >
+        <p class="route-suggestions__status">
+          Looking for similar pages...
+        </p>
+        <ol class="route-suggestions__list" aria-hidden="true">
+          <li><span class="route-suggestions__skeleton-item" /></li>
+          <li><span class="route-suggestions__skeleton-item" /></li>
+          <li><span class="route-suggestions__skeleton-item" /></li>
+          <li><span class="route-suggestions__skeleton-item" /></li>
+          <li><span class="route-suggestions__skeleton-item" /></li>
+        </ol>
+      </div>
+    </RouteSuggestions>
   </Section>
 </Base>
