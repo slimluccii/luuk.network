@@ -39,13 +39,16 @@ const ranked = routes
 
 {
   pathname && (
-    <ol class="route-suggestions__list" aria-label="Suggested pages">
-      {ranked.map((route) => (
-        <li>
-          <a href={route.href}>{route.title}</a>
-        </li>
-      ))}
-    </ol>
+    <div class="route-suggestions" aria-label="Suggested pages">
+      <p class="route-suggestions__label">Did you mean:</p>
+      <ol class="route-suggestions__list">
+        {ranked.map((route) => (
+          <li>
+            <a href={route.href}>{route.title}</a>
+          </li>
+        ))}
+      </ol>
+    </div>
   )
 }
 
@@ -57,8 +60,10 @@ const ranked = routes
     min-block-size: calc(1.5em * 6 + var(--spacing-gap-tight) * 5);
   }
 
-  .route-suggestions__status {
+  .route-suggestions__label {
     margin: 0;
+    opacity: 0.75;
+    font-size: var(--typography-scale-caption);
   }
 
   .route-suggestions__list {
@@ -68,11 +73,11 @@ const ranked = routes
     margin: 0;
     padding-inline-start: var(--spacing-size-m);
     min-block-size: calc(1.5em * 5 + var(--spacing-gap-tight) * 4);
-    list-style: decimal;
   }
 
   .route-suggestions__list li::marker {
-    opacity: 0.75;
+    opacity: 0.4;
+    font-size: 0.875em;
   }
 
   .route-suggestions__skeleton-item {

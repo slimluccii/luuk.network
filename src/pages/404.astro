@@ -1,31 +1,18 @@
 ---
 import Base from "~/layouts/Base.astro";
-import Button from "~/components/Button.astro";
-import PageHeader from "~/components/PageHeader.astro";
 import RouteSuggestions from "~/components/RouteSuggestions.astro";
-import Section from "~/components/Section.astro";
-import SectionActions from "~/components/SectionActions.astro";
-import SectionContent from "~/components/SectionContent.astro";
-import SectionTitle from "~/components/SectionTitle.astro";
 
 const seo = {
-  title: "Not Found",
+  title: "Page not found",
   description: "The page you're looking for doesn't exist.",
 };
 ---
 
 <Base seo={seo}>
-  <PageHeader>
-    <h1>Not Found</h1>
-  </PageHeader>
-  <Section>
-    <SectionContent>
-      <p>The page you're looking for doesn't exist.</p>
-    </SectionContent>
-    <SectionActions>
-      <Button as="a" icon="arrow-left" href="/">Back to home</Button>
-    </SectionActions>
-    <SectionTitle>Did you mean</SectionTitle>
+  <article class="error-state">
+    <p class="error-state__code">404</p>
+    <h1 class="error-state__title">Page not found</h1>
+    <p>The page you're looking for doesn't exist.</p>
     <RouteSuggestions server:defer>
       <div
         slot="fallback"
@@ -33,9 +20,7 @@ const seo = {
         aria-busy="true"
         aria-live="polite"
       >
-        <p class="route-suggestions__status">
-          Looking for similar pages...
-        </p>
+        <p class="route-suggestions__label">Looking for similar pages...</p>
         <ol class="route-suggestions__list" aria-hidden="true">
           <li><span class="route-suggestions__skeleton-item" /></li>
           <li><span class="route-suggestions__skeleton-item" /></li>
@@ -45,5 +30,34 @@ const seo = {
         </ol>
       </div>
     </RouteSuggestions>
-  </Section>
+  </article>
 </Base>
+
+<style>
+  .error-state {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
+    padding: calc(var(--ln-header-height) + var(--spacing-size-xl))
+      var(--spacing-size-l) var(--spacing-size-xxl);
+  }
+
+  .error-state__code {
+    margin: 0;
+    opacity: 0.5;
+    font-size: var(--typography-scale-caption);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .error-state__title {
+    margin: 0;
+    font-weight: 400;
+    font-size: var(--typography-scale-heading);
+    font-family: var(--typography-typeface-body);
+  }
+
+  .error-state p {
+    margin: 0;
+  }
+</style>
