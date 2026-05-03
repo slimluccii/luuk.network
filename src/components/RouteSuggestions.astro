@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import Link from "~/components/Link.astro";
 import { levenshtein } from "~/utils/levenshtein";
 
 interface Props {
@@ -39,20 +40,15 @@ const ranked = routes
 
 {
   pathname && (
-    <div
-      class="route-suggestions"
-      aria-live="polite"
-      aria-label="Suggested pages"
-    >
-      <p>Did you mean:</p>
-      <ul>
-        {ranked.map((route) => (
-          <li>
-            <a href={route.href}>{route.title}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ol class="route-suggestions__list" aria-label="Suggested pages">
+      {ranked.map((route) => (
+        <li>
+          <Link href={route.href} icon="arrow-right">
+            {route.title}
+          </Link>
+        </li>
+      ))}
+    </ol>
   )
 }
 
@@ -61,17 +57,20 @@ const ranked = routes
     display: flex;
     flex-direction: column;
     gap: var(--spacing-gap-tight);
-    min-block-size: calc(
-      1.5em * 6 + var(--spacing-gap-tight) * 5
-    );
+    min-block-size: calc(1.5em * 6 + var(--spacing-gap-tight) * 5);
   }
 
-  .route-suggestions ul {
+  .route-suggestions__status {
+    margin: 0;
+  }
+
+  .route-suggestions__list {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-gap-tight);
     margin: 0;
     padding: 0;
+    min-block-size: calc(1.5em * 5 + var(--spacing-gap-tight) * 4);
     list-style: none;
   }
 
