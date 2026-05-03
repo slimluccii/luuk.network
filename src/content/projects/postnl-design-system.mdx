@@ -7,8 +7,8 @@ startDate: 2025-01-13
 endDate: 2026-03-31
 featured: true
 order: 1
-subject: ../../images/postnl-logo.png
-cover: ../../images/postnl-cover.png
+subject: ~/images/postnl-logo.png
+cover: ~/images/postnl-cover.png
 ---
 
 import Hero from "~/components/Hero.astro";
@@ -34,7 +34,7 @@ import cover from "~/images/postnl-cover.png";
   <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
   <HeroTitle>{frontmatter.title}</HeroTitle>
   <p>{frontmatter.description}</p>
-  <HeroMeta>Angular, React, Web Components, TypeScript</HeroMeta>
+  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
 </Hero>
 
 <Prose>

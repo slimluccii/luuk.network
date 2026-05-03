@@ -19,7 +19,7 @@ import { formatDateRange } from "~/utils/date-range";
   subject="/logos/psa-software.svg"
 >
   <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
-  <HeroTitle>Internal PSA software</HeroTitle>
-  <p>Front-end largely rewritten in Angular, with REST integrations and a shared component library.</p>
-  <HeroMeta>Angular, TypeScript, REST</HeroMeta>
+  <HeroTitle>{frontmatter.title}</HeroTitle>
+  <p>{frontmatter.description}</p>
+  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
 </Hero>

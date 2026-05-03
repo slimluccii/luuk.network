@@ -18,7 +18,7 @@ import { formatDateRange } from "~/utils/date-range";
   subject="/logos/superstruct.svg"
 >
   <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
-  <HeroTitle>Superstruct One Stop Shop</HeroTitle>
-  <p>Festival platform where users can (re)sell tickets through festival-specific shops.</p>
-  <HeroMeta>React, DatoCMS</HeroMeta>
+  <HeroTitle>{frontmatter.title}</HeroTitle>
+  <p>{frontmatter.description}</p>
+  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
 </Hero>

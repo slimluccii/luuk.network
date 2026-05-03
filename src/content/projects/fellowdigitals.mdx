@@ -31,7 +31,7 @@ import cover from "~/images/fellowdigitals-cover.png";
 </Button>
 
   <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
-  <HeroTitle>fellowdigitals.com</HeroTitle>
-  <p>Headless corporate site built on Voorhoede's head-start template. Scalable building-block system focused on conversion, accessibility, and SEO.</p>
-  <HeroMeta>Astro, Web Components, DatoCMS, Cloudflare</HeroMeta>
+  <HeroTitle>{frontmatter.title}</HeroTitle>
+  <p>{frontmatter.description}</p>
+  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
 </Hero>
