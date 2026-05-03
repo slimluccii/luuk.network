@@ -3,21 +3,25 @@ import Base from "~/layouts/Base.astro";
 import Button from "~/components/Button.astro";
 import EmptyState from "~/components/EmptyState.astro";
 import PageHeader from "~/components/PageHeader.astro";
+import RouteSuggestions from "~/components/RouteSuggestions.astro";
 import Section from "~/components/Section.astro";
 
+export const prerender = false;
+
 const seo = {
-  title: "Page not found",
+  title: "Not Found",
   description: "The page you're looking for doesn't exist.",
 };
 ---
 
 <Base seo={seo}>
   <PageHeader>
-    <h1>404</h1>
+    <h1>Not Found</h1>
   </PageHeader>
   <Section>
     <EmptyState>
-      <p>Page not found.</p>
+      <p>The page you're looking for doesn't exist.</p>
+      <RouteSuggestions server:defer pathname={Astro.url.pathname} />
       <Button as="a" icon="arrow-right" href="/">
         Back to home
       </Button>
