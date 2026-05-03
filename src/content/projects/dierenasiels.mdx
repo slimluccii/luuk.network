@@ -3,7 +3,8 @@ title: "dierenasiels.com"
 description: "Public Angular application with a Firebase backend for animal shelters in the Netherlands."
 stack: ["Angular", "TypeScript", "AngularFire", "Firebase"]
 href: "https://dierenasiels.com"
-year: "2019 - 2023"
+startDate: 2019-09-01
+endDate: 2023-08-31
 featured: false
 order: 8
 subject: ""
@@ -14,6 +15,7 @@ import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
 import Button from "~/components/Button.astro";
+import { formatDateRange } from "~/utils/date-range";
 
 <Hero
   subject="/logos/dierenasiels.svg"
@@ -27,7 +29,7 @@ import Button from "~/components/Button.astro";
   Visit site
 </Button>
 
-  <HeroMeta>2019 - 2023</HeroMeta>
+  <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
   <HeroTitle>dierenasiels.com</HeroTitle>
   <p>Public Angular application with a Firebase backend for animal shelters in the Netherlands.</p>
   <HeroMeta>Angular, TypeScript, AngularFire, Firebase</HeroMeta>

@@ -3,7 +3,8 @@ title: "fellowdigitals.com"
 description: "Headless corporate site built on Voorhoede's head-start template. Scalable building-block system focused on conversion, accessibility, and SEO."
 stack: ["Astro", "Web Components", "DatoCMS", "Cloudflare"]
 href: "https://fellowdigitals.com"
-year: "2024"
+startDate: 2024-01-01
+endDate: 2024-12-31
 featured: true
 order: 3
 subject: ../../images/fellowdigitals-logo.jpeg
@@ -14,6 +15,7 @@ import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
 import Button from "~/components/Button.astro";
+import { formatDateRange } from "~/utils/date-range";
 
 import logo from "~/images/fellowdigitals-logo.jpeg";
 import cover from "~/images/fellowdigitals-cover.png";
@@ -28,7 +30,7 @@ import cover from "~/images/fellowdigitals-cover.png";
   Visit site
 </Button>
 
-  <HeroMeta>2024</HeroMeta>
+  <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
   <HeroTitle>fellowdigitals.com</HeroTitle>
   <p>Headless corporate site built on Voorhoede's head-start template. Scalable building-block system focused on conversion, accessibility, and SEO.</p>
   <HeroMeta>Astro, Web Components, DatoCMS, Cloudflare</HeroMeta>

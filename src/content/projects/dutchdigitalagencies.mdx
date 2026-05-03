@@ -3,7 +3,7 @@ title: "dutchdigitalagencies.com"
 description: "Corporate website for the Dutch Digital Agencies, built on Voorhoede's head-start template. Headless setup where member agencies self-manage their own pages, with a focus on flexible architecture and an intuitive admin experience."
 stack: ["Astro", "DatoCMS", "Cloudflare"]
 href: "https://dutchdigitalagencies.com"
-year: "2024 - present"
+startDate: 2024-01-01
 featured: true
 order: 2
 subject: ../../images/dda-logo.png
@@ -14,6 +14,7 @@ import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
 import Button from "~/components/Button.astro";
+import { formatDateRange } from "~/utils/date-range";
 
 import logo from "~/images/dda-logo.png";
 import cover from "~/images/dda-cover.png";
@@ -28,7 +29,7 @@ import cover from "~/images/dda-cover.png";
   Visit site
 </Button>
 
-  <HeroMeta>2024 - present</HeroMeta>
+  <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
   <HeroTitle>dutchdigitalagencies.com</HeroTitle>
   <p>Corporate website for the Dutch Digital Agencies, built on Voorhoede's head-start template. Headless setup where member agencies self-manage their own pages, with a focus on flexible architecture and an intuitive admin experience.</p>
   <HeroMeta>Astro, DatoCMS, Cloudflare</HeroMeta>
