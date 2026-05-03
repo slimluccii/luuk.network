@@ -16,7 +16,10 @@ import HeroMeta from "~/components/HeroMeta.astro";
 import Button from "~/components/Button.astro";
 import { formatDateRange } from "~/utils/date-range";
 
-<Hero subject={frontmatter.subject} cover={frontmatter.cover}>
+import logo from "~/images/dda-logo.png";
+import cover from "~/images/dda-cover.png";
+
+<Hero subject={logo} cover={cover}>
 <Button
   slot="action"
   as="a"
