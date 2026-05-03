@@ -1,27 +1,45 @@
 ---
 import Base from "~/layouts/Base.astro";
-import Button from "~/components/Button.astro";
-import PageHeader from "~/components/PageHeader.astro";
-import Section from "~/components/Section.astro";
-import SectionActions from "~/components/SectionActions.astro";
-import SectionContent from "~/components/SectionContent.astro";
 
 const seo = {
-  title: "Server Error",
+  title: "Server error",
   description: "An unexpected error occurred.",
 };
 ---
 
 <Base seo={seo}>
-  <PageHeader>
-    <h1>Server Error</h1>
-  </PageHeader>
-  <Section>
-    <SectionContent>
-      <p>Something went wrong on our end. Try again in a moment.</p>
-    </SectionContent>
-    <SectionActions>
-      <Button as="a" icon="arrow-left" href="/">Back to home</Button>
-    </SectionActions>
-  </Section>
+  <article class="error-state">
+    <p class="error-state__code">500</p>
+    <h1 class="error-state__title">Server error</h1>
+    <p>Something went wrong on our end. Try again in a moment.</p>
+  </article>
 </Base>
+
+<style>
+  .error-state {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
+    padding: calc(var(--ln-header-height) + var(--spacing-size-xl))
+      var(--spacing-size-l) var(--spacing-size-xxl);
+  }
+
+  .error-state__code {
+    margin: 0;
+    opacity: 0.5;
+    font-size: var(--typography-scale-caption);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .error-state__title {
+    margin: 0;
+    font-weight: 400;
+    font-size: var(--typography-scale-heading);
+    font-family: var(--typography-typeface-body);
+  }
+
+  .error-state p {
+    margin: 0;
+  }
+</style>
