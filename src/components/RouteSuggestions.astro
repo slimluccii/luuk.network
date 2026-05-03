@@ -66,9 +66,13 @@ const ranked = routes
     flex-direction: column;
     gap: var(--spacing-gap-tight);
     margin: 0;
-    padding: 0;
+    padding-inline-start: var(--spacing-size-m);
     min-block-size: calc(1.5em * 5 + var(--spacing-gap-tight) * 4);
-    list-style: none;
+    list-style: decimal;
+  }
+
+  .route-suggestions__list li::marker {
+    opacity: 0.75;
   }
 
   .route-suggestions__skeleton-item {
