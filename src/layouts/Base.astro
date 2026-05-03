@@ -124,6 +124,10 @@ const { seo } = Astro.props;
     background-color: var(--color-surface-canvas);
     scrollbar-gutter: stable;
     color-scheme: dark;
+
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
