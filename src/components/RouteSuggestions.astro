@@ -13,15 +13,20 @@ const pathname = referer ? new URL(referer).pathname : "";
 
 const projects = await getCollection("projects");
 
-type Route = { href: string; title: string };
+type Route = { href: string; title: string; description: string };
 
 const routes: Route[] = [
-  { href: "/", title: "Home" },
-  { href: "/projects/", title: "Projects" },
-  { href: "/blog/", title: "Blog" },
+  { href: "/", title: "Home", description: "Front-end designer & developer" },
+  {
+    href: "/projects/",
+    title: "Projects",
+    description: "An overview of projects I've worked on",
+  },
+  { href: "/blog/", title: "Blog", description: "Notes and articles" },
   ...projects.map((project) => ({
     href: `/projects/${project.id}/`,
     title: project.data.title,
+    description: project.data.description,
   })),
 ];
 
@@ -43,8 +48,10 @@ const ranked = routes
       <p class="route-suggestions__label">Did you mean:</p>
       <ol class="route-suggestions__list">
         {ranked.map((route) => (
-          <li>
+          <li class="route-suggestions__item">
             <a href={route.href}>{route.title}</a>
+            <p class="route-suggestions__description">{route.description}</p>
+            <p class="route-suggestions__path">{route.href}</p>
           </li>
         ))}
       </ol>
@@ -57,7 +64,6 @@ const ranked = routes
     display: flex;
     flex-direction: column;
     gap: var(--spacing-gap-tight);
-    min-block-size: calc(1.5em * 6 + var(--spacing-gap-tight) * 5);
   }
 
   .route-suggestions__label {
@@ -69,10 +75,15 @@ const ranked = routes
   .route-suggestions__list {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-gap-tight);
+    gap: var(--spacing-size-l);
     margin: 0;
     padding-inline-start: var(--spacing-size-m);
-    min-block-size: calc(1.5em * 5 + var(--spacing-gap-tight) * 4);
+  }
+
+  .route-suggestions__item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-xxs);
   }
 
   .route-suggestions__list li::marker {
@@ -80,26 +91,37 @@ const ranked = routes
     font-size: var(--typography-scale-caption);
   }
 
+  .route-suggestions__description {
+    margin: 0;
+  }
+
+  .route-suggestions__path {
+    margin: 0;
+    opacity: 0.75;
+    font-size: var(--typography-scale-caption);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      monospace;
+  }
+
   .route-suggestions__skeleton-item {
     display: block;
     border-radius: 2px;
     background-color: currentColor;
-    inline-size: 8em;
     block-size: 1em;
     opacity: 0.15;
     animation: route-suggestions-pulse 1.4s ease-in-out infinite;
   }
 
-  .route-suggestions__skeleton-item:nth-child(2) {
-    inline-size: 11em;
-  }
-  .route-suggestions__skeleton-item:nth-child(3) {
+  .route-suggestions__skeleton-item--title {
     inline-size: 9em;
   }
-  .route-suggestions__skeleton-item:nth-child(4) {
-    inline-size: 12em;
+
+  .route-suggestions__skeleton-item--description {
+    inline-size: 16em;
+    max-inline-size: 100%;
   }
-  .route-suggestions__skeleton-item:nth-child(5) {
+
+  .route-suggestions__skeleton-item--path {
     inline-size: 7em;
   }
 
