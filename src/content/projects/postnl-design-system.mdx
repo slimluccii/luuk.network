@@ -3,7 +3,8 @@ title: "PostNL Design System"
 description: "Building Stamp, PostNL's new design system bridging style, accessibility, and tech across teams."
 stack: ["Angular", "React", "Web Components", "TypeScript"]
 href: "https://www.postnl.nl/"
-year: "2024 - present"
+startDate: 2025-01-13
+endDate: 2026-03-31
 featured: true
 order: 1
 subject: ../../images/postnl-logo.png
@@ -14,6 +15,8 @@ import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import HeroMeta from "~/components/HeroMeta.astro";
 import Button from "~/components/Button.astro";
+import Prose from "~/components/Prose.astro";
+import { formatDateRange } from "~/utils/date-range";
 
 import logo from "~/images/postnl-logo.png";
 import cover from "~/images/postnl-cover.png";
@@ -28,8 +31,58 @@ import cover from "~/images/postnl-cover.png";
     Visit site
   </Button>
 
-  <HeroMeta>2024 - present</HeroMeta>
-  <HeroTitle>PostNL Design System</HeroTitle>
-  <p>Building Stamp, PostNL's new design system bridging style, accessibility, and tech across teams.</p>
+  <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
+  <HeroTitle>{frontmatter.title}</HeroTitle>
+  <p>{frontmatter.description}</p>
   <HeroMeta>Angular, React, Web Components, TypeScript</HeroMeta>
 </Hero>
+
+<Prose>
+
+Stamp is the design system we're building for PostNL to bring style, accessibility, and tech together across all of their digital products. Working on it is where I've put my views on accessibility, standards, and clean component APIs into daily practice.
+
+## My role
+
+I worked on Stamp for about a year and a half together with my tech lead, the two of us as the developers from De Voorhoede. The wider core team includes a product owner, designer, and accessibility expert from PostNL.
+
+In a team this small, my work goes beyond writing components. I shape component APIs, propose and implement accessibility patterns, maintain the CI pipeline, and document the system. I also lay the groundwork for new system areas and tooling, mentor developers joining the project, and work closely with the designer to test design choices and push for stronger UX outcomes.
+
+## Three packages, one system
+
+Stamp ships as three separate packages: Angular, React, and native Web Components. PostNL runs a wide range of projects and platforms, and the three packages exist so every team, regardless of their stack, can adopt the system.
+
+That decision sits underneath almost everything else on the project. It shapes how we design components, how we document them, and how new contributors get up to speed.
+
+## Designing for three at once
+
+Web Components accept attributes and slots, not complex objects, so we lean toward composition over configuration across all three packages. A `<List>` with `<ListItem>` children works predictably everywhere, where a list with a complex `items` prop would force the Web Components version into a different shape. The result tends to read better in templates anyway.
+
+The constraint of working across three packages quietly disciplines every other choice. We keep components small, we don't reach for the configuration-via-props pattern that feels natural in Angular and React, and we treat the most restrictive output as the convention for all three.
+
+## Accessibility as a discipline of the system
+
+Accessibility on Stamp isn't a checklist applied at the end, it's a property of how the system is built. Most of the work happens in HTML and CSS: semantic elements as the default, logical properties so layouts behave across writing modes, lang-aware patterns so localized text follows the document language. ARIA only enters where the platform genuinely doesn't have an answer.
+
+What made this approach possible is the team. Sparring with our accessibility expert throughout the project is the difference between code that passes audits and a system that's actually accessible.
+
+## Laying the groundwork for AI
+
+I laid the foundation for Stamp to be consumed by AI tools. Two pieces of work fit together to make that possible.
+
+The first is publishing our packages to Figma Make, so designers prototyping there always have the latest components at hand. I worked out the publishing flow and wrote a separate npm configuration so it could be added cleanly to CI as part of our regular release process.
+
+The second is a `GUIDELINES.md` for every component, written in plain language describing how each component should and shouldn't be used. AI tools need this kind of context to generate correct code against the system instead of guessing, and the same files double as developer-facing documentation.
+
+## Keeping the machine running
+
+A meaningful part of design system work is keeping things running. Reproducing bugs against consumer projects, releasing fixes through Changesets, and following up with the affected teams to confirm the issue is actually closed on their side.
+
+The most disruptive episode was the Shai-Hulud npm supply chain attacks in 2025. PostNL responded by blocking parts of our pipeline and our access to certain systems, and for several weeks I worked around it. Working locally, batching pushes once access was restored, and tracking by hand what had been reviewed, what was waiting, and what was done. Alongside that I researched what the codebase needed to harden against this class of attack and implemented the changes.
+
+## What I take from it
+
+Stamp taught me a lot. Working in a small team with broad responsibility pushed me past writing components, into API design, documentation, communication with the teams consuming our work, and the kind of long view that building software for other developers demands. Three packages deepened my preference for standards-driven, framework-agnostic foundations. And working alongside a tech lead, a designer, and an accessibility expert I could spar with throughout the project made the learning curve a steep and welcome one.
+
+The team made it land. Sharp, engaged, generous with their expertise, willing to push back when it mattered. The kind of colleagues you remember.
+
+</Prose>
