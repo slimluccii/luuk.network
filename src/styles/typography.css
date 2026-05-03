@@ -77,3 +77,25 @@ a {
     color: #fff;
   }
 }
+
+:is(h1, h2, h3, h4, h5, h6):has(.heading-anchor) {
+  display: flex;
+  gap: 0.25em;
+  align-items: baseline;
+  scroll-margin-block-start: calc(var(--ln-header-height) + var(--spacing-size-l));
+}
+
+.heading-anchor {
+  opacity: 0;
+  text-decoration: none;
+  transition: opacity ease;
+  transition-duration: var(--motion-transition);
+
+  &:focus-visible {
+    opacity: 1;
+  }
+}
+
+:is(h1, h2, h3, h4, h5, h6):hover .heading-anchor {
+  opacity: 1;
+}
