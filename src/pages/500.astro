@@ -9,8 +9,10 @@ const seo = {
 
 <Base seo={seo}>
   <article class="error-state">
-    <p class="error-state__code">500</p>
-    <h1 class="error-state__title">Server error</h1>
+    <header class="error-state__header">
+      <p class="error-state__code">500</p>
+      <h1 class="error-state__title">Server error</h1>
+    </header>
     <p>Something went wrong on our end. Try again in a moment.</p>
   </article>
 </Base>
@@ -24,9 +26,15 @@ const seo = {
       var(--spacing-size-l) var(--spacing-size-xxl);
   }
 
+  .error-state__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-xxs);
+  }
+
   .error-state__code {
     margin: 0;
-    opacity: 0.5;
+    opacity: 0.75;
     font-size: var(--typography-scale-caption);
     letter-spacing: 0.1em;
     text-transform: uppercase;
