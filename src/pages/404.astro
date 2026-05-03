@@ -1,5 +1,7 @@
 ---
 import Base from "~/layouts/Base.astro";
+import PageHeader from "~/components/PageHeader.astro";
+import PageHeaderEyebrow from "~/components/PageHeaderEyebrow.astro";
 import RouteSuggestions from "~/components/RouteSuggestions.astro";
 
 const seo = {
@@ -10,28 +12,30 @@ const seo = {
 
 <Base seo={seo}>
   <article class="error-state">
-    <header class="error-state__header">
-      <p class="error-state__code">404</p>
+    <PageHeader>
+      <PageHeaderEyebrow>404</PageHeaderEyebrow>
       <h1 class="error-state__title">Page not found</h1>
-    </header>
-    <p>The page you're looking for doesn't exist.</p>
-    <RouteSuggestions server:defer>
-      <div
-        slot="fallback"
-        class="route-suggestions"
-        aria-busy="true"
-        aria-live="polite"
-      >
-        <p class="route-suggestions__label">Looking for similar pages...</p>
-        <ol class="route-suggestions__list" aria-hidden="true">
-          <li><span class="route-suggestions__skeleton-item" /></li>
-          <li><span class="route-suggestions__skeleton-item" /></li>
-          <li><span class="route-suggestions__skeleton-item" /></li>
-          <li><span class="route-suggestions__skeleton-item" /></li>
-          <li><span class="route-suggestions__skeleton-item" /></li>
-        </ol>
-      </div>
-    </RouteSuggestions>
+    </PageHeader>
+    <div class="error-state__body">
+      <p>The page you're looking for doesn't exist.</p>
+      <RouteSuggestions server:defer>
+        <div
+          slot="fallback"
+          class="route-suggestions"
+          aria-busy="true"
+          aria-live="polite"
+        >
+          <p class="route-suggestions__label">Looking for similar pages...</p>
+          <ol class="route-suggestions__list" aria-hidden="true">
+            <li><span class="route-suggestions__skeleton-item" /></li>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+            <li><span class="route-suggestions__skeleton-item" /></li>
+          </ol>
+        </div>
+      </RouteSuggestions>
+    </div>
   </article>
 </Base>
 
@@ -40,22 +44,7 @@ const seo = {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-size-m);
-    padding: calc(var(--ln-header-height) + var(--spacing-size-xl))
-      var(--spacing-size-l) var(--spacing-size-xxl);
-  }
-
-  .error-state__header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-xxs);
-  }
-
-  .error-state__code {
-    margin: 0;
-    opacity: 0.75;
-    font-size: var(--typography-scale-caption);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    padding-block-end: var(--spacing-size-xxl);
   }
 
   .error-state__title {
@@ -65,7 +54,14 @@ const seo = {
     font-family: var(--typography-typeface-body);
   }
 
-  .error-state p {
+  .error-state__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-size-m);
+    padding-inline: var(--spacing-size-l);
+  }
+
+  .error-state__body p {
     margin: 0;
   }
 </style>
