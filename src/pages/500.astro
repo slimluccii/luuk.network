@@ -1,8 +1,9 @@
 ---
 import Base from "~/layouts/Base.astro";
-import Link from "~/components/Link.astro";
+import Button from "~/components/Button.astro";
 import PageHeader from "~/components/PageHeader.astro";
 import Section from "~/components/Section.astro";
+import SectionActions from "~/components/SectionActions.astro";
 import SectionContent from "~/components/SectionContent.astro";
 
 const seo = {
@@ -18,7 +19,9 @@ const seo = {
   <Section>
     <SectionContent>
       <p>Something went wrong on our end. Try again in a moment.</p>
-      <Link href="/" icon="arrow-right">Back to home</Link>
     </SectionContent>
+    <SectionActions>
+      <Button as="a" icon="arrow-left" href="/">Back to home</Button>
+    </SectionActions>
   </Section>
 </Base>
