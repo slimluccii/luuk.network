@@ -7,8 +7,8 @@ startDate: 2025-01-13
 endDate: 2026-03-31
 featured: true
 order: 1
-subject: ~/images/postnl-logo.png
-cover: ~/images/postnl-cover.png
+subject: ../../images/postnl-logo.png
+cover: ../../images/postnl-cover.png
 ---
 
 import Hero from "~/components/Hero.astro";
@@ -18,10 +18,7 @@ import Button from "~/components/Button.astro";
 import Prose from "~/components/Prose.astro";
 import { formatDateRange } from "~/utils/date-range";
 
-import logo from "~/images/postnl-logo.png";
-import cover from "~/images/postnl-cover.png";
-
-<Hero subject={logo} cover={cover}>
+<Hero subject={frontmatter.subject} cover={frontmatter.cover}>
   <Button
     slot="action"
     as="a"
