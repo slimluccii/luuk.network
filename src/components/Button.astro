@@ -35,7 +35,8 @@ const {
     transition:
       background var(--motion-feedback),
       border var(--motion-feedback),
-      color var(--motion-feedback);
+      color var(--motion-feedback),
+      transform var(--motion-feedback);
     cursor: pointer;
     border: 1px solid var(--color-brand-primary);
     background-color: var(--color-brand-primary);
@@ -43,6 +44,27 @@ const {
     color: #000;
     font-weight: 500;
     text-decoration: none;
+  }
+
+  @media (hover: hover) {
+    .button:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+  }
+
+  .button:active {
+    transform: translateY(0) scale(0.96);
+    transition-duration: 0.05s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .button {
+      transition: none;
+    }
+    .button:hover,
+    .button:active {
+      transform: none;
+    }
   }
 
   .button--secondary {

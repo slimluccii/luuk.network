@@ -1,12 +1,14 @@
 ---
+type RiveFit = "contain" | "cover" | "fill" | "fitWidth" | "fitHeight" | "none";
+
 interface Props {
   src: string;
   stateMachines?: string;
   artboard?: string;
   animations?: string;
   autoplay?: boolean;
-  width?: number;
-  height?: number;
+  aspectRatio?: string;
+  fit?: RiveFit;
   lazy?: boolean;
   class?: string;
 }
@@ -17,8 +19,8 @@ const {
   artboard,
   animations,
   autoplay = true,
-  width = 500,
-  height = 500,
+  aspectRatio = "1 / 1",
+  fit = "contain",
   lazy = true,
   class: className,
 } = Astro.props;
@@ -31,19 +33,23 @@ const {
   data-animations={animations}
   data-autoplay={autoplay ? "" : null}
   data-lazy={lazy ? "" : null}
+  data-fit={fit}
   class={className}
+  style={`--rive-aspect-ratio: ${aspectRatio};`}
 >
-  <canvas width={width} height={height}></canvas>
+  <canvas></canvas>
 </rive-canvas>
 
 <style>
   rive-canvas {
     display: block;
+    aspect-ratio: var(--rive-aspect-ratio, 1 / 1);
+    width: 100%;
   }
   rive-canvas canvas {
+    display: block;
     width: 100%;
-    height: auto;
-    max-width: 100%;
+    height: 100%;
   }
 </style>
 
@@ -61,7 +67,7 @@ const {
 
     connectedCallback() {
       const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
+        "(prefers-reduced-motion: reduce)"
       ).matches;
       if (reduceMotion) return;
 
@@ -106,10 +112,20 @@ const {
       if (!src) return;
 
       try {
-        const { Rive, RuntimeLoader } = await import("@rive-app/canvas");
+        const { Rive, RuntimeLoader, Layout, Fit, Alignment } =
+          await import("@rive-app/canvas");
         RuntimeLoader.setWasmUrl(wasmUrl);
 
         const canvas = this.querySelector("canvas")!;
+        const fitMap: Record<string, (typeof Fit)[keyof typeof Fit]> = {
+          contain: Fit.Contain,
+          cover: Fit.Cover,
+          fill: Fit.Fill,
+          fitWidth: Fit.FitWidth,
+          fitHeight: Fit.FitHeight,
+          none: Fit.None,
+        };
+        const fit = fitMap[this.dataset.fit ?? "contain"] ?? Fit.Contain;
 
         this.rive = new Rive({
           src,
@@ -118,6 +134,7 @@ const {
           stateMachines: this.dataset.stateMachines,
           artboard: this.dataset.artboard,
           animations: this.dataset.animations,
+          layout: new Layout({ fit, alignment: Alignment.Center }),
           onLoad: () => {
             this.rive?.resizeDrawingSurfaceToCanvas();
             this.resizeObserver = new ResizeObserver(() => {

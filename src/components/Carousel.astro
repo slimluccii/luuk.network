@@ -10,6 +10,8 @@ type CarouselItem = {
   description: string;
   cover?: ImageMetadata | string;
   linkLabel?: string;
+  meta?: string;
+  transitionName?: string;
 };
 
 interface Props {
@@ -32,8 +34,10 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
           description,
           cover,
           linkLabel = "Read more",
+          meta,
+          transitionName,
         }) => (
-          <li class="carousel__item">
+          <li class="carousel__item" transition:name={transitionName}>
             <LinkArea>
               {cover &&
                 (typeof cover === "string" ? (
@@ -51,6 +55,7 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
                 ))}
               <div class="carousel__body">
                 <div class="carousel__text">
+                  {meta && <p class="carousel__meta">{meta}</p>}
                   <Heading class="carousel__title">{title}</Heading>
                   <p class="carousel__description">{description}</p>
                 </div>
@@ -109,9 +114,10 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
 
       this.indicators.forEach((button, index) => {
         button.addEventListener("click", () => {
+          const isLast = index === this.items.length - 1;
           this.items[index]?.scrollIntoView({
             behavior: reduceMotion.matches ? "auto" : "smooth",
-            inline: "center",
+            inline: isLast ? "end" : "center",
             block: "nearest",
           });
         });
@@ -153,7 +159,36 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
       list.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", this.updateOverflow);
       requestAnimationFrame(() => this.updateOverflow!());
+
+      this.items.forEach((item) => {
+        item.addEventListener("click", () => {
+          item.dataset.transitioning = "true";
+        });
+      });
+
+      document.addEventListener(
+        "astro:before-preparation",
+        this.handleBeforePrep,
+      );
+      document.addEventListener("astro:after-swap", this.handleAfterSwap);
     }
+
+    handleBeforePrep = () => {
+      const active = this.querySelector<HTMLElement>(
+        ".carousel__item[data-transitioning]",
+      );
+      if (!active) return;
+      this.items.forEach((item) => {
+        if (item !== active) item.classList.add("carousel__item--hidden");
+      });
+    };
+
+    handleAfterSwap = () => {
+      this.items.forEach((item) => {
+        item.classList.remove("carousel__item--hidden");
+        delete item.dataset.transitioning;
+      });
+    };
 
     setActive(index: number) {
       this.indicators.forEach((button, i) => {
@@ -172,6 +207,11 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
       if (this.updateOverflow) {
         window.removeEventListener("resize", this.updateOverflow);
       }
+      document.removeEventListener(
+        "astro:before-preparation",
+        this.handleBeforePrep,
+      );
+      document.removeEventListener("astro:after-swap", this.handleAfterSwap);
     }
   }
 
@@ -188,6 +228,8 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
   .carousel__viewport {
     position: relative;
     margin-inline: calc(var(--spacing-size-l) * -1);
+    overflow: clip;
+    contain: paint;
   }
 
   .carousel__viewport::before,
@@ -233,8 +275,9 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
     padding-block: 0;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--spacing-size-l);
     scrollbar-width: none;
-    list-style: none;
+    list-style-type: "";
   }
 
   .carousel__list::-webkit-scrollbar {
@@ -247,7 +290,16 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
 
   .carousel__item {
     flex: 0 0 100%;
+    max-inline-size: 375px;
     scroll-snap-align: center;
+  }
+
+  .carousel__item:last-child {
+    scroll-snap-align: end;
+  }
+
+  .carousel__item--hidden {
+    visibility: hidden;
   }
 
   .carousel__cover {
@@ -271,6 +323,12 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
     display: flex;
     flex-direction: column;
     gap: var(--spacing-size-s);
+  }
+
+  .carousel__meta {
+    opacity: var(--opacity-muted);
+    margin: 0;
+    font-size: var(--typography-scale-caption);
   }
 
   .carousel__title {

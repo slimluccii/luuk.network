@@ -5,28 +5,16 @@ import Border from "~/components/Border.astro";
 
 interface Props {
   subject?: ImageMetadata;
-  cover?: ImageMetadata;
+  transitionName?: string;
+  subjectTransitionName?: string;
 }
 
-const { subject, cover } = Astro.props;
+const { subject, transitionName, subjectTransitionName } = Astro.props;
 ---
 
-<Border class="hero">
+<Border class="hero" transition:name={transitionName}>
   <div class="hero__visual">
-    {
-      cover && (
-        <Picture
-          class="hero__cover"
-          formats={["avif", "webp"]}
-          widths={[600, 1200, 1800]}
-          sizes="(min-width: 800px) 580px, 100vw"
-          src={cover}
-          alt=""
-          loading="eager"
-          fetchpriority="high"
-        />
-      )
-    }
+    <slot name="cover" />
   </div>
   <div class="hero__content">
     <div class="hero-content__top">
@@ -41,6 +29,7 @@ const { subject, cover } = Astro.props;
             alt=""
             loading="eager"
             fetchpriority="high"
+            transition:name={subjectTransitionName}
           />
         )
       }
@@ -59,7 +48,7 @@ const { subject, cover } = Astro.props;
     aspect-ratio: 16 / 9;
     overflow: hidden;
 
-    &:has(.hero__cover)::after {
+    &:has(.hero-cover--image)::after {
       position: absolute;
       inset: 0;
       background-color: rgba(0, 0, 0, 0.25);
@@ -70,6 +59,11 @@ const { subject, cover } = Astro.props;
 
   .hero__visual :global(picture) {
     display: block;
+    block-size: 100%;
+  }
+
+  .hero__visual :global(rive-canvas) {
+    aspect-ratio: auto;
     block-size: 100%;
   }
 
@@ -95,11 +89,35 @@ const { subject, cover } = Astro.props;
 </style>
 
 <style is:global>
-  .hero__cover {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 400ms;
+    animation-timing-function: ease;
+  }
+
+  ::view-transition-new(hero-subject) {
+    animation:
+      hero-subject-fade 200ms ease-out 200ms both,
+      hero-subject-drop 250ms ease-out 200ms both;
+  }
+
+  ::view-transition-old(hero-subject) {
+    animation: hero-subject-fade 150ms ease reverse both;
+  }
+
+  @keyframes hero-subject-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes hero-subject-drop {
+    from {
+      transform: translateY(-6px);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 
   .hero__image {
@@ -109,6 +127,9 @@ const { subject, cover } = Astro.props;
     inline-size: 100px;
     block-size: 100px;
     object-fit: cover;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.12),
+      0 12px 24px -10px rgba(0, 0, 0, 0.25);
 
     @media (min-width: 400px) {
       inline-size: 150px;
