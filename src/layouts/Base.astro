@@ -83,6 +83,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={seo.description} />
     <meta name="twitter:image" content={previewImageUrl} />
+    <slot name="head" />
   </head>
   <body>
     <Button as="a" class="kb-only skip-link" href="#main">

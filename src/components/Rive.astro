@@ -49,6 +49,7 @@ const {
 
 <script>
   import type { Rive as RiveType } from "@rive-app/canvas";
+  import wasmUrl from "@rive-app/canvas/rive.wasm?url";
   import { observeVisibility } from "~/utils/observe-visibility";
 
   class RiveCanvas extends HTMLElement {
@@ -105,7 +106,9 @@ const {
       if (!src) return;
 
       try {
-        const { Rive } = await import("@rive-app/canvas");
+        const { Rive, RuntimeLoader } = await import("@rive-app/canvas");
+        RuntimeLoader.setWasmUrl(wasmUrl);
+
         const canvas = this.querySelector("canvas")!;
 
         this.rive = new Rive({
