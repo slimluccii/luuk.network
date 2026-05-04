@@ -1,0 +1,58 @@
+---
+import { Picture } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import Rive from "~/components/Rive.astro";
+
+type RiveFit = "contain" | "cover" | "fill" | "fitWidth" | "fitHeight" | "none";
+
+type ImageProps = {
+  type: "image";
+  src: ImageMetadata;
+};
+
+type RiveProps = {
+  type: "rive";
+  src: string;
+  stateMachines?: string;
+  artboard?: string;
+  animations?: string;
+  fit?: RiveFit;
+};
+
+type Props = ImageProps | RiveProps;
+
+const props = Astro.props;
+---
+
+{
+  props.type === "image" ? (
+    <Picture
+      class="hero-cover hero-cover--image"
+      formats={["avif", "webp"]}
+      widths={[600, 1200, 1800]}
+      sizes="(min-width: 800px) 580px, 100vw"
+      src={props.src}
+      alt=""
+      loading="eager"
+      fetchpriority="high"
+    />
+  ) : (
+    <Rive
+      class="hero-cover hero-cover--rive"
+      src={props.src}
+      stateMachines={props.stateMachines}
+      artboard={props.artboard}
+      animations={props.animations}
+      fit={props.fit ?? "cover"}
+    />
+  )
+}
+
+<style is:global>
+  .hero-cover--image {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+</style>
