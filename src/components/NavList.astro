@@ -62,7 +62,7 @@ const { pathname } = Astro.url;
 
   .nav-list__link {
     display: block;
-    opacity: 0.75;
+    opacity: var(--opacity-muted);
     transition: var(--motion-feedback) ease;
     color: inherit;
     text-decoration: underline;
@@ -103,7 +103,7 @@ const { pathname } = Astro.url;
     display: flex;
     align-items: center;
     gap: var(--spacing-size-xs);
-    opacity: 0.75;
+    opacity: var(--opacity-muted);
     transition: var(--motion-feedback) ease;
     color: inherit;
     font-size: var(--typography-scale-caption);

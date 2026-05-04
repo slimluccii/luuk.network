@@ -31,9 +31,11 @@ That decision sits underneath almost everything else on the project. It shapes h
 
 Web Components accept attributes and slots, not complex objects, while Angular and React happily take rich props. The shape of an API has to work in three idioms at once, so we lean toward composition over configuration: small focused components that compose together, instead of larger components configured through rich props. It's a constraint that tends to leave behind anything clever that only works in one framework, and what's left is usually the better design anyway.
 
+> Accessibility on Stamp isn't a checklist applied at the end, it's a property of how the system is built.
+
 ## Accessibility as a discipline of the system
 
-Accessibility on Stamp isn't a checklist applied at the end, it's a property of how the system is built. Most of the work happens in HTML and CSS: semantic elements as the default, logical properties so layouts behave across writing modes, lang-aware patterns so localized text follows the document language. ARIA only enters where the platform genuinely doesn't have an answer.
+This shows up clearly in how we approach accessibility. Most of the work happens in HTML and CSS: semantic elements as the default, logical properties so layouts behave across writing modes, lang-aware patterns so localized text follows the document language. ARIA only enters where the platform genuinely doesn't have an answer.
 
 What made this approach possible is the team. Sparring with our accessibility expert throughout the project is the difference between code that passes audits and a system that's actually accessible.
 
