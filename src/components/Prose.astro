@@ -10,32 +10,48 @@ const { class: className, ...attrs } = Astro.props;
   <slot />
 </div>
 
-<style is:global>
+<style>
   .prose {
     padding-block: var(--spacing-size-xxl);
   }
 
-  .prose > :not(.hero) {
+  .prose > :global(*) {
+    margin-block: 0;
     padding-inline: var(--spacing-size-l);
   }
 
-  .prose > * {
-    margin-block: 0;
+  .prose > :global(* + *) {
+    margin-block-start: var(--spacing-size-m);
   }
 
-  .prose > * + * {
-    margin-block-start: var(--spacing-gap-regular);
+  .prose > :global(* + :is(h2, h3)) {
+    margin-block-start: var(--spacing-size-xl);
   }
 
-  .prose > * + :is(h2, h3) {
+  .prose > :global(:is(h2, h3) + *) {
     margin-block-start: var(--spacing-size-l);
   }
 
-  .prose :is(ul, ol) {
+  .prose :global(:is(ul, ol)) {
     padding-inline-start: var(--spacing-size-m);
   }
 
-  .prose li + li {
-    margin-block-start: var(--spacing-gap-tight);
+  .prose :global(li + li) {
+    margin-block-start: var(--spacing-size-s);
+  }
+
+  .prose :global(blockquote) {
+    margin-inline-start: var(--spacing-size-l);
+    border-inline-start: 2px solid var(--color-brand-accent);
+    padding-inline-start: var(--spacing-size-m);
+    font-style: italic;
+  }
+
+  .prose :global(blockquote > *) {
+    opacity: var(--opacity-muted);
+  }
+
+  .prose :global(blockquote > * + *) {
+    margin-block-start: var(--spacing-size-m);
   }
 </style>
