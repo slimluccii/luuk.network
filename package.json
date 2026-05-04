@@ -16,6 +16,7 @@
     "@astrojs/cloudflare": "^13.2.1",
     "@astrojs/mdx": "^5.0.4",
     "@astrojs/sitemap": "^3.7.2",
+    "@rive-app/canvas": "^2.37.5",
     "astro": "^6.1.9",
     "wrangler": "^4.85.0"
   },

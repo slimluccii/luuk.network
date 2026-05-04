@@ -1,0 +1,141 @@
+---
+interface Props {
+  src: string;
+  stateMachines?: string;
+  artboard?: string;
+  animations?: string;
+  autoplay?: boolean;
+  width?: number;
+  height?: number;
+  lazy?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  stateMachines,
+  artboard,
+  animations,
+  autoplay = true,
+  width = 500,
+  height = 500,
+  lazy = true,
+  class: className,
+} = Astro.props;
+---
+
+<rive-canvas
+  data-src={src}
+  data-state-machines={stateMachines}
+  data-artboard={artboard}
+  data-animations={animations}
+  data-autoplay={autoplay ? "" : null}
+  data-lazy={lazy ? "" : null}
+  class={className}
+>
+  <canvas width={width} height={height}></canvas>
+</rive-canvas>
+
+<style>
+  rive-canvas {
+    display: block;
+  }
+  rive-canvas canvas {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+  }
+</style>
+
+<script>
+  import type { Rive as RiveType } from "@rive-app/canvas";
+  import { observeVisibility } from "~/utils/observe-visibility";
+
+  class RiveCanvas extends HTMLElement {
+    rive?: RiveType;
+    disconnectVisibility?: () => void;
+    resizeObserver?: ResizeObserver;
+    started = false;
+    inViewport = true;
+
+    connectedCallback() {
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (reduceMotion) return;
+
+      document.addEventListener("visibilitychange", this.handleVisibility);
+
+      if (this.dataset.lazy === undefined) {
+        this.ensureStarted();
+        return;
+      }
+
+      this.inViewport = false;
+      this.disconnectVisibility = observeVisibility(this, {
+        onEnter: () => {
+          this.inViewport = true;
+          this.ensureStarted();
+          this.updatePlayState();
+        },
+        onLeave: () => {
+          this.inViewport = false;
+          this.updatePlayState();
+        },
+      });
+    }
+
+    handleVisibility = () => this.updatePlayState();
+
+    ensureStarted() {
+      if (this.started) return;
+      this.started = true;
+      this.start();
+    }
+
+    updatePlayState() {
+      if (!this.rive) return;
+      const shouldPlay = !document.hidden && this.inViewport;
+      if (shouldPlay) this.rive.play();
+      else this.rive.pause();
+    }
+
+    async start() {
+      const src = this.dataset.src;
+      if (!src) return;
+
+      try {
+        const { Rive } = await import("@rive-app/canvas");
+        const canvas = this.querySelector("canvas")!;
+
+        this.rive = new Rive({
+          src,
+          canvas,
+          autoplay: this.dataset.autoplay !== undefined,
+          stateMachines: this.dataset.stateMachines,
+          artboard: this.dataset.artboard,
+          animations: this.dataset.animations,
+          onLoad: () => {
+            this.rive?.resizeDrawingSurfaceToCanvas();
+            this.resizeObserver = new ResizeObserver(() => {
+              this.rive?.resizeDrawingSurfaceToCanvas();
+            });
+            this.resizeObserver.observe(canvas);
+            this.updatePlayState();
+          },
+        });
+      } catch (error) {
+        console.error("Rive load failed:", error);
+      }
+    }
+
+    disconnectedCallback() {
+      document.removeEventListener("visibilitychange", this.handleVisibility);
+      this.disconnectVisibility?.();
+      this.resizeObserver?.disconnect();
+      this.rive?.cleanup();
+    }
+  }
+
+  customElements.define("rive-canvas", RiveCanvas);
+</script>
