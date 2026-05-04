@@ -1,6 +1,12 @@
 ---
 import { getCollection, render } from "astro:content";
 import Base from "~/layouts/Base.astro";
+import Hero from "~/components/Hero.astro";
+import HeroTitle from "~/components/HeroTitle.astro";
+import HeroMeta from "~/components/HeroMeta.astro";
+import Button from "~/components/Button.astro";
+import Prose from "~/components/Prose.astro";
+import { formatDateRange } from "~/utils/date-range";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -12,13 +18,36 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+const {
+  title,
+  description,
+  stack,
+  href,
+  startDate,
+  endDate,
+  subject,
+  cover
+} = project.data;
 
-const seo = {
-  title: project.data.title,
-  description: project.data.description,
-};
+const seo = { title, description, image: cover };
 ---
 
 <Base seo={seo}>
-  <Content />
+  <Hero subject={subject} cover={cover || undefined}>
+    {
+      href && (
+        <Button slot="action" as="a" variant="secondary" href={href}>
+          Visit site
+        </Button>
+      )
+    }
+    <HeroMeta>{formatDateRange(startDate, endDate)}</HeroMeta>
+    <HeroTitle>{title}</HeroTitle>
+    <p>{description}</p>
+    <HeroMeta>{stack.join(", ")}</HeroMeta>
+  </Hero>
+
+  <Prose>
+    <Content />
+  </Prose>
 </Base>

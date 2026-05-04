@@ -1,9 +1,13 @@
 ---
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import Border from "~/components/Border.astro";
 import Footer from "~/components/Footer.astro";
 import IconSprite from "~/components/IconSprite.astro";
 import Logo from "~/components/Logo.astro";
 import Navigation from "~/components/Navigation.astro";
+
+import socialPreview from "~/images/social-preview.png";
 
 import "~/generated/tokens.css";
 import "~/styles/a11y.css";
@@ -14,10 +18,28 @@ type Props = {
   seo: {
     title: string;
     description: string;
+    image?: ImageMetadata;
   };
 };
 
 const { seo } = Astro.props;
+const { origin, pathname } = Astro.url;
+
+const canonical = `${origin}${pathname}`;
+
+const previewImageUrl = new URL(
+  (
+    await getImage({
+      src: seo.image ?? socialPreview,
+      format: "jpeg",
+      width: 1200,
+      height: 630,
+    })
+  ).src,
+  origin,
+).toString();
+
+const fullTitle = `${seo.title} • Luuk Brauckmann`;
 ---
 
 <html lang="en">
@@ -43,8 +65,23 @@ const { seo } = Astro.props;
       fetchpriority="high"
       crossorigin
     />
-    <title>{seo.title} • Luuk Brauckmann</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={seo.description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Luuk Brauckmann" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={previewImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={seo.description} />
+    <meta name="twitter:image" content={previewImageUrl} />
   </head>
   <body>
     <aside class="navigation">
@@ -149,9 +186,9 @@ const { seo } = Astro.props;
 
   .header {
     display: block;
+    position: sticky;
     grid-area: stack;
     align-self: start;
-    position: sticky;
     z-index: 999;
     inset-block-start: -1px;
 
