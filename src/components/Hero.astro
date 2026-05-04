@@ -4,7 +4,7 @@ import type { ImageMetadata } from "astro";
 import Border from "~/components/Border.astro";
 
 interface Props {
-  subject: ImageMetadata;
+  subject?: ImageMetadata;
   cover?: ImageMetadata;
 }
 
@@ -30,16 +30,20 @@ const { subject, cover } = Astro.props;
   </div>
   <div class="hero__content">
     <div class="hero-content__top">
-      <Picture
-        class="hero__image"
-        formats={["avif", "webp"]}
-        widths={[200, 300, 400, 600]}
-        sizes="(min-width: 600px) 200px, (min-width: 400px) 150px, 100px"
-        src={subject}
-        alt=""
-        loading="eager"
-        fetchpriority="high"
-      />
+      {
+        subject && (
+          <Picture
+            class="hero__image"
+            formats={["avif", "webp"]}
+            widths={[200, 300, 400, 600]}
+            sizes="(min-width: 600px) 200px, (min-width: 400px) 150px, 100px"
+            src={subject}
+            alt=""
+            loading="eager"
+            fetchpriority="high"
+          />
+        )
+      }
       <slot name="action" />
     </div>
 

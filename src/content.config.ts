@@ -14,8 +14,8 @@ const projects = defineCollection({
       endDate: z.coerce.date().optional(),
       featured: z.boolean().default(false),
       order: z.number().default(0),
-      subject: z.union([image(), z.string()]).default(""),
-      cover: z.union([image(), z.string()]).default(""),
+      subject: image().optional(),
+      cover: image().optional(),
     }),
 });
 

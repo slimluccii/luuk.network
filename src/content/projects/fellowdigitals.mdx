@@ -1,37 +1,14 @@
 ---
 title: "fellowdigitals.com"
 description: "Headless corporate site built on Voorhoede's head-start template. Scalable building-block system focused on conversion, accessibility, and SEO."
-stack: ["Astro", "Web Components", "DatoCMS", "Cloudflare"]
+stack:
+  - Astro
+  - Web Components
+  - DatoCMS
+  - Cloudflare
 href: "https://fellowdigitals.com"
-startDate: 2024-01-01
-endDate: 2024-12-31
-featured: true
-order: 3
+startDate: 2024-02-07
+endDate: 2025-08-15
 subject: ../../images/fellowdigitals-logo.jpeg
 cover: ../../images/fellowdigitals-cover.png
 ---
-
-import Hero from "~/components/Hero.astro";
-import HeroTitle from "~/components/HeroTitle.astro";
-import HeroMeta from "~/components/HeroMeta.astro";
-import Button from "~/components/Button.astro";
-import { formatDateRange } from "~/utils/date-range";
-
-import logo from "~/images/fellowdigitals-logo.jpeg";
-import cover from "~/images/fellowdigitals-cover.png";
-
-<Hero subject={logo} cover={cover}>
-<Button
-  slot="action"
-  as="a"
-  variant="secondary"
-  href="https://fellowdigitals.com"
->
-  Visit site
-</Button>
-
-  <HeroMeta>{formatDateRange(frontmatter.startDate, frontmatter.endDate)}</HeroMeta>
-  <HeroTitle>{frontmatter.title}</HeroTitle>
-  <p>{frontmatter.description}</p>
-  <HeroMeta>{frontmatter.stack.join(", ")}</HeroMeta>
-</Hero>
