@@ -4,18 +4,11 @@ import Base from "~/layouts/Base.astro";
 import EntryList from "~/components/EntryList.astro";
 import PageHeader from "~/components/PageHeader.astro";
 import Section from "~/components/Section.astro";
+import { toEntryListItem } from "~/utils/project-entry";
 
-const projects = (await getCollection("projects")).sort((a, b) => {
-  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-  return a.data.order - b.data.order;
-});
-
-const entries = projects.map(({ id, data }) => ({
-  href: `/projects/${id}/`,
-  title: data.title,
-  description: data.description,
-  meta: data.stack.join(", "),
-}));
+const entries = (await getCollection("projects"))
+  .sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime())
+  .map(toEntryListItem);
 
 const seo = {
   title: "Projects",

@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getEntries } from "astro:content";
 import Base from "~/layouts/Base.astro";
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
@@ -9,6 +9,7 @@ import Section from "~/components/Section.astro";
 import SectionActions from "~/components/SectionActions.astro";
 import SectionContent from "~/components/SectionContent.astro";
 import SectionTitle from "~/components/SectionTitle.astro";
+import { toCarouselItem } from "~/utils/project-entry";
 
 import image from "~/images/me.jpeg";
 
@@ -18,16 +19,13 @@ const seo = {
     "Cum laude graduate in Front-end Design & Development. I build accessible and performant web experiences. My work is guided by digital sovereignty, responsible AI, and managing complexity.",
 };
 
-const selectedWork = (
-  await getCollection("projects", ({ data }) => data.featured)
-).sort((a, b) => a.data.order - b.data.order);
+const selectedWork = await getEntries([
+  { collection: "projects", id: "postnl-design-system" },
+  { collection: "projects", id: "dutchdigitalagencies" },
+  { collection: "projects", id: "fellowdigitals" },
+]);
 
-const workItems = selectedWork.map(({ id, data }) => ({
-  href: `/projects/${id}/`,
-  title: data.title,
-  description: data.description,
-  cover: data.cover,
-}));
+const workItems = selectedWork.map(toCarouselItem);
 ---
 
 <Base seo={seo}>

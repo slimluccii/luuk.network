@@ -2,6 +2,7 @@
 import { getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import Border from "~/components/Border.astro";
+import Button from "~/components/Button.astro";
 import Footer from "~/components/Footer.astro";
 import IconSprite from "~/components/IconSprite.astro";
 import Logo from "~/components/Logo.astro";
@@ -84,7 +85,13 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     <meta name="twitter:image" content={previewImageUrl} />
   </head>
   <body>
-    <aside class="navigation">
+    <Button as="a" class="kb-only skip-link" href="#main">
+      Skip to main content
+    </Button>
+    <Button as="a" class="kb-only skip-link" href="#navigation">
+      Skip to navigation
+    </Button>
+    <aside id="navigation" class="navigation">
       <Navigation currentPageTitle={seo.title} />
     </aside>
     <div class="content">
@@ -100,7 +107,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
           </Border>
         </ln-header>
 
-        <main>
+        <main id="main">
           <slot />
         </main>
 
@@ -165,6 +172,14 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     @media (prefers-reduced-motion: no-preference) {
       scroll-behavior: smooth;
     }
+  }
+
+  .skip-link:focus {
+    position: fixed;
+    inset-block-start: var(--spacing-size-xs);
+    inset-inline-start: 50%;
+    z-index: 9999;
+    transform: translateX(-50%);
   }
 
   body {
