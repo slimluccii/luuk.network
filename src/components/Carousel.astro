@@ -355,6 +355,7 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
   }
 
   .carousel__indicator {
+    position: relative;
     display: block;
     border: 0;
     border-radius: 50%;
@@ -365,6 +366,16 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
     inline-size: 8px;
     block-size: 8px;
     transition: opacity ease var(--motion-transition);
+  }
+
+  .carousel__indicator::after {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    translate: -50% -50%;
+    inline-size: max(100%, 24px);
+    block-size: max(100%, 24px);
+    content: "";
   }
 
   .carousel__indicator--active {
