@@ -5,14 +5,16 @@ import Border from "~/components/Border.astro";
 
 interface Props {
   subject?: ImageMetadata;
-  transitionName?: string;
-  subjectTransitionName?: string;
+  transitions?: {
+    root?: string;
+    subject?: string;
+  };
 }
 
-const { subject, transitionName, subjectTransitionName } = Astro.props;
+const { subject, transitions } = Astro.props;
 ---
 
-<Border class="hero" transition:name={transitionName}>
+<Border class="hero" transition:name={transitions?.root}>
   <div class="hero__visual">
     <slot name="cover" />
   </div>
@@ -29,7 +31,7 @@ const { subject, transitionName, subjectTransitionName } = Astro.props;
             alt=""
             loading="eager"
             fetchpriority="high"
-            transition:name={subjectTransitionName}
+            transition:name={transitions?.subject}
           />
         )
       }

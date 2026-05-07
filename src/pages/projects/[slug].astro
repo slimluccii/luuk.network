@@ -36,8 +36,10 @@ const seo = { title, description, image: cover };
 <Base seo={seo}>
   <Hero
     subject={subject}
-    transitionName={`project-${project.id}`}
-    subjectTransitionName="hero-subject"
+    transitions={{
+      root: `project-${project.id}`,
+      subject: "hero-subject",
+    }}
   >
     {cover && <HeroCover slot="cover" type="image" src={cover} />}
     {
