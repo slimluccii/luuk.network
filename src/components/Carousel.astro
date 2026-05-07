@@ -8,7 +8,7 @@ type CarouselItem = {
   href: string;
   title: string;
   description: string;
-  cover?: ImageMetadata | string;
+  cover?: ImageMetadata;
   linkLabel?: string;
   meta?: string;
   transitionName?: string;
@@ -17,42 +17,56 @@ type CarouselItem = {
 interface Props {
   items: CarouselItem[];
   headingLevel?: 2 | 3;
+  label?: string;
 }
 
-const { items, headingLevel = 3 } = Astro.props;
+const { items, headingLevel = 3, label = "Carousel" } = Astro.props;
 const Heading = `h${headingLevel}` as "h2" | "h3";
+const total = items.length;
 ---
 
-<ln-carousel class="carousel">
+<ln-carousel
+  class="carousel"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label={label}
+>
   <div class="carousel__viewport">
     <ul class="carousel__list" tabindex="0">
     {
       items.map(
-        ({
-          href,
-          title,
-          description,
-          cover,
-          linkLabel = "Read more",
-          meta,
-          transitionName,
-        }) => (
-          <li class="carousel__item" transition:name={transitionName}>
+        (
+          {
+            href,
+            title,
+            description,
+            cover,
+            linkLabel = "Read more",
+            meta,
+            transitionName,
+          },
+          index,
+        ) => (
+          <li
+            id={`carousel-slide-${index}`}
+            class="carousel__item"
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${index + 1} of ${total}: ${title}`}
+            transition:name={transitionName}
+          >
             <LinkArea>
-              {cover &&
-                (typeof cover === "string" ? (
-                  <img class="carousel__cover" src={cover} alt="" loading="lazy" />
-                ) : (
-                  <Picture
-                    class="carousel__cover"
-                    formats={["avif", "webp"]}
-                    widths={[500, 1000, 1500]}
-                    sizes="(min-width: 800px) 500px, 100vw"
-                    src={cover}
-                    alt=""
-                    loading="lazy"
-                  />
-                ))}
+              {cover && (
+                <Picture
+                  class="carousel__cover"
+                  formats={["avif", "webp"]}
+                  widths={[500, 1000, 1500]}
+                  sizes="(min-width: 800px) 500px, 100vw"
+                  src={cover}
+                  alt=""
+                  loading="lazy"
+                />
+              )}
               <div class="carousel__body">
                 <div class="carousel__text">
                   {meta && <p class="carousel__meta">{meta}</p>}
@@ -72,7 +86,7 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
     </ul>
   </div>
 
-  <ol class="carousel__indicators" aria-label="Carousel navigation">
+  <ol class="carousel__indicators" aria-label={`${label} slide navigation`}>
     {
       items.map(({ title }, index) => (
         <li>
@@ -80,9 +94,9 @@ const Heading = `h${headingLevel}` as "h2" | "h3";
             class="carousel__indicator"
             type="button"
             data-index={index}
-          >
-            <span class="sr-only">Go to {title}</span>
-          </button>
+            aria-controls={`carousel-slide-${index}`}
+            aria-label={`Go to slide ${index + 1} of ${total}: ${title}`}
+          />
         </li>
       ))
     }
