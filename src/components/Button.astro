@@ -46,6 +46,11 @@ const {
     text-decoration: none;
   }
 
+  .button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
   @media (hover: hover) {
     .button:hover {
       transform: translateY(-2px) scale(1.02);

@@ -52,6 +52,15 @@ const { currentPageTitle } = Astro.props;
     }
   }
 
+  const FOCUSABLE_SELECTOR = [
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])",
+  ].join(",");
+
   class LnNavigation extends HTMLElement {
     private menu!: HTMLElement;
     private trigger!: HTMLButtonElement;
@@ -72,6 +81,7 @@ const { currentPageTitle } = Astro.props;
 
     disconnectedCallback() {
       this.menu?.removeEventListener("toggle", this.handlePopoverToggle);
+      this.menu?.removeEventListener("keydown", this.handleKeydown);
       this.desktopQuery.removeEventListener(
         "change",
         this.handleViewportChange
@@ -87,10 +97,38 @@ const { currentPageTitle } = Astro.props;
       document.documentElement.classList.toggle(SCROLL_LOCK_CLASS, open);
       setSiblingsInert(this, open);
 
+      if (open) {
+        this.menu.addEventListener("keydown", this.handleKeydown);
+      } else {
+        this.menu.removeEventListener("keydown", this.handleKeydown);
+      }
+
       const focusTarget = open
         ? this.menu.querySelector<HTMLElement>(".nav-list__link")
         : this.trigger;
       focusTarget?.focus();
+    };
+
+    /** Trap Tab/Shift+Tab inside the open popover. */
+    private handleKeydown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+
+      const focusables = Array.from(
+        this.menu.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      ).filter((el) => !el.hasAttribute("inert") && el.offsetParent !== null);
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
     /** On resize to desktop, the popover should never stay open. */
