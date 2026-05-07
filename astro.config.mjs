@@ -13,9 +13,6 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "compile",
   }),
-  prefetch: {
-    prefetchAll: true,
-  },
   integrations: [
     designTokens(),
     iconSprite(),
