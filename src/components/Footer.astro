@@ -47,7 +47,9 @@ const socialLinks = [
     <div class="footer__meta">
       <p class="copyright">
         &copy; 2026 Luuk Brauckmann. <a
-          href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a
+          href="https://creativecommons.org/licenses/by-sa/4.0/"
+          target="_blank"
+          rel="noopener noreferrer">CC BY-SA 4.0</a
         >
       </p>
 
@@ -55,7 +57,7 @@ const socialLinks = [
         {
           socialLinks.map(({ href, icon, title }) => (
             <li>
-              <a href={href}>
+              <a href={href} target="_blank" rel="noopener noreferrer">
                 <Icon name={icon} title={title} />
               </a>
             </li>
