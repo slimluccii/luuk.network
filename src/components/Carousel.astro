@@ -47,38 +47,39 @@ const total = items.length;
           },
           index,
         ) => (
-          <li
-            id={`carousel-slide-${index}`}
-            class="carousel__item"
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${index + 1} of ${total}: ${title}`}
-            transition:name={transitionName}
-          >
-            <LinkArea>
-              {cover && (
-                <Picture
-                  class="carousel__cover"
-                  formats={["avif", "webp"]}
-                  widths={[500, 1000, 1500]}
-                  sizes="(min-width: 800px) 500px, 100vw"
-                  src={cover}
-                  alt=""
-                  loading="lazy"
-                />
-              )}
-              <div class="carousel__body">
-                <div class="carousel__text">
-                  {meta && <p class="carousel__meta">{meta}</p>}
-                  <Heading class="carousel__title">{title}</Heading>
-                  <p class="carousel__description">{description}</p>
+          <li class="carousel__item" transition:name={transitionName}>
+            <div
+              id={`carousel-slide-${index}`}
+              class="carousel__slide"
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${index + 1} of ${total}: ${title}`}
+            >
+              <LinkArea>
+                {cover && (
+                  <Picture
+                    class="carousel__cover"
+                    formats={["avif", "webp"]}
+                    widths={[500, 1000, 1500]}
+                    sizes="(min-width: 800px) 500px, 100vw"
+                    src={cover}
+                    alt=""
+                    loading="lazy"
+                  />
+                )}
+                <div class="carousel__body">
+                  <div class="carousel__text">
+                    {meta && <p class="carousel__meta">{meta}</p>}
+                    <Heading class="carousel__title">{title}</Heading>
+                    <p class="carousel__description">{description}</p>
+                  </div>
+                  <Link href={href} icon="arrow-right">
+                    {linkLabel}
+                    <span class="sr-only"> about {title}</span>
+                  </Link>
                 </div>
-                <Link href={href} icon="arrow-right">
-                  {linkLabel}
-                  <span class="sr-only"> about {title}</span>
-                </Link>
-              </div>
-            </LinkArea>
+              </LinkArea>
+            </div>
           </li>
         )
       )
@@ -369,30 +370,27 @@ const total = items.length;
   }
 
   .carousel__indicator {
-    position: relative;
-    display: block;
+    display: grid;
+    place-items: center;
     border: 0;
-    border-radius: 50%;
-    background-color: white;
+    background: transparent;
     cursor: pointer;
-    opacity: var(--opacity-subdued);
     padding: 0;
-    inline-size: 8px;
-    block-size: 8px;
-    transition: opacity ease var(--motion-transition);
+    inline-size: 24px;
+    block-size: 24px;
   }
 
-  .carousel__indicator::after {
-    position: absolute;
-    inset-block-start: 50%;
-    inset-inline-start: 50%;
-    translate: -50% -50%;
-    inline-size: max(100%, 24px);
-    block-size: max(100%, 24px);
+  .carousel__indicator::before {
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background-color: white;
+    opacity: var(--opacity-subdued);
+    transition: opacity ease var(--motion-transition);
     content: "";
   }
 
-  .carousel__indicator--active {
+  .carousel__indicator--active::before {
     opacity: 1;
   }
 
