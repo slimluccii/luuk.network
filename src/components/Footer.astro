@@ -54,7 +54,7 @@ const socialLinks = [
         >
       </p>
 
-      <ul class="social-links">
+      <ul class="social-links" role="list">
         {
           socialLinks.map(({ href, icon, title }) => (
             <li>
@@ -115,6 +115,6 @@ const socialLinks = [
     display: flex;
     gap: var(--spacing-size-xs);
     padding: 0px;
-    list-style-type: "";
+    list-style: none;
   }
 </style>
