@@ -41,7 +41,7 @@ const seo = { title, description, image: cover };
       subject: "hero-subject",
     }}
   >
-    {cover && <HeroCover slot="cover" type="image" src={cover} />}
+    {cover && <HeroCover slot="cover" src={cover} />}
     {
       href && (
         <Button slot="action" as="a" variant="secondary" href={href}>

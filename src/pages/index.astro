@@ -5,6 +5,7 @@ import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
 import Carousel from "~/components/Carousel.astro";
 import Hero from "~/components/Hero.astro";
+import HeroTitle from "~/components/HeroTitle.astro";
 import Section from "~/components/Section.astro";
 import SectionActions from "~/components/SectionActions.astro";
 import SectionContent from "~/components/SectionContent.astro";
@@ -26,9 +27,36 @@ const selectedWork = await getEntries([
 ]);
 
 const workItems = selectedWork.map(toCarouselItem);
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://luuk.network";
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Luuk Brauckmann",
+  url: siteUrl,
+  jobTitle: "Front-end Designer & Developer",
+  worksFor: {
+    "@type": "Organization",
+    name: "De Voorhoede",
+    url: "https://www.voorhoede.nl",
+  },
+  description: seo.description,
+  sameAs: [
+    "https://github.com/slimluccii",
+    "https://www.linkedin.com/in/luukbrauckmann/",
+    "https://bsky.app/profile/luuk.network",
+    "https://codepen.io/slimluccii",
+  ],
+};
 ---
 
 <Base seo={seo}>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(personJsonLd)}
+  />
+
   <Hero subject={image}>
     <Button
       slot="action"
@@ -40,8 +68,7 @@ const workItems = selectedWork.map(toCarouselItem);
       rel="noopener noreferrer">GitHub</Button
     >
 
-    <h1 class="sr-only">Luuk Brauckmann, Front-end Designer & Developer</h1>
-    <p class="hero__title" aria-hidden="true">Luuk Brauckmann</p>
+    <HeroTitle>Luuk Brauckmann</HeroTitle>
     <p>
       Cum laude graduate in Front-end Design & Development. I build accessible
       and performant web experiences. My work is guided by digital sovereignty,
