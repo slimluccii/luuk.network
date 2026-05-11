@@ -11,7 +11,6 @@ type CarouselItem = {
   cover?: ImageMetadata;
   linkLabel?: string;
   meta?: string;
-  transitionName?: string;
 };
 
 interface Props {
@@ -43,11 +42,10 @@ const total = items.length;
             cover,
             linkLabel = "Read more",
             meta,
-            transitionName,
           },
           index,
         ) => (
-          <li class="carousel__item" transition:name={transitionName}>
+          <li class="carousel__item">
             <div
               id={`carousel-slide-${index}`}
               class="carousel__slide"
@@ -210,36 +208,7 @@ const total = items.length;
       list.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", this.updateOverflow);
       requestAnimationFrame(() => this.updateOverflow!());
-
-      this.items.forEach((item) => {
-        item.addEventListener("click", () => {
-          item.dataset.transitioning = "true";
-        });
-      });
-
-      document.addEventListener(
-        "astro:before-preparation",
-        this.handleBeforePrep,
-      );
-      document.addEventListener("astro:after-swap", this.handleAfterSwap);
     }
-
-    handleBeforePrep = () => {
-      const active = this.querySelector<HTMLElement>(
-        ".carousel__item[data-transitioning]",
-      );
-      if (!active) return;
-      this.items.forEach((item) => {
-        if (item !== active) item.classList.add("carousel__item--hidden");
-      });
-    };
-
-    handleAfterSwap = () => {
-      this.items.forEach((item) => {
-        item.classList.remove("carousel__item--hidden");
-        delete item.dataset.transitioning;
-      });
-    };
 
     setActive(index: number) {
       this.indicators.forEach((button, i) => {
@@ -258,11 +227,6 @@ const total = items.length;
       if (this.updateOverflow) {
         window.removeEventListener("resize", this.updateOverflow);
       }
-      document.removeEventListener(
-        "astro:before-preparation",
-        this.handleBeforePrep,
-      );
-      document.removeEventListener("astro:after-swap", this.handleAfterSwap);
     }
   }
 
@@ -347,10 +311,6 @@ const total = items.length;
 
   .carousel__item:last-child {
     scroll-snap-align: end;
-  }
-
-  .carousel__item--hidden {
-    visibility: hidden;
   }
 
   .carousel__cover {

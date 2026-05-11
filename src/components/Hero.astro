@@ -5,16 +5,12 @@ import Border from "~/components/Border.astro";
 
 interface Props {
   subject?: ImageMetadata;
-  transitions?: {
-    root?: string;
-    subject?: string;
-  };
 }
 
-const { subject, transitions } = Astro.props;
+const { subject } = Astro.props;
 ---
 
-<Border class="hero" transition:name={transitions?.root}>
+<Border class="hero">
   <div class="hero__visual">
     <slot name="cover" />
   </div>
@@ -31,7 +27,6 @@ const { subject, transitions } = Astro.props;
             alt=""
             loading="eager"
             fetchpriority="high"
-            transition:name={transitions?.subject}
           />
         )
       }
@@ -64,11 +59,6 @@ const { subject, transitions } = Astro.props;
     block-size: 100%;
   }
 
-  .hero__visual :global(rive-canvas) {
-    aspect-ratio: auto;
-    block-size: 100%;
-  }
-
   .hero__content {
     display: flex;
     flex-direction: column;
@@ -91,37 +81,6 @@ const { subject, transitions } = Astro.props;
 </style>
 
 <style is:global>
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 400ms;
-    animation-timing-function: ease;
-  }
-
-  ::view-transition-new(hero-subject) {
-    animation:
-      hero-subject-fade 200ms ease-out 200ms both,
-      hero-subject-drop 250ms ease-out 200ms both;
-  }
-
-  ::view-transition-old(hero-subject) {
-    animation: hero-subject-fade 150ms ease reverse both;
-  }
-
-  @keyframes hero-subject-fade {
-    from {
-      opacity: 0;
-    }
-  }
-
-  @keyframes hero-subject-drop {
-    from {
-      transform: translateY(-6px);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
   .hero__image {
     position: absolute;
     inset-block-end: 0px;

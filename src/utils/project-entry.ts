@@ -10,7 +10,6 @@ export function toCarouselItem(project: Project) {
     description: project.data.description,
     cover: project.data.cover,
     meta: formatDateRange(project.data.startDate, project.data.endDate),
-    transitionName: `project-${project.id}`,
   };
 }
 
