@@ -32,7 +32,7 @@ const total = items.length;
   aria-label={label}
 >
   <div class="carousel__viewport">
-    <ul class="carousel__list" tabindex="0">
+    <ul class="carousel__list" role="list" tabindex="0">
     {
       items.map(
         (
@@ -87,7 +87,11 @@ const total = items.length;
     </ul>
   </div>
 
-  <ol class="carousel__indicators" aria-label={`${label} slide navigation`}>
+  <ol
+    class="carousel__indicators"
+    role="list"
+    aria-label={`${label} slide navigation`}
+  >
     {
       items.map(({ title }, index) => (
         <li>
@@ -127,15 +131,47 @@ const total = items.length;
         "(prefers-reduced-motion: reduce)"
       );
 
-      this.indicators.forEach((button, index) => {
-        button.addEventListener("click", () => {
-          const isLast = index === this.items.length - 1;
-          this.items[index]?.scrollIntoView({
-            behavior: reduceMotion.matches ? "auto" : "smooth",
-            inline: isLast ? "end" : "center",
-            block: "nearest",
-          });
+      const scrollToIndex = (index: number) => {
+        const clamped = Math.max(0, Math.min(this.items.length - 1, index));
+        const isLast = clamped === this.items.length - 1;
+        this.items[clamped]?.scrollIntoView({
+          behavior: reduceMotion.matches ? "auto" : "smooth",
+          inline: isLast ? "end" : "center",
+          block: "nearest",
         });
+      };
+
+      this.indicators.forEach((button, index) => {
+        button.addEventListener("click", () => scrollToIndex(index));
+      });
+
+      list.addEventListener("keydown", (event) => {
+        const active = this.indicators.findIndex((b) =>
+          b.classList.contains("carousel__indicator--active"),
+        );
+        const isRtl =
+          getComputedStyle(list).direction === "rtl";
+        const forward = isRtl ? "ArrowLeft" : "ArrowRight";
+        const back = isRtl ? "ArrowRight" : "ArrowLeft";
+
+        switch (event.key) {
+          case forward:
+            event.preventDefault();
+            scrollToIndex(active + 1);
+            break;
+          case back:
+            event.preventDefault();
+            scrollToIndex(active - 1);
+            break;
+          case "Home":
+            event.preventDefault();
+            scrollToIndex(0);
+            break;
+          case "End":
+            event.preventDefault();
+            scrollToIndex(this.items.length - 1);
+            break;
+        }
       });
 
       this.observer = new IntersectionObserver(

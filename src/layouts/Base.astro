@@ -95,7 +95,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     <Button as="a" class="kb-only skip-link" href="#navigation">
       Skip to navigation
     </Button>
-    <aside id="navigation" class="navigation">
+    <aside id="navigation" class="navigation" tabindex="-1">
       <Navigation currentPageTitle={seo.title} />
     </aside>
     <div class="content">
@@ -165,7 +165,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
 
 <style>
   html {
-    --enhanced-header-height: calc(
+    --header-height: calc(
       var(--typography-scale-subtitle) + var(--spacing-size-xxs) * 2
     );
 
