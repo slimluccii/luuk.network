@@ -17,7 +17,10 @@ const {
 const { pathname } = Astro.url;
 ---
 
-<ul class:list={["nav-list", { "nav-list--mark-active": markActive }]}>
+<ul
+  class:list={["nav-list", { "nav-list--mark-active": markActive }]}
+  role="list"
+>
   {
     navLinks.map(({ href, label }) => {
       const state = getCurrentState(pathname, href);
@@ -31,7 +34,7 @@ const { pathname } = Astro.url;
             {label}
           </a>
           {showSubList && state === "section" && currentPageTitle && (
-            <ul class="nav-list__sublist">
+            <ul class="nav-list__sublist" role="list">
               <li>
                 <a
                   class="nav-list__sublink"
@@ -57,7 +60,7 @@ const { pathname } = Astro.url;
     gap: var(--spacing-size-s);
     margin: 0;
     padding: 0;
-    list-style-type: "";
+    list-style: none;
   }
 
   .nav-list__link {
@@ -93,7 +96,7 @@ const { pathname } = Astro.url;
     gap: var(--spacing-size-xs);
     margin: 0;
     padding: 0;
-    list-style-type: "";
+    list-style: none;
   }
 
   .nav-list__sublink {
