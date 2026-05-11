@@ -31,7 +31,7 @@ const { pathname } = Astro.url;
             {label}
           </a>
           {showSubList && state === "section" && currentPageTitle && (
-            <ul class="nav-list__sublist" transition:name="nav-sublist">
+            <ul class="nav-list__sublist">
               <li>
                 <a
                   class="nav-list__sublink"
@@ -126,21 +126,3 @@ const { pathname } = Astro.url;
     }
   }
 </style>
-
-<style is:global>
-  ::view-transition-new(nav-sublist) {
-    animation: nav-sublist-in 320ms ease-out 200ms both;
-  }
-
-  ::view-transition-old(nav-sublist) {
-    animation: nav-sublist-in 200ms ease-out reverse both;
-  }
-
-  @keyframes nav-sublist-in {
-    from {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
-  }
-</style>
-
