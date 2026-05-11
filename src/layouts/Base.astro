@@ -100,7 +100,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     </aside>
     <div class="content">
       <Border class="content__border">
-        <ln-header class="header">
+        <enhanced-header class="header">
           <Border class="header__border">
             <header>
               <a href="/" transition:name="logo">
@@ -109,7 +109,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
               </a>
             </header>
           </Border>
-        </ln-header>
+        </enhanced-header>
 
         <main id="main">
           <slot />
@@ -124,7 +124,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
 </html>
 
 <script>
-  class LnHeader extends HTMLElement {
+  class EnhancedHeader extends HTMLElement {
     observer: IntersectionObserver | null = null;
 
     constructor() {
@@ -160,12 +160,12 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
       }
     }
   }
-  customElements.define("ln-header", LnHeader);
+  customElements.define("enhanced-header", EnhancedHeader);
 </script>
 
 <style>
   html {
-    --ln-header-height: calc(
+    --enhanced-header-height: calc(
       var(--typography-scale-subtitle) + var(--spacing-size-xxs) * 2
     );
 
