@@ -82,7 +82,7 @@ a {
   display: flex;
   gap: 0.25em;
   align-items: baseline;
-  scroll-margin-block-start: calc(var(--ln-header-height) + var(--spacing-size-l));
+  scroll-margin-block-start: calc(var(--header-height) + var(--spacing-size-l));
 }
 
 .heading-anchor {

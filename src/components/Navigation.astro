@@ -1,4 +1,5 @@
 ---
+import AnchorToButton from "~/components/AnchorToButton.astro";
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
 import Logo from "~/components/Logo.astro";
@@ -11,37 +12,43 @@ interface Props {
 const { currentPageTitle } = Astro.props;
 ---
 
-<ln-navigation>
-  <Button
-    class="ln-nav-trigger"
-    type="button"
-    icon="menu"
-    popovertarget="ln-nav-menu"
-    aria-controls="ln-nav-menu"
-    aria-expanded="false">Menu</Button
+<enhanced-navigation>
+  <AnchorToButton
+    buttonAttrs={{
+      popovertarget: "nav-menu",
+      "aria-controls": "nav-menu",
+      "aria-expanded": "false",
+    }}
   >
+    <Button
+      as="a"
+      class="trigger"
+      icon="menu"
+      href="#footer-nav">Menu</Button
+    >
+  </AnchorToButton>
 
-  <nav id="ln-nav-menu" popover class="ln-nav-menu" aria-label="Main">
-    <Border class="ln-nav-header__border">
-      <header class="ln-nav-header">
+  <nav id="nav-menu" popover class="menu" aria-label="Main">
+    <Border class="header__border">
+      <header class="header">
         <Logo />
       </header>
     </Border>
     <NavList currentPageTitle={currentPageTitle} showSubList />
     <Button
-      class="ln-nav-close"
+      class="close"
       type="button"
       icon="x"
-      popovertarget="ln-nav-menu">Close</Button
+      popovertarget="nav-menu">Close</Button
     >
   </nav>
-</ln-navigation>
+</enhanced-navigation>
 
 <script>
   const DESKTOP_QUERY = "(min-width: 800px)";
   const FOOTER_NAV_SELECTOR = "[data-footer-nav]";
-  const SCROLL_LOCK_CLASS = "ln-nav-scroll-locked";
-  const FOOTER_VISIBLE_CLASS = "ln-nav--footer-visible";
+  const SCROLL_LOCK_CLASS = "nav-scroll-locked";
+  const FOOTER_VISIBLE_CLASS = "footer-visible";
 
   /** Make every direct child of <body> (except this element's branch) inert. */
   function setSiblingsInert(self: HTMLElement, inert: boolean) {
@@ -61,7 +68,7 @@ const { currentPageTitle } = Astro.props;
     "[tabindex]:not([tabindex='-1'])",
   ].join(",");
 
-  class LnNavigation extends HTMLElement {
+  class EnhancedNavigation extends HTMLElement {
     private menu!: HTMLElement;
     private trigger!: HTMLButtonElement;
     private desktopQuery = window.matchMedia(DESKTOP_QUERY);
@@ -69,7 +76,9 @@ const { currentPageTitle } = Astro.props;
 
     connectedCallback() {
       const menu = this.querySelector<HTMLElement>("[popover]");
-      const trigger = this.querySelector<HTMLButtonElement>(".ln-nav-trigger");
+      const trigger = this.querySelector<HTMLButtonElement>(
+        "button.trigger",
+      );
       if (!menu || !trigger) return;
       this.menu = menu;
       this.trigger = trigger;
@@ -151,13 +160,11 @@ const { currentPageTitle } = Astro.props;
     }
   }
 
-  if (!customElements.get("ln-navigation")) {
-    customElements.define("ln-navigation", LnNavigation);
-  }
+  customElements.define("enhanced-navigation", EnhancedNavigation);
 </script>
 
 <style is:global>
-  html.ln-nav-scroll-locked {
+  html.nav-scroll-locked {
     overflow: hidden;
   }
 </style>
@@ -165,14 +172,14 @@ const { currentPageTitle } = Astro.props;
 <style>
   /* --- Root ----------------------------------------------------------- */
 
-  ln-navigation {
+  enhanced-navigation {
     display: contents;
   }
 
   /* --- Floating buttons (mobile trigger + close) ---------------------- */
 
-  .ln-nav-trigger,
-  .ln-nav-close {
+  .trigger,
+  .close {
     position: fixed;
     z-index: 1000;
     inset-block-end: max(var(--spacing-size-l), env(safe-area-inset-bottom));
@@ -180,20 +187,20 @@ const { currentPageTitle } = Astro.props;
   }
 
   /* Hide the outside trigger while the menu is open. */
-  ln-navigation:has(:popover-open) .ln-nav-trigger {
+  enhanced-navigation:has(:popover-open) .trigger {
     display: none;
   }
 
   /* Fade the floating trigger out while the footer nav is in view.
      Visibility flips instantly when showing, but waits for the fade
      when hiding so the button stays focusable until it's gone. */
-  .ln-nav-trigger {
+  .trigger {
     transition:
       opacity var(--motion-transition) ease,
       visibility 0s linear 0s;
   }
 
-  ln-navigation.ln-nav--footer-visible .ln-nav-trigger {
+  enhanced-navigation.footer-visible .trigger {
     visibility: hidden;
     opacity: 0;
     transition:
@@ -203,15 +210,15 @@ const { currentPageTitle } = Astro.props;
 
   /* --- Focus ---------------------------------------------------------- */
 
-  .ln-nav-trigger:focus-visible,
-  .ln-nav-close:focus-visible {
+  .trigger:focus-visible,
+  .close:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 2px;
   }
 
   /* --- Mobile menu (full-screen popover) ------------------------------ */
 
-  .ln-nav-menu {
+  .menu {
     /* Override UA centered-modal defaults for full-screen overlay. */
     margin: 0;
     inset: 0;
@@ -228,17 +235,17 @@ const { currentPageTitle } = Astro.props;
     color: inherit;
   }
 
-  .ln-nav-menu::backdrop {
+  .menu::backdrop {
     background-color: transparent;
   }
 
-  .ln-nav-menu :global(.nav-list) {
+  .menu :global(.nav-list) {
     padding: var(--spacing-size-l);
   }
 
   /* --- Header (logo, mobile only) ------------------------------------- */
 
-  .ln-nav-header {
+  .header {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -250,11 +257,11 @@ const { currentPageTitle } = Astro.props;
   @media (min-width: 800px) {
     /* Override UA `[popover]:not(:popover-open) { display: none }`.
        Equal specificity (0,2,0); author rule wins by order. */
-    .ln-nav-menu:not(:popover-open) {
+    .menu:not(:popover-open) {
       display: flex;
     }
 
-    .ln-nav-menu {
+    .menu {
       position: sticky;
       align-items: center;
       inset: 0;
@@ -267,16 +274,16 @@ const { currentPageTitle } = Astro.props;
       overflow: visible;
     }
 
-    .ln-nav-menu :global(.nav-list) {
+    .menu :global(.nav-list) {
       flex: 1;
       justify-content: flex-start;
       padding: 0;
       min-block-size: 0;
     }
 
-    .ln-nav-trigger,
-    .ln-nav-close,
-    .ln-nav-header__border {
+    .trigger,
+    .close,
+    .header__border {
       display: none;
     }
   }
