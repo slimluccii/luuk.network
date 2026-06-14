@@ -1,393 +1,70 @@
----
-import { Picture } from "astro:assets";
-import type { ImageMetadata } from "astro";
-import Link from "~/components/Link.astro";
-import LinkArea from "~/components/LinkArea.astro";
+<div class="carousel-wrapper">
+  <ul class="carousel">
+    <slot />
+  </ul>
+</div>
 
-type CarouselItem = {
-  href: string;
-  title: string;
-  description: string;
-  cover?: ImageMetadata;
-  linkLabel?: string;
-  meta?: string;
-};
+<style>
+  .carousel-wrapper {
+    position: relative;
+    margin-inline: calc(var(--spacing-size-l) * -1);
+  }
 
-interface Props {
-  items: CarouselItem[];
-  headingLevel?: 2 | 3;
-  label?: string;
-}
+  .carousel {
+    display: flex;
+    gap: var(--spacing-size-m);
+    container-type: scroll-state;
+    margin: 0;
+    padding-inline: var(--spacing-size-l);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    list-style-type: "";
+    scrollbar-width: none;
 
-const { items, headingLevel = 3, label = "Carousel" } = Astro.props;
-const Heading = `h${headingLevel}` as "h2" | "h3";
-const total = items.length;
----
-
-<enhanced-carousel
-  class="carousel"
-  role="region"
-  aria-roledescription="carousel"
-  aria-label={label}
->
-  <div class="carousel__viewport">
-    <ul class="carousel__list" role="list" tabindex="0">
-    {
-      items.map(
-        (
-          {
-            href,
-            title,
-            description,
-            cover,
-            linkLabel = "Read more",
-            meta,
-          },
-          index,
-        ) => (
-          <li class="carousel__item">
-            <div
-              id={`carousel-slide-${index}`}
-              class="carousel__slide"
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${index + 1} of ${total}: ${title}`}
-            >
-              <LinkArea>
-                {cover && (
-                  <Picture
-                    class="carousel__cover"
-                    formats={["avif", "webp"]}
-                    widths={[500, 1000, 1500]}
-                    sizes="(min-width: 800px) 500px, 100vw"
-                    src={cover}
-                    alt=""
-                    loading="lazy"
-                  />
-                )}
-                <div class="carousel__body">
-                  <div class="carousel__text">
-                    {meta && <p class="carousel__meta">{meta}</p>}
-                    <Heading class="carousel__title">{title}</Heading>
-                    <p class="carousel__description">{description}</p>
-                  </div>
-                  <Link href={href} icon="arrow-right">
-                    {linkLabel}
-                    <span class="sr-only"> about {title}</span>
-                  </Link>
-                </div>
-              </LinkArea>
-            </div>
-          </li>
-        )
-      )
-    }
-    </ul>
-  </div>
-
-  <ol
-    class="carousel__indicators"
-    role="list"
-    aria-label={`${label} slide navigation`}
-  >
-    {
-      items.map(({ title }, index) => (
-        <li>
-          <button
-            class="carousel__indicator"
-            type="button"
-            data-index={index}
-            aria-controls={`carousel-slide-${index}`}
-            aria-label={`Go to slide ${index + 1} of ${total}: ${title}`}
-          />
-        </li>
-      ))
-    }
-  </ol>
-</enhanced-carousel>
-
-<script>
-  class EnhancedCarousel extends HTMLElement {
-    observer: IntersectionObserver | null = null;
-    items: HTMLElement[] = [];
-    indicators: HTMLButtonElement[] = [];
-    list: HTMLElement | null = null;
-    updateOverflow: (() => void) | null = null;
-
-    connectedCallback() {
-      const list = this.querySelector<HTMLElement>(".carousel__list");
-      if (!list) return;
-
-      this.items = Array.from(
-        list.querySelectorAll<HTMLElement>(".carousel__item")
-      );
-      this.indicators = Array.from(
-        this.querySelectorAll<HTMLButtonElement>(".carousel__indicator")
-      );
-
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      );
-
-      const scrollToIndex = (index: number) => {
-        const clamped = Math.max(0, Math.min(this.items.length - 1, index));
-        const isLast = clamped === this.items.length - 1;
-        this.items[clamped]?.scrollIntoView({
-          behavior: reduceMotion.matches ? "auto" : "smooth",
-          inline: isLast ? "end" : "center",
-          block: "nearest",
-        });
-      };
-
-      this.indicators.forEach((button, index) => {
-        button.addEventListener("click", () => scrollToIndex(index));
-      });
-
-      list.addEventListener("keydown", (event) => {
-        const active = this.indicators.findIndex((b) =>
-          b.classList.contains("carousel__indicator--active"),
-        );
-        const isRtl =
-          getComputedStyle(list).direction === "rtl";
-        const forward = isRtl ? "ArrowLeft" : "ArrowRight";
-        const back = isRtl ? "ArrowRight" : "ArrowLeft";
-
-        switch (event.key) {
-          case forward:
-            event.preventDefault();
-            scrollToIndex(active + 1);
-            break;
-          case back:
-            event.preventDefault();
-            scrollToIndex(active - 1);
-            break;
-          case "Home":
-            event.preventDefault();
-            scrollToIndex(0);
-            break;
-          case "End":
-            event.preventDefault();
-            scrollToIndex(this.items.length - 1);
-            break;
-        }
-      });
-
-      this.observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.intersectionRatio >= 0.5) {
-              const index = this.items.indexOf(entry.target as HTMLElement);
-              this.setActive(index);
-            }
-          });
-        },
-        { root: list, threshold: [0.5, 0.75, 1] }
-      );
-
-      this.items.forEach((item) => this.observer!.observe(item));
-      this.setActive(0);
-
-      this.list = list;
-      this.updateOverflow = () => {
-        const { scrollLeft, scrollWidth, clientWidth } = list;
-        const atStart = scrollLeft <= 0;
-        const atEnd = scrollLeft + clientWidth >= scrollWidth - 1;
-        this.classList.toggle("carousel--overflow-start", !atStart);
-        this.classList.toggle("carousel--overflow-end", !atEnd);
-      };
-
-      let frame = 0;
-      const onScroll = () => {
-        if (frame) return;
-        frame = requestAnimationFrame(() => {
-          frame = 0;
-          this.updateOverflow!();
-        });
-      };
-
-      list.addEventListener("scroll", onScroll, { passive: true });
-      window.addEventListener("resize", this.updateOverflow);
-      requestAnimationFrame(() => this.updateOverflow!());
+    &::-webkit-scrollbar {
+      display: none;
     }
 
-    setActive(index: number) {
-      this.indicators.forEach((button, i) => {
-        const active = i === index;
-        button.classList.toggle("carousel__indicator--active", active);
-        if (active) {
-          button.setAttribute("aria-current", "true");
-        } else {
-          button.removeAttribute("aria-current");
-        }
-      });
+    &::before,
+    &::after {
+      position: absolute;
+      inline-size: var(--spacing-size-l);
+      z-index: 1;
+      opacity: 0;
+      transition: opacity ease var(--motion-transition);
+      inset-block: 0;
+      pointer-events: none;
+      content: "";
     }
 
-    disconnectedCallback() {
-      this.observer?.disconnect();
-      if (this.updateOverflow) {
-        window.removeEventListener("resize", this.updateOverflow);
+    &::before {
+      inset-inline-start: 0;
+      background: linear-gradient(
+        to right,
+        var(--color-surface-base),
+        transparent
+      );
+    }
+
+    &::after {
+      inset-inline-end: 0;
+      background: linear-gradient(
+        to left,
+        var(--color-surface-base),
+        transparent
+      );
+    }
+
+    @container scroll-state(scrollable: inline-start) {
+      &::before {
+        opacity: 1;
+      }
+    }
+
+    @container scroll-state(scrollable: inline-end) {
+      &::after {
+        opacity: 1;
       }
     }
   }
-
-  customElements.define("enhanced-carousel", EnhancedCarousel);
-</script>
-
-<style>
-  .carousel {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-m);
-  }
-
-  .carousel__viewport {
-    position: relative;
-    margin-inline: calc(var(--spacing-size-l) * -1);
-    overflow: clip;
-    contain: paint;
-  }
-
-  .carousel__viewport::before,
-  .carousel__viewport::after {
-    position: absolute;
-    inset-block: 0;
-    z-index: 1;
-    inline-size: var(--spacing-size-l);
-    opacity: 0;
-    transition: opacity ease var(--motion-transition);
-    pointer-events: none;
-    content: "";
-  }
-
-  .carousel__viewport::before {
-    inset-inline-start: 0;
-    background: linear-gradient(
-      to right,
-      var(--color-surface-base),
-      transparent
-    );
-  }
-
-  .carousel__viewport::after {
-    inset-inline-end: 0;
-    background: linear-gradient(
-      to left,
-      var(--color-surface-base),
-      transparent
-    );
-  }
-
-  .carousel--overflow-start .carousel__viewport::before,
-  .carousel--overflow-end .carousel__viewport::after {
-    opacity: 1;
-  }
-
-  .carousel__list {
-    display: flex;
-    gap: var(--spacing-size-m);
-    margin: 0;
-    padding-inline: var(--spacing-size-l);
-    padding-block: 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--spacing-size-l);
-    scrollbar-width: none;
-    list-style: none;
-  }
-
-  .carousel__list::-webkit-scrollbar {
-    display: none;
-  }
-
-  .carousel__list:focus-visible {
-    outline-offset: -2px;
-  }
-
-  .carousel__item {
-    flex: 0 0 100%;
-    max-inline-size: 375px;
-    scroll-snap-align: center;
-  }
-
-  .carousel__item:last-child {
-    scroll-snap-align: end;
-  }
-
-  .carousel__cover {
-    display: block;
-    aspect-ratio: 16 / 9;
-    inline-size: 100%;
-    block-size: auto;
-    object-fit: cover;
-  }
-
-  .carousel__body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-m);
-    border: 1px solid var(--color-surface-raised);
-    background-color: var(--color-surface-raised);
-    padding: var(--spacing-size-m);
-  }
-
-  .carousel__text {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-size-s);
-  }
-
-  .carousel__meta {
-    opacity: var(--opacity-muted);
-    margin: 0;
-    font-size: var(--typography-scale-caption);
-  }
-
-  .carousel__title {
-    margin: 0;
-  }
-
-  .carousel__description {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    min-block-size: 3lh;
-    margin: 0;
-    overflow: hidden;
-  }
-
-  .carousel__indicators {
-    display: flex;
-    justify-content: center;
-    gap: var(--spacing-size-s);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .carousel__indicator {
-    display: grid;
-    place-items: center;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    padding: 0;
-    inline-size: 24px;
-    block-size: 24px;
-  }
-
-  .carousel__indicator::before {
-    inline-size: 8px;
-    block-size: 8px;
-    border-radius: 50%;
-    background-color: white;
-    opacity: var(--opacity-subdued);
-    transition: opacity ease var(--motion-transition);
-    content: "";
-  }
-
-  .carousel__indicator--active::before {
-    opacity: 1;
-  }
-
 </style>
