@@ -1,0 +1,378 @@
+---
+import Border from "~/components/Border.astro";
+import Button from "~/components/Button.astro";
+import Logo from "~/components/Logo.astro";
+import NavList from "~/components/NavList.astro";
+
+interface Props {
+  currentPageTitle?: string;
+}
+
+const { currentPageTitle } = Astro.props;
+---
+
+<menu-drawer>
+  <Button
+    type="button"
+    class="trigger"
+    icon="menu"
+    popovertarget="menu-drawer"
+    aria-controls="menu-drawer"
+    aria-expanded="false">Menu</Button
+  >
+
+  <!-- popover="manual": dismissal is driven from JS so the browser's
+       light-dismiss never fires mid-swipe. -->
+  <div class="drawer" id="menu-drawer" popover="manual">
+    <div class="drawer__scroller">
+      <nav class="drawer__sheet" tabindex="-1" aria-label="Main">
+        <Border class="header__border">
+          <header class="header">
+            <Logo />
+          </header>
+        </Border>
+        <NavList currentPageTitle={currentPageTitle} showSubList />
+        <Button
+          class="close"
+          type="button"
+          icon="x">Close</Button
+        >
+      </nav>
+    </div>
+  </div>
+</menu-drawer>
+
+<script>
+  const SCROLL_LOCK_CLASS = "menu-scroll-locked";
+  const FOOTER_NAV_SELECTOR = "[data-footer-nav]";
+  const FOOTER_VISIBLE_CLASS = "footer-visible";
+  // Above this width the drawer renders as a static sidebar — all the
+  // open/close/observer machinery must no-op so it never steals focus.
+  const DESKTOP_QUERY = "(min-width: 800px)";
+
+  /** Make every direct child of <body> (except this element's branch) inert. */
+  function setSiblingsInert(self: HTMLElement, inert: boolean) {
+    for (const child of document.body.children) {
+      if (!child.contains(self)) {
+        (child as HTMLElement).inert = inert;
+      }
+    }
+  }
+
+  class MenuDrawer extends HTMLElement {
+    private drawer!: HTMLElement;
+    private scroller!: HTMLElement;
+    private sheet!: HTMLElement;
+    private closeBtn!: HTMLButtonElement | null;
+    private observer!: IntersectionObserver;
+    private footerObserver: IntersectionObserver | null = null;
+    private desktop = window.matchMedia(DESKTOP_QUERY);
+    /** True only once the sheet has fully slid in — guards the observer's
+        closed-callback from firing during the slide-in animation. */
+    private isOpen = false;
+
+    connectedCallback() {
+      const drawer = this.querySelector<HTMLElement>("[popover]");
+      if (!drawer) return;
+      this.drawer = drawer;
+      this.scroller = drawer.querySelector(".drawer__scroller")!;
+      this.sheet = drawer.querySelector(".drawer__sheet")!;
+      this.closeBtn = drawer.querySelector("button.close");
+
+      // The popover opens natively via the trigger's `popovertarget`. We
+      // only react to the resulting toggle to animate the sheet in.
+      this.drawer.addEventListener("toggle", this.onToggle);
+      this.drawer.addEventListener("click", this.onBackdropClick);
+      this.closeBtn?.addEventListener("click", this.close);
+      document.addEventListener("keydown", this.onKeydown);
+
+      // The sheet's visibility inside the popover is the single source of
+      // truth for fully-open / fully-closed — every dismissal path (swipe,
+      // backdrop tap, Escape, Close button) converges here.
+      const visibleThreshold = 1 / window.innerWidth;
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries.at(-1)!;
+          if (entry.intersectionRatio < visibleThreshold) this.onClosed();
+          else if (entry.intersectionRatio === 1) this.onOpened();
+        },
+        { root: this.drawer, threshold: [visibleThreshold, 1] }
+      );
+      this.observer.observe(this.sheet);
+
+      this.desktop.addEventListener("change", this.onViewportChange);
+      this.observeFooter();
+    }
+
+    disconnectedCallback() {
+      this.observer?.disconnect();
+      this.footerObserver?.disconnect();
+      this.drawer?.removeEventListener("toggle", this.onToggle);
+      this.drawer?.removeEventListener("click", this.onBackdropClick);
+      this.closeBtn?.removeEventListener("click", this.close);
+      this.desktop.removeEventListener("change", this.onViewportChange);
+      document.removeEventListener("keydown", this.onKeydown);
+    }
+
+    /** Never leave the popover open when crossing into the sidebar layout. */
+    private onViewportChange = () => {
+      if (this.desktop.matches && this.drawer.matches(":popover-open")) {
+        this.drawer.hidePopover();
+      }
+    };
+
+    /** Fired when the popover is shown (via popovertarget). Slide the sheet
+        in and apply the open-state side effects. */
+    private onToggle = (event: Event) => {
+      if (this.desktop.matches) return;
+      if ((event as ToggleEvent).newState !== "open") return;
+      setSiblingsInert(this, true);
+      document.documentElement.classList.add(SCROLL_LOCK_CLASS);
+      this.setExpanded(true);
+      // `behavior: auto` defers to CSS scroll-behavior (smooth unless
+      // reduced-motion). Snap locks it fully open at the end.
+      this.scroller.scrollTo({ left: 0, behavior: "auto" });
+    };
+
+    private close = () => {
+      // Scroll back to the spacer. The observer hides the popover once the
+      // sheet has fully left the viewport, so the slide-out stays visible.
+      this.scroller.scrollTo({
+        left: this.scroller.offsetWidth,
+        behavior: "auto",
+      });
+    };
+
+    private onBackdropClick = (event: MouseEvent) => {
+      if (!this.sheet.contains(event.target as Node)) this.close();
+    };
+
+    private onKeydown = (event: KeyboardEvent) => {
+      // popover="manual" doesn't auto-close on Escape, so handle it.
+      if (event.key === "Escape" && this.drawer.matches(":popover-open")) {
+        this.close();
+      }
+    };
+
+    private onOpened() {
+      // On desktop the sheet is a permanently-visible sidebar; reacting to
+      // it would steal focus on every page load.
+      if (this.desktop.matches) return;
+      this.isOpen = true;
+      this.sheet.focus();
+    }
+
+    private onClosed() {
+      // Ignore desktop (static sidebar), the off-screen state during the
+      // slide-in (isOpen still false), and the initial display:none on load.
+      if (this.desktop.matches || !this.isOpen) return;
+      this.isOpen = false;
+      if (this.drawer.matches(":popover-open")) this.drawer.hidePopover();
+      setSiblingsInert(this, false);
+      document.documentElement.classList.remove(SCROLL_LOCK_CLASS);
+      this.setExpanded(false);
+      this.querySelector<HTMLElement>(".trigger")?.focus();
+    }
+
+    private setExpanded(open: boolean) {
+      this.querySelector(".trigger")?.setAttribute(
+        "aria-expanded",
+        String(open)
+      );
+    }
+
+    /** Hide the floating trigger when the footer nav is visible. */
+    private observeFooter() {
+      const footerNav =
+        document.querySelector<HTMLElement>(FOOTER_NAV_SELECTOR);
+      if (!footerNav) return;
+
+      this.footerObserver = new IntersectionObserver(([entry]) => {
+        this.classList.toggle(FOOTER_VISIBLE_CLASS, entry.isIntersecting);
+      });
+      this.footerObserver.observe(footerNav);
+    }
+  }
+
+  customElements.define("menu-drawer", MenuDrawer);
+</script>
+
+<style is:global>
+  html.menu-scroll-locked {
+    overflow: hidden;
+  }
+</style>
+
+<style>
+  /* --- Root ----------------------------------------------------------- */
+
+  menu-drawer {
+    display: contents;
+  }
+
+  /* --- Floating buttons (mobile trigger + close) ---------------------- */
+
+  .trigger,
+  .close {
+    position: fixed;
+    z-index: 1000;
+    inset-block-end: max(var(--spacing-size-l), env(safe-area-inset-bottom));
+    inset-inline-end: var(--spacing-size-l);
+  }
+
+  /* Hide the outside trigger while the menu is open. */
+  menu-drawer:has(:popover-open) .trigger {
+    display: none;
+  }
+
+  /* Fade the floating trigger out while the footer nav is in view.
+     Visibility flips instantly when showing, but waits for the fade
+     when hiding so the button stays focusable until it's gone. */
+  .trigger {
+    transition:
+      opacity var(--motion-transition) ease,
+      visibility 0s linear 0s;
+  }
+
+  menu-drawer.footer-visible .trigger {
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity var(--motion-transition) ease,
+      visibility 0s linear var(--motion-transition);
+  }
+
+  /* --- Focus ---------------------------------------------------------- */
+
+  .trigger:focus-visible,
+  .close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  /* --- Drawer popover (top layer, fills viewport) -------------------- */
+
+  .drawer {
+    /* Reset UA popover styling so it can fill the viewport. */
+    margin: 0;
+    inset: 0;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    overflow: visible;
+    color: inherit;
+  }
+
+  .drawer::backdrop {
+    background-color: transparent;
+  }
+
+  /* --- Swipe surface (horizontal scroll-snap) ------------------------ */
+
+  .drawer__scroller {
+    display: grid;
+    /* Full-screen sheet on the left, full-viewport spacer on the right;
+       snapping between the two columns opens and closes the drawer. */
+    grid-template-columns: 100dvw 100%;
+    overflow-x: scroll;
+    /* Stop the swipe from chaining into the page scroll at the edges. */
+    overscroll-behavior: none;
+    scrollbar-width: none;
+    /* `mandatory` guarantees it always settles fully open or closed. */
+    scroll-snap-type: x mandatory;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .drawer__scroller {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Empty spacer = the "closed" snap stop. `scroll-initial-target` opens
+     the popover already scrolled here (sheet off-screen), so JS only has
+     to scroll to the open position to animate it in. */
+  .drawer__scroller::after {
+    content: "";
+    scroll-snap-align: end;
+    scroll-initial-target: nearest;
+  }
+
+  .drawer__sheet {
+    /* `svh`, not `vh`/`dvh`, so the height doesn't jump when the mobile
+       address bar resizes mid-swipe. */
+    block-size: 100svh;
+    background-color: var(--color-surface-overlay);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-align: start;
+    scrollbar-width: none;
+  }
+
+  .drawer__sheet :global(.nav-list) {
+    padding: var(--spacing-size-l);
+  }
+
+  /* --- Header (logo, mobile only) ------------------------------------- */
+
+  .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--spacing-size-xxs);
+  }
+
+  /* --- Desktop: sticky sidebar (drawer mechanics off) ---------------- */
+
+  @media (min-width: 800px) {
+    /* Override UA `[popover]:not(:popover-open) { display: none }`.
+       Equal specificity (0,2,0); author rule wins by order. */
+    .drawer:not(:popover-open) {
+      display: block;
+    }
+
+    .drawer {
+      position: sticky;
+      inset: 0;
+      block-size: 100dvh;
+      inline-size: auto;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .drawer__scroller {
+      display: block;
+      block-size: 100dvh;
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+
+    .drawer__scroller::after {
+      content: none;
+    }
+
+    .drawer__sheet {
+      display: flex;
+      align-items: center;
+      block-size: 100dvh;
+      background: transparent;
+      overflow: visible;
+    }
+
+    .drawer__sheet :global(.nav-list) {
+      flex: 1;
+      justify-content: flex-start;
+      padding: 0;
+      min-block-size: 0;
+    }
+
+    .trigger,
+    .close,
+    .header__border {
+      display: none;
+    }
+  }
+</style>
