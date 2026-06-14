@@ -4,6 +4,7 @@ import Base from "~/layouts/Base.astro";
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
 import Carousel from "~/components/Carousel.astro";
+import CarouselItem from "~/components/CarouselItem.astro";
 import Hero from "~/components/Hero.astro";
 import HeroTitle from "~/components/HeroTitle.astro";
 import Section from "~/components/Section.astro";
@@ -106,7 +107,9 @@ const personJsonLd = {
   <Border>
     <Section>
       <SectionTitle>Selected work</SectionTitle>
-      <Carousel items={workItems} label="Selected work" />
+      <Carousel>
+          {workItems.map((item) => <CarouselItem {...item} />)}
+      </Carousel>
       <SectionActions>
         <Button as="a" icon="arrow-right" href="/projects/">
           See all projects
