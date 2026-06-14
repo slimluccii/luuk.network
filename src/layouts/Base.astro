@@ -97,16 +97,14 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     </aside>
     <div class="content">
       <Border class="content__border">
-        <enhanced-header class="header">
-          <Border class="header__border">
-            <header>
-              <a href="/">
-                <Logo />
-                <span class="sr-only">Luuk Brauckmann</span>
-              </a>
-            </header>
-          </Border>
-        </enhanced-header>
+        <Border class="header">
+          <header>
+            <a href="/">
+              <Logo />
+              <span class="sr-only">Luuk Brauckmann</span>
+            </a>
+          </header>
+        </Border>
 
         <main id="main">
           <slot />
@@ -120,52 +118,13 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
   </body>
 </html>
 
-<script>
-  class EnhancedHeader extends HTMLElement {
-    observer: IntersectionObserver | null = null;
-
-    constructor() {
-      super();
-    }
-
-    connectedCallback() {
-      if (this) {
-        this.observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.intersectionRatio < 1) {
-                this?.classList.add("header--scrolled");
-              } else {
-                this?.classList.remove("header--scrolled");
-              }
-            });
-          },
-          {
-            root: null,
-            rootMargin: "0px",
-            threshold: [0, 1],
-          }
-        );
-
-        this.observer.observe(this);
-      }
-    }
-
-    disconnectedCallback() {
-      if (this.observer) {
-        this.observer.disconnect();
-      }
-    }
-  }
-  customElements.define("enhanced-header", EnhancedHeader);
-</script>
-
 <style>
   html {
     --header-height: calc(
       var(--typography-scale-subtitle) + var(--spacing-size-xxs) * 2
     );
 
+    container-type: inline-size;
     background-color: var(--color-surface-canvas);
     scrollbar-gutter: stable;
     color-scheme: dark;
@@ -179,34 +138,60 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     position: fixed;
     inset-block-start: var(--spacing-size-xs);
     inset-inline-start: 50%;
-    z-index: 9999;
-    transform: translateX(-50%);
   }
 
   body {
     min-block-size: 100dvh;
     overflow-x: clip;
 
-    @media (min-width: 800px) {
+    @container (width > 800px) {
       display: grid;
       grid-template-columns: minmax(0, 200px) min(600px, 100%);
       grid-template-areas: "left center";
       justify-content: center;
     }
 
-    @media (min-width: 1000px) {
+    @container (width > 1000px) {
       grid-template-columns: minmax(0, 200px) min(600px, 100%) minmax(0, 200px);
       grid-template-areas: "left center right";
     }
   }
 
+  main {
+    grid-area: stack;
+    overflow: hidden;
+  }
+
+  .content {
+    grid-area: center;
+
+    @container (width > 800px) {
+      padding: var(--spacing-size-xs);
+    }
+  }
+
+  .content__border {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "stack"
+      "footer";
+    block-size: 100%;
+  }
+
+  .navigation {
+    grid-area: left;
+  }
+
   .header {
     display: block;
     position: sticky;
+    container-type: scroll-state;
     grid-area: stack;
     align-self: start;
     z-index: 999;
     inset-block-start: -1px;
+    border-block-end-color: transparent;
 
     &::after {
       position: absolute;
@@ -227,56 +212,26 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     }
   }
 
-  .header__border {
-    transition: opacity ease;
-    transition-duration: var(--motion-transition);
-    border-block-end-color: transparent;
-  }
-
-  .header--scrolled::after {
-    opacity: 1;
-  }
-
-  .header--scrolled .header__border {
-    border-block-end-color: var(--color-surface-base);
-  }
-
-  header {
+  .header header {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: background-color ease;
+    transition:
+      background-color ease,
+      border-block-end-color ease;
     transition-duration: var(--motion-transition);
+    border-block-end: 1px solid transparent;
     padding: var(--spacing-size-xxs);
   }
 
-  .header--scrolled header {
-    background-color: var(--color-surface-canvas);
-  }
-
-  main {
-    grid-area: stack;
-    overflow: hidden;
-  }
-
-  .content {
-    grid-area: center;
-
-    @media (min-width: 800px) {
-      padding: var(--spacing-size-xs);
+  @container scroll-state(stuck: top) {
+    .header::after {
+      opacity: 1;
     }
-  }
 
-  .content__border {
-    display: grid;
-    grid-template-rows: 1fr auto;
-    grid-template-areas:
-      "stack"
-      "footer";
-    block-size: 100%;
-  }
-
-  .navigation {
-    grid-area: left;
+    .header header {
+      background-color: var(--color-surface-canvas);
+      border-block-end-color: var(--color-surface-base);
+    }
   }
 </style>
