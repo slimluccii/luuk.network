@@ -1,0 +1,15 @@
+<enhanced-filter>
+  <form>
+    <input type="search" />
+
+    <output>
+      <slot />
+    </output>
+  </form>
+</enhanced-filter>
+
+<script>
+  class FilterComponent extends HTMLElement {}
+
+  customElements.define("enhanced-filter", FilterComponent);
+</script>
