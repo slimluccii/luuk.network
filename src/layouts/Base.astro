@@ -6,7 +6,7 @@ import Button from "~/components/Button.astro";
 import Footer from "~/components/Footer.astro";
 import IconSprite from "~/components/IconSprite.astro";
 import Logo from "~/components/Logo.astro";
-import Navigation from "~/components/Navigation.astro";
+import Menu from "~/components/Menu.astro";
 
 import socialPreview from "~/images/social-preview.png";
 
@@ -93,7 +93,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
       Skip to navigation
     </Button>
     <aside id="navigation" class="navigation" tabindex="-1">
-      <Navigation currentPageTitle={seo.title} />
+      <Menu currentPageTitle={seo.title} />
     </aside>
     <div class="content">
       <Border class="content__border">
