@@ -1,0 +1,8 @@
+{
+  "$schema": "https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/",
+  "name": "luuk.network",
+  "description": "Personal site of Luuk Brauckmann, frontend engineer at De Voorhoede.",
+  "url": "https://luuk.network",
+  "contact": "mail@luuk.network",
+  "agents": []
+}
