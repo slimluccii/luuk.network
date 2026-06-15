@@ -1,0 +1,23 @@
+---
+// Sole owner of the layout breakpoint. Writes `data-viewport="wide" | "narrow"`
+// to <html> and dispatches a `viewportchange` event, so CSS and components
+// derive the layout class from one place instead of each repeating the literal.
+//
+// Rendered inline in <head> (not bundled/deferred) so the attribute is set
+// before first paint — no flash of the wrong layout. Same head-state-setter
+// pattern as <EnableJavascript> and <SetColorScheme>.
+---
+
+<script is:inline>
+  (() => {
+    const mq = matchMedia("(min-width: 800px)");
+    const apply = () => {
+      const viewport = mq.matches ? "wide" : "narrow";
+      if (document.documentElement.dataset.viewport === viewport) return;
+      document.documentElement.dataset.viewport = viewport;
+      document.dispatchEvent(new CustomEvent("viewportchange", { detail: viewport }));
+    };
+    mq.addEventListener("change", apply);
+    apply();
+  })();
+</script>

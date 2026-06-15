@@ -3,10 +3,13 @@ import type { ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
+import EnableJavascript from "~/components/EnableJavascript.astro";
 import Footer from "~/components/Footer.astro";
 import IconSprite from "~/components/IconSprite.astro";
 import Logo from "~/components/Logo.astro";
 import Menu from "~/components/Menu.astro";
+import SetColorScheme from "~/components/SetColorScheme.astro";
+import ViewportState from "~/components/ViewportState.astro";
 
 import socialPreview from "~/images/social-preview.png";
 
@@ -50,6 +53,11 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+
+    <EnableJavascript />
+    <ViewportState />
+    <SetColorScheme />
+
     <link
       rel="preload"
       href="/fonts/source-sans.woff2"

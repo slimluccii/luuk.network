@@ -1,0 +1,52 @@
+---
+// Sole owner of the color-scheme preference. Reads the stored choice
+// (light | dark | system) and writes the *resolved* scheme to
+// `data-color-scheme="light" | "dark"` on <html>, dispatching a
+// `colorschemechange` event so CSS and components derive it from one place.
+//
+// Rendered inline in <head> (not bundled/deferred) so the attribute is set
+// before first paint — no flash of the wrong scheme.
+//
+// Scaffold only for now: the site is dark-only (no light tokens yet), so
+// nothing reads the attribute. This establishes the mechanism for when
+// theming lands — wire CSS to `html[data-color-scheme="light"]` then.
+---
+
+<script is:inline>
+  (() => {
+    const STORAGE_KEY = "color-scheme";
+    const system = matchMedia("(prefers-color-scheme: light)");
+
+    // localStorage access can throw (e.g. blocked in private mode); treat any
+    // failure as "no stored preference" so the resolver always succeeds.
+    const stored = () => {
+      try {
+        return localStorage.getItem(STORAGE_KEY);
+      } catch {
+        return null;
+      }
+    };
+
+    // "light"/"dark" win; "system" and unset resolve against the OS.
+    const resolve = () => {
+      const pref = stored();
+      if (["light", "dark"].includes(pref)) return pref;
+      return system.matches ? "light" : "dark";
+    };
+
+    const apply = () => {
+      const scheme = resolve();
+      if (document.documentElement.dataset.colorScheme === scheme) return;
+      document.documentElement.dataset.colorScheme = scheme;
+      document.dispatchEvent(new CustomEvent("colorschemechange", { detail: scheme }));
+    };
+
+    // Re-resolve when the OS flips (only affects "system"/unset) and when
+    // another tab changes the stored preference.
+    system.addEventListener("change", apply);
+    addEventListener("storage", (event) => {
+      if (event.key === STORAGE_KEY) apply();
+    });
+    apply();
+  })();
+</script>

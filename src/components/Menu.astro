@@ -46,9 +46,6 @@ const { currentPageTitle } = Astro.props;
   const SCROLL_LOCK_CLASS = "menu-scroll-locked";
   const FOOTER_NAV_SELECTOR = "[data-footer-nav]";
   const FOOTER_VISIBLE_CLASS = "footer-visible";
-  // Above this width the drawer renders as a static sidebar — all the
-  // open/close/observer machinery must no-op so it never steals focus.
-  const DESKTOP_QUERY = "(min-width: 800px)";
 
   /** Make every direct child of <body> (except this element's branch) inert. */
   function setSiblingsInert(self: HTMLElement, inert: boolean) {
@@ -66,7 +63,11 @@ const { currentPageTitle } = Astro.props;
     private closeBtn!: HTMLButtonElement | null;
     private observer!: IntersectionObserver;
     private footerObserver: IntersectionObserver | null = null;
-    private desktop = window.matchMedia(DESKTOP_QUERY);
+    // Layout class owned by <ViewportState> — the breakpoint literal lives
+    // there alone. Above the breakpoint the drawer renders as a static
+    // sidebar, so all open/close/observer machinery must no-op.
+    private isDesktop = () =>
+      document.documentElement.dataset.viewport === "wide";
     /** True only once the sheet has fully slid in — guards the observer's
         closed-callback from firing during the slide-in animation. */
     private isOpen = false;
@@ -100,7 +101,7 @@ const { currentPageTitle } = Astro.props;
       );
       this.observer.observe(this.sheet);
 
-      this.desktop.addEventListener("change", this.onViewportChange);
+      document.addEventListener("viewportchange", this.onViewportChange);
       this.observeFooter();
     }
 
@@ -110,13 +111,13 @@ const { currentPageTitle } = Astro.props;
       this.drawer?.removeEventListener("toggle", this.onToggle);
       this.drawer?.removeEventListener("click", this.onBackdropClick);
       this.closeBtn?.removeEventListener("click", this.close);
-      this.desktop.removeEventListener("change", this.onViewportChange);
+      document.removeEventListener("viewportchange", this.onViewportChange);
       document.removeEventListener("keydown", this.onKeydown);
     }
 
     /** Never leave the popover open when crossing into the sidebar layout. */
     private onViewportChange = () => {
-      if (this.desktop.matches && this.drawer.matches(":popover-open")) {
+      if (this.isDesktop() && this.drawer.matches(":popover-open")) {
         this.drawer.hidePopover();
       }
     };
@@ -124,7 +125,7 @@ const { currentPageTitle } = Astro.props;
     /** Fired when the popover is shown (via popovertarget). Slide the sheet
         in and apply the open-state side effects. */
     private onToggle = (event: Event) => {
-      if (this.desktop.matches) return;
+      if (this.isDesktop()) return;
       if ((event as ToggleEvent).newState !== "open") return;
       setSiblingsInert(this, true);
       document.documentElement.classList.add(SCROLL_LOCK_CLASS);
@@ -157,7 +158,7 @@ const { currentPageTitle } = Astro.props;
     private onOpened() {
       // On desktop the sheet is a permanently-visible sidebar; reacting to
       // it would steal focus on every page load.
-      if (this.desktop.matches) return;
+      if (this.isDesktop()) return;
       this.isOpen = true;
       this.sheet.focus();
     }
@@ -165,7 +166,7 @@ const { currentPageTitle } = Astro.props;
     private onClosed() {
       // Ignore desktop (static sidebar), the off-screen state during the
       // slide-in (isOpen still false), and the initial display:none on load.
-      if (this.desktop.matches || !this.isOpen) return;
+      if (this.isDesktop() || !this.isOpen) return;
       this.isOpen = false;
       if (this.drawer.matches(":popover-open")) this.drawer.hidePopover();
       setSiblingsInert(this, false);
@@ -327,52 +328,55 @@ const { currentPageTitle } = Astro.props;
 
   /* --- Desktop: sticky sidebar (drawer mechanics off) ---------------- */
 
-  @media (min-width: 800px) {
-    /* Override UA `[popover]:not(:popover-open) { display: none }`.
-       Equal specificity (0,2,0); author rule wins by order. */
-    .drawer:not(:popover-open) {
-      display: block;
-    }
+  /* Layout class owned by <ViewportState> (was `@media (min-width: 800px)`),
+     so the breakpoint literal lives in one place. The ancestor selector is
+     `:global()` (it lives on <html>, outside this component) while the child
+     classes stay scoped — nesting the whole block under `:global()` would
+     leak every rule. The ancestor attribute also outranks the UA
+     `[popover]:not(:popover-open) { display: none }`, so the first rule no
+     longer relies on source order. */
+  :global(html[data-viewport="wide"]) .drawer:not(:popover-open) {
+    display: block;
+  }
 
-    .drawer {
-      position: sticky;
-      inset: 0;
-      block-size: 100dvh;
-      inline-size: auto;
-      background: transparent;
-      overflow: visible;
-    }
+  :global(html[data-viewport="wide"]) .drawer {
+    position: sticky;
+    inset: 0;
+    block-size: 100dvh;
+    inline-size: auto;
+    background: transparent;
+    overflow: visible;
+  }
 
-    .drawer__scroller {
-      display: block;
-      block-size: 100dvh;
-      overflow: visible;
-      scroll-snap-type: none;
-    }
+  :global(html[data-viewport="wide"]) .drawer__scroller {
+    display: block;
+    block-size: 100dvh;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
 
-    .drawer__scroller::after {
-      content: none;
-    }
+  :global(html[data-viewport="wide"]) .drawer__scroller::after {
+    content: none;
+  }
 
-    .drawer__sheet {
-      display: flex;
-      align-items: center;
-      block-size: 100dvh;
-      background: transparent;
-      overflow: visible;
-    }
+  :global(html[data-viewport="wide"]) .drawer__sheet {
+    display: flex;
+    align-items: center;
+    block-size: 100dvh;
+    background: transparent;
+    overflow: visible;
+  }
 
-    .drawer__sheet :global(.nav-list) {
-      flex: 1;
-      justify-content: flex-start;
-      padding: 0;
-      min-block-size: 0;
-    }
+  :global(html[data-viewport="wide"]) .drawer__sheet :global(.nav-list) {
+    flex: 1;
+    justify-content: flex-start;
+    padding: 0;
+    min-block-size: 0;
+  }
 
-    .trigger,
-    .close,
-    .header__border {
-      display: none;
-    }
+  :global(html[data-viewport="wide"]) .trigger,
+  :global(html[data-viewport="wide"]) .close,
+  :global(html[data-viewport="wide"]) .header__border {
+    display: none;
   }
 </style>
