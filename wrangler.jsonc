@@ -1,5 +1,5 @@
 {
-  "name": "luuk-dot-network",
+  "name": "luuk-network",
   "observability": {
     "enabled": false,
     "head_sampling_rate": 1,
