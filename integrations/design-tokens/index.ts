@@ -26,9 +26,7 @@ export default function designTokens(): AstroIntegration {
                 files: [
                   {
                     destination: "tokens.css",
-                    format: "css/variables",
-                    // fluid-scale tokens are scale definitions, not output vars.
-                    filter: (token) => token.$type !== "fluid-scale",
+                    format: "css/variables"
                   },
                 ],
               },
@@ -38,9 +36,6 @@ export default function designTokens(): AstroIntegration {
             verbosity: "silent",
           }
         );
-
-        // Tokens are parsed once initialized; read the fluid config before
-        // building so the transforms can be configured with it.
         await sb.hasInitialized;
 
         sb.registerTransform(colorOklch);
