@@ -1,0 +1,39 @@
+---
+import NavList from "~/components/NavList.astro";
+import type { MenuItem } from "~/datocms/menu";
+import { useTranslations } from "~/i18n";
+
+interface Props {
+  items: MenuItem[];
+  currentPageTitle?: string;
+}
+
+const { items, currentPageTitle } = Astro.props;
+const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
+---
+
+<nav class="menu-sidebar" aria-label={t("main_navigation")}>
+  <NavList items={items} currentPageTitle={currentPageTitle} showSubList />
+</nav>
+
+<style>
+  /* Wide-viewport affordance only; the drawer replaces it below the
+     breakpoint (owned by <ViewportState>). */
+  .menu-sidebar {
+    display: none;
+  }
+
+  :global(html[data-viewport="wide"]) .menu-sidebar {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    min-block-size: 0;
+  }
+
+  .menu-sidebar :global(.nav-list) {
+    flex: 1;
+    justify-content: flex-start;
+    min-block-size: 0;
+    padding: 0;
+  }
+</style>
