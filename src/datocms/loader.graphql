@@ -1,0 +1,81 @@
+#import "~/components/Blocks/HeroBlock/HeroBlock.fragment.graphql"
+#import "~/components/Blocks/CollectionBlock/CollectionBlock.fragment.graphql"
+#import "~/components/Blocks/SectionBlock/SectionBlock.fragment.graphql"
+#import "~/components/Blocks/TitleBlock/TitleBlock.fragment.graphql"
+#import "~/components/Blocks/LinkBlock/LinkBlock.fragment.graphql"
+#import "~/components/Blocks/FeaturedBlock/FeaturedBlock.fragment.graphql"
+#import "~/components/Blocks/StoryBlock/StoryBlock.fragment.graphql"
+#import "~/datocms/responsive-image.fragment.graphql"
+
+query Loader($locale: SiteLocale, $fallbackLocales: [SiteLocale!]) {
+  allRoutes(locale: $locale, first: 100) {
+    collection
+    indexPage {
+      id
+    }
+  }
+  allPages(locale: $locale, fallbackLocales: $fallbackLocales, first: 100) {
+    _modelApiKey
+    id
+    slug
+    title
+    _seoMetaTags {
+      tag
+      attributes
+      content
+    }
+    content {
+      __typename
+      ...HeroBlock
+      ...CollectionBlock
+      ...SectionBlock
+      ...TitleBlock
+      ...LinkBlock
+      ...FeaturedBlock
+      ...StoryBlock
+    }
+  }
+  allPosts(locale: $locale, fallbackLocales: $fallbackLocales, first: 100) {
+    _modelApiKey
+    id
+    slug
+    title
+    _seoMetaTags {
+      tag
+      attributes
+      content
+    }
+  }
+  allProjects(locale: $locale, fallbackLocales: $fallbackLocales, first: 100) {
+    _modelApiKey
+    id
+    slug
+    _seoMetaTags {
+      tag
+      attributes
+      content
+    }
+    title
+    description
+    href
+    startDate
+    endDate
+    clientName
+    cover {
+      responsiveImage(imgixParams: { ar: "16:9", fit: crop, auto: [format] }) {
+        ...ResponsiveImage
+      }
+    }
+    clientLogo {
+      responsiveImage(imgixParams: { w: 400, h: 400, fit: crop, auto: [format] }) {
+        ...ResponsiveImage
+      }
+    }
+    technologies {
+      name
+    }
+    content {
+      value
+    }
+  }
+}
