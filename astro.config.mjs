@@ -1,28 +1,51 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 import cloudflare from "@astrojs/cloudflare";
-import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
+import graphql from "@rollup/plugin-graphql";
+import site from "./integrations/site";
+import translations from "./integrations/translations";
+import codegen from "./integrations/codegen";
 import designTokens from "./integrations/design-tokens";
-import iconSprite from "./integrations/icon-sprite";
+import icons from "./integrations/icons";
+import codegenConfig from "./codegen";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://luuk.network",
-  adapter: cloudflare({
-    imageService: "compile",
-  }),
-  build: {
-    inlineStylesheets: "always",
-  },
+  adapter: cloudflare(),
   integrations: [
+    codegen(codegenConfig),
+    site(),
+    translations(),
+    icons(),
     designTokens(),
-    iconSprite(),
-    mdx(),
     sitemap(),
   ],
+  security: {
+    csp: true,
+  },
+  markdown: {
+    syntaxHighlight: false,
+  },
   devToolbar: {
     enabled: false,
+  },
+  prefetch: true,
+  vite: {
+    plugins: [graphql()],
+  },
+  env: {
+    schema: {
+      DATOCMS_CMA_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      DATOCMS_CDA_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+    },
   },
 });

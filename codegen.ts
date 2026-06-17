@@ -1,0 +1,42 @@
+import type { CodegenConfig } from "@graphql-codegen/cli";
+import { loadEnv } from "vite";
+
+const { DATOCMS_CDA_TOKEN } = loadEnv(
+  process.env.NODE_ENV ?? "development",
+  process.cwd(),
+  ""
+);
+
+const config: CodegenConfig = {
+  schema: [
+    {
+      "https://graphql.datocms.com/": {
+        headers: { Authorization: `Bearer ${DATOCMS_CDA_TOKEN}` },
+      },
+    },
+  ],
+  documents: ["**/*.graphql"],
+  generates: {
+    ".generated/datocms.ts": {
+      plugins: ["typescript", "typescript-operations"],
+      config: {
+        dedupeFragments: true,
+        strictScalars: true,
+        scalars: {
+          BooleanType: "boolean",
+          CustomData: "Record<string, unknown>",
+          Date: "string",
+          DateTime: "string",
+          FloatType: "number",
+          IntType: "number",
+          ItemId: "string",
+          JsonField: "unknown",
+          MetaTagAttributes: "Record<string, string>",
+          UploadId: "string",
+        },
+      },
+    },
+  },
+};
+
+export default config;
