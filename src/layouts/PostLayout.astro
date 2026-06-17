@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Base from "~/layouts/Base.astro";
+
+type Props = {
+  entry: CollectionEntry<"pages">;
+};
+
+const { entry } = Astro.props;
+const { locale, slug } = entry.data;
+
+// TODO: fetch post body by id + locale, render structured text
+---
+
+<Base
+  locale={locale}
+  title={entry.data.title ?? undefined}
+  seoMetaTags={entry.data._seoMetaTags}
+  translations={entry.data.translations}
+>
+  <article>
+    <h1>{slug}</h1>
+  </article>
+</Base>

@@ -1,20 +1,8 @@
 import { defineCollection } from "astro:content";
-import { glob } from "astro/loaders";
-import { z } from "astro/zod";
+import { loader } from "./datocms/loader";
 
-const projects = defineCollection({
-  loader: glob({ base: "./src/content/projects", pattern: "**/*.mdx" }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      stack: z.array(z.string()),
-      href: z.string().url().optional(),
-      startDate: z.coerce.date(),
-      endDate: z.coerce.date().optional(),
-      subject: image().optional(),
-      cover: image().optional(),
-    }),
+const pages = defineCollection({
+  loader: loader()
 });
 
-export const collections = { projects };
+export const collections = { pages };

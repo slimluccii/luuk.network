@@ -1,0 +1,22 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Base from "~/layouts/Base.astro";
+import Blocks from "~/components/Blocks/Blocks.astro";
+
+type Props = {
+  entry: CollectionEntry<"pages">;
+};
+
+const { entry } = Astro.props;
+const { locale } = entry.data;
+const blocks = (entry.data as { content?: Array<Record<string, any>> }).content ?? [];
+---
+
+<Base
+  locale={locale}
+  title={entry.data.title ?? undefined}
+  seoMetaTags={entry.data._seoMetaTags}
+  translations={entry.data.translations}
+>
+  <Blocks blocks={blocks} />
+</Base>
