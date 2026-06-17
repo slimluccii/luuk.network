@@ -1,22 +1,25 @@
 ---
+import type { ComponentProps } from "astro/types";
 import Base from "~/layouts/Base.astro";
 import PageHeader from "~/components/PageHeader.astro";
 import PageHeaderEyebrow from "~/components/PageHeaderEyebrow.astro";
+import { useTranslations } from "~/i18n";
 
-const seo = {
-  title: "Server error",
-  description: "An unexpected error occurred.",
-};
+const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
+
+const seoMetaTags: NonNullable<ComponentProps<typeof Base>["seoMetaTags"]> = [
+  { tag: "title", content: t("server_error") },
+];
 ---
 
-<Base seo={seo}>
+<Base title={t("server_error")} seoMetaTags={seoMetaTags}>
   <article class="error-state">
     <PageHeader>
       <PageHeaderEyebrow>500</PageHeaderEyebrow>
-      <h1 class="error-state__title">Server error</h1>
+      <h1 class="error-state__title">{t("server_error")}</h1>
     </PageHeader>
     <div class="error-state__body">
-      <p>Something went wrong on our end. Try again in a moment.</p>
+      <p>{t("server_error_body")}</p>
     </div>
   </article>
 </Base>

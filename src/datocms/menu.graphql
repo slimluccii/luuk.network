@@ -1,0 +1,11 @@
+query Menu($locale: SiteLocale) {
+  menu(locale: $locale) {
+    items {
+      id
+      title
+      page {
+        id
+      }
+    }
+  }
+}

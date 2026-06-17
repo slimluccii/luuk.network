@@ -1,0 +1,71 @@
+---
+import type { CollectionEntry } from "astro:content";
+import type { LoaderQuery } from "~/generated/datocms";
+import type { CdaStructuredTextValue } from "@datocms/astro";
+import Base from "~/layouts/Base.astro";
+import Button from "~/components/Button.astro";
+import Hero from "~/components/Hero.astro";
+import HeroCover from "~/components/HeroCover.astro";
+import HeroSubject from "~/components/HeroSubject.astro";
+import HeroTitle from "~/components/HeroTitle.astro";
+import HeroMeta from "~/components/HeroMeta.astro";
+import StructuredText from "~/components/StructuredText.astro";
+import { useTranslations } from "~/i18n";
+
+type Props = {
+  entry: CollectionEntry<"pages">;
+};
+
+type ProjectData = LoaderQuery["allProjects"][number] & {
+  locale: string;
+  translations: Array<{ locale: string; path: string }>;
+};
+
+const { entry } = Astro.props;
+const data = entry.data as unknown as ProjectData;
+
+const { t, d } = useTranslations(data.locale as "en" | "nl");
+const dateFormat: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" };
+const period = data.startDate
+  ? `${d(data.startDate, dateFormat)} – ${data.endDate ? d(data.endDate, dateFormat) : t("present")}`
+  : null;
+const stack = data.technologies
+  .map((tech) => tech.name)
+  .filter((name): name is string => name != null)
+  .join(", ");
+---
+
+<Base
+  locale={data.locale}
+  title={data.title ?? undefined}
+  seoMetaTags={data._seoMetaTags}
+  translations={data.translations}
+>
+  <article class="project">
+    <Hero>
+      {
+        data.cover?.responsiveImage && (
+          <HeroCover slot="cover" src={data.cover.responsiveImage} />
+        )
+      }
+      {
+        data.clientLogo?.responsiveImage && (
+          <HeroSubject slot="subject" src={data.clientLogo.responsiveImage} />
+        )
+      }
+      {
+        data.href && (
+          <Button slot="action" as="a" variant="secondary" href={data.href}>
+            {t("visit_site")}
+          </Button>
+        )
+      }
+      {period && <HeroMeta>{period}</HeroMeta>}
+      <HeroTitle>{data.title}</HeroTitle>
+      {data.description && <p>{data.description}</p>}
+      {stack && <HeroMeta>{stack}</HeroMeta>}
+    </Hero>
+
+    <StructuredText data={data.content as CdaStructuredTextValue} />
+  </article>
+</Base>

@@ -7,22 +7,28 @@ type Props<Tag extends "button" | "a" = "button"> = Polymorphic<{
   as: Tag;
   variant?: "primary" | "secondary" | "transparent" | "link";
   icon?: IconName;
+  iconOnly?: boolean;
 }>;
 const {
   as: Tag = "button",
   variant,
   icon,
+  iconOnly,
   class: className,
   ...props
 } = Astro.props;
 ---
 
 <Tag
-  class:list={["button", { [`button--${variant}`]: variant }, className]}
+  class:list={[
+    "button",
+    { [`button--${variant}`]: variant, "button--icon-only": iconOnly },
+    className,
+  ]}
   {...props}
 >
   {icon && <Icon class="button__icon" name={icon} />}
-  <span class="button__label">
+  <span class:list={["button__label", { "sr-only": iconOnly }]}>
     <slot />
   </span>
 </Tag>
@@ -44,36 +50,47 @@ const {
     color: #000;
     font-weight: 500;
     text-decoration: none;
-  }
 
-  .button:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-  }
-
-  @media (hover: hover) {
-    .button:hover {
+    &:hover {
       transform: translateY(-2px) scale(1.02);
     }
-  }
 
-  .button:active {
-    transform: translateY(0) scale(0.96);
-    transition-duration: 0.05s;
-  }
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
 
-  @media (prefers-reduced-motion: reduce) {
-    .button {
+    &:active {
+      transform: translateY(0) scale(0.96);
+      transition-duration: 0.05s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
       transition: none;
+
+      &:hover,
+      &:active {
+        transform: none;
+      }
     }
-    .button:hover,
-    .button:active {
-      transform: none;
-    }
+  }
+
+  .button--icon-only {
+    padding: var(--spacing-size-xs);
   }
 
   .button--secondary {
     border-color: var(--color-brand-secondary);
     background-color: var(--color-brand-secondary);
+  }
+
+  .button--transparent {
+    border-color: transparent;
+    background-color: transparent;
+
+    &:hover {
+      border-color: var(--color-brand-neutral);
+      background-color: var(--color-brand-neutral);
+    }
   }
 </style>

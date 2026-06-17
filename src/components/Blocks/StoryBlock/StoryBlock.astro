@@ -1,0 +1,14 @@
+---
+type Props = {
+  block: {
+    title?: string;
+  };
+};
+
+const { block } = Astro.props;
+// TODO: render `content` (structured_text)
+---
+
+<section class="story-block">
+  {block.title && <h2>{block.title}</h2>}
+</section>
