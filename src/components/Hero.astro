@@ -1,13 +1,5 @@
 ---
-import { Picture } from "astro:assets";
-import type { ImageMetadata } from "astro";
 import Border from "~/components/Border.astro";
-
-interface Props {
-  subject?: ImageMetadata;
-}
-
-const { subject } = Astro.props;
 ---
 
 <Border class="hero">
@@ -16,18 +8,7 @@ const { subject } = Astro.props;
   </div>
   <div class="hero__content">
     <div class="hero-content__top">
-      {
-        subject && (
-          <Picture
-            class="hero__image"
-            formats={["avif", "webp"]}
-            widths={[200, 300, 400, 600]}
-            sizes="(min-width: 600px) 200px, (min-width: 400px) 150px, 100px"
-            src={subject}
-            alt=""
-          />
-        )
-      }
+      <slot name="subject" />
       <slot name="action" />
     </div>
 
@@ -43,7 +24,7 @@ const { subject } = Astro.props;
     aspect-ratio: 16 / 9;
     overflow: hidden;
 
-    &:has(.hero-cover--image)::after {
+    &:has(picture)::after {
       position: absolute;
       inset: 0;
       background-color: rgba(0, 0, 0, 0.25);
@@ -79,28 +60,6 @@ const { subject } = Astro.props;
 </style>
 
 <style is:global>
-  .hero__image {
-    position: absolute;
-    inset-block-end: 0px;
-    inset-inline-start: 0px;
-    inline-size: 100px;
-    block-size: 100px;
-    object-fit: cover;
-    box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.12),
-      0 12px 24px -10px rgba(0, 0, 0, 0.25);
-
-    @media (min-width: 400px) {
-      inline-size: 150px;
-      block-size: 150px;
-    }
-
-    @media (min-width: 600px) {
-      inline-size: 200px;
-      block-size: 200px;
-    }
-  }
-
   .hero__title {
     margin: 0;
     font-weight: 350;

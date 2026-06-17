@@ -3,6 +3,15 @@ import Border from "~/components/Border.astro";
 import Icon from "~/components/Icon.astro";
 import Logo from "~/components/Logo.astro";
 import NavList from "~/components/NavList.astro";
+import type { MenuItem } from "~/datocms/menu";
+import { useTranslations } from "~/i18n";
+
+interface Props {
+  items: MenuItem[];
+}
+
+const { items } = Astro.props;
+const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
 
 const socialLinks = [
   { href: "https://github.com/slimluccii", icon: "github", title: "GitHub" },
@@ -22,17 +31,14 @@ const socialLinks = [
 
 <Border class="footer__border" color="secondary">
   <footer class="footer">
-    <h2 class="sr-only">Site footer</h2>
+    <h2 class="sr-only">{t("site_footer")}</h2>
 
     <div class="footer__intro">
       <div class="footer__logo">
         <Logo size="large" />
       </div>
 
-      <p class="footer__about">
-        I’m Luuk, a front-end developer from the Netherlands, dedicated to
-        building fast, accessible, and inclusive web experiences.
-      </p>
+      <p class="footer__about">{t("footer_about")}</p>
 
       <nav
         id="footer-nav"
@@ -40,8 +46,8 @@ const socialLinks = [
         aria-labelledby="footer-nav-heading"
         data-footer-nav
       >
-        <h3 id="footer-nav-heading" class="sr-only">Pages</h3>
-        <NavList markActive={false} />
+        <h3 id="footer-nav-heading" class="sr-only">{t("pages")}</h3>
+        <NavList items={items} markActive={false} />
       </nav>
     </div>
 

@@ -1,44 +1,25 @@
 ---
+import type { ComponentProps } from "astro/types";
 import Base from "~/layouts/Base.astro";
 import PageHeader from "~/components/PageHeader.astro";
 import PageHeaderEyebrow from "~/components/PageHeaderEyebrow.astro";
-import RouteSuggestions from "~/components/RouteSuggestions.astro";
+import { useTranslations } from "~/i18n";
 
-const seo = {
-  title: "Page not found",
-  description: "The page you're looking for doesn't exist.",
-};
+const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
+
+const seoMetaTags: NonNullable<ComponentProps<typeof Base>["seoMetaTags"]> = [
+  { tag: "title", content: t("page_not_found") },
+];
 ---
 
-<Base seo={seo}>
+<Base title={t("page_not_found")} seoMetaTags={seoMetaTags}>
   <article class="error-state">
     <PageHeader>
       <PageHeaderEyebrow>404</PageHeaderEyebrow>
-      <h1 class="error-state__title">Page not found</h1>
+      <h1 class="error-state__title">{t("page_not_found")}</h1>
     </PageHeader>
     <div class="error-state__body">
-      <p>The page you're looking for doesn't exist.</p>
-      <RouteSuggestions server:defer>
-        <div
-          slot="fallback"
-          class="route-suggestions"
-          aria-busy="true"
-          aria-live="polite"
-        >
-          <p class="route-suggestions__label">Looking for similar pages...</p>
-          <ol class="route-suggestions__list" aria-hidden="true">
-            {[0, 1, 2, 3, 4].map(() => (
-              <li>
-                <div class="route-suggestions__item">
-                  <span class="route-suggestions__skeleton-item route-suggestions__skeleton-item--title" />
-                  <span class="route-suggestions__skeleton-item route-suggestions__skeleton-item--description" />
-                  <span class="route-suggestions__skeleton-item route-suggestions__skeleton-item--path" />
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </RouteSuggestions>
+      <p>{t("page_not_found_body")}</p>
     </div>
   </article>
 </Base>
