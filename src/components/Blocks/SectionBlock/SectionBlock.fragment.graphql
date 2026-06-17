@@ -1,0 +1,6 @@
+fragment SectionBlock on SectionBlockRecord {
+  title
+  content {
+    value
+  }
+}

@@ -1,0 +1,22 @@
+fragment FeaturedBlock on FeaturedBlockRecord {
+  title
+  pages {
+    ... on ProjectRecord {
+      id
+    }
+    ... on PageRecord {
+      id
+    }
+  }
+  link {
+    ... on LinkBlockRecord {
+      label
+      icon {
+        name
+      }
+      page {
+        id
+      }
+    }
+  }
+}

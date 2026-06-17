@@ -1,0 +1,97 @@
+---
+import type { ComponentProps } from "astro/types";
+import { getEntry } from "astro:content";
+import { Image } from "@datocms/astro";
+import type { FeaturedBlockFragment } from "~/generated/datocms";
+import type { IconName } from "~/generated/icon-sprite";
+import Section from "~/components/Section.astro";
+import SectionHeader from "~/components/SectionHeader.astro";
+import SectionTitle from "~/components/SectionTitle.astro";
+import SectionActions from "~/components/SectionActions.astro";
+import Carousel from "~/components/Carousel.astro";
+import CarouselItem from "~/components/CarouselItem.astro";
+import Button from "~/components/Button.astro";
+import { useTranslations } from "~/i18n";
+
+type Props = {
+  block: FeaturedBlockFragment;
+};
+
+const { block } = Astro.props;
+
+const locale = (Astro.currentLocale ?? "en") as "en" | "nl";
+const { t, d } = useTranslations(locale);
+const dateFormat: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" };
+
+type ItemData = {
+  path: string;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  cover?: { responsiveImage?: ComponentProps<typeof Image>["data"] | null } | null;
+};
+
+const resolved = await Promise.all(
+  block.pages.map((page) => getEntry("pages", `${locale}/${page.id}`))
+);
+const items = resolved
+  .filter((entry) => entry !== undefined)
+  .map((entry) => entry.data as ItemData);
+
+const link = block.link;
+const linkPage = link?.page
+  ? await getEntry("pages", `${locale}/${link.page.id}`)
+  : undefined;
+const seeAll = linkPage
+  ? {
+      label: link?.label ?? "",
+      href: (linkPage.data as ItemData).path,
+      icon: link?.icon?.name,
+    }
+  : null;
+---
+
+<Section>
+  {
+    block.title && (
+      <SectionHeader>
+        <SectionTitle>{block.title}</SectionTitle>
+      </SectionHeader>
+    )
+  }
+
+  <Carousel>
+    {
+      items.map((data) => (
+        <CarouselItem
+          href={data.path}
+          title={data.title ?? data.slug}
+          description={data.description ?? ""}
+          cover={data.cover?.responsiveImage ?? undefined}
+          meta={
+            data.startDate
+              ? `${d(data.startDate, dateFormat)} – ${data.endDate ? d(data.endDate, dateFormat) : t("present")}`
+              : undefined
+          }
+          linkLabel={t("read_more")}
+        />
+      ))
+    }
+  </Carousel>
+
+  {
+    seeAll && (
+      <SectionActions>
+        <Button
+          as="a"
+          icon={seeAll.icon ? (seeAll.icon as IconName) : undefined}
+          href={seeAll.href}
+        >
+          {seeAll.label}
+        </Button>
+      </SectionActions>
+    )
+  }
+</Section>

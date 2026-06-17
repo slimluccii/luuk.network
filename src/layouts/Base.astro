@@ -1,17 +1,19 @@
 ---
-import type { ImageMetadata } from "astro";
-import { getImage } from "astro:assets";
+import type { ComponentProps } from "astro/types";
+import { i18n } from "astro:config/client";
+import { Seo } from "@datocms/astro";
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
 import EnableJavascript from "~/components/EnableJavascript.astro";
 import Footer from "~/components/Footer.astro";
 import IconSprite from "~/components/IconSprite.astro";
+import LocaleSelector from "~/components/LocaleSelector.astro";
 import Logo from "~/components/Logo.astro";
 import Menu from "~/components/Menu.astro";
 import SetColorScheme from "~/components/SetColorScheme.astro";
 import ViewportState from "~/components/ViewportState.astro";
-
-import socialPreview from "~/images/social-preview.png";
+import { getMenuItems } from "~/datocms/menu";
+import { useTranslations } from "~/i18n";
 
 import "~/generated/tokens.css";
 import "~/styles/a11y.css";
@@ -19,34 +21,28 @@ import "~/styles/reset.css";
 import "~/styles/typography.css";
 
 type Props = {
-  seo: {
-    title: string;
-    description: string;
-    image?: ImageMetadata;
-  };
+  locale?: string;
+  title?: string;
+  seoMetaTags?: ComponentProps<typeof Seo>["data"];
+  translations?: Array<{ locale: string; path: string }>;
 };
 
-const { seo } = Astro.props;
+const {
+  locale = i18n?.defaultLocale ?? "en",
+  title,
+  seoMetaTags = [],
+  translations = [],
+} = Astro.props;
+const xDefault = translations.find((t) => t.locale === i18n?.defaultLocale);
 const { origin, pathname } = Astro.url;
 
 const canonical = `${origin}${pathname}`;
 
-const previewImageUrl = new URL(
-  (
-    await getImage({
-      src: seo.image ?? socialPreview,
-      format: "jpeg",
-      width: 1200,
-      height: 630,
-    })
-  ).src,
-  origin,
-).toString();
-
-const fullTitle = `${seo.title} • Luuk Brauckmann`;
+const menuItems = await getMenuItems(locale);
+const { t } = useTranslations(locale as "en" | "nl");
 ---
 
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -74,34 +70,40 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
       fetchpriority="high"
       crossorigin
     />
-    <title>{fullTitle}</title>
-    <meta name="description" content={seo.description} />
+    <Seo data={seoMetaTags} />
     <link rel="canonical" href={canonical} />
-
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Luuk Brauckmann" />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={seo.description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={previewImageUrl} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={seo.description} />
-    <meta name="twitter:image" content={previewImageUrl} />
+    {
+      translations.map(({ locale, path }) => (
+        <link
+          rel="alternate"
+          hreflang={locale}
+          href={new URL(path, Astro.site)}
+        />
+      ))
+    }
+    {
+      xDefault && (
+        <link
+          rel="alternate"
+          hreflang="x-default"
+          href={new URL(xDefault.path, Astro.site)}
+        />
+      )
+    }
     <slot name="head" />
   </head>
   <body>
     <Button as="a" class="kb-only skip-link" href="#main">
-      Skip to main content
+      {t("skip_to_main_content")}
     </Button>
     <Button as="a" class="kb-only skip-link" href="#navigation">
-      Skip to navigation
+      {t("skip_to_navigation")}
     </Button>
     <aside id="navigation" class="navigation" tabindex="-1">
-      <Menu currentPageTitle={seo.title} />
+      <Menu items={menuItems} currentPageTitle={title} />
+      {translations.length > 0 && (
+        <LocaleSelector current={locale} translations={translations} />
+      )}
     </aside>
     <div class="content">
       <Border class="content__border">
@@ -118,7 +120,7 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
           <slot />
         </main>
 
-        <Footer />
+        <Footer items={menuItems} />
       </Border>
     </div>
 
@@ -189,6 +191,17 @@ const fullTitle = `${seo.title} • Luuk Brauckmann`;
 
   .navigation {
     grid-area: left;
+  }
+
+  /* On wide the whole left column sticks for the full viewport height, so the
+     locale selector can pin to the bottom and stay in view while scrolling.
+     (Was on <MenuSidebar>, but the selector lives outside it.) */
+  :global(html[data-viewport="wide"]) .navigation {
+    display: flex;
+    position: sticky;
+    flex-direction: column;
+    inset-block-start: 0;
+    block-size: 100dvh;
   }
 
   .header {

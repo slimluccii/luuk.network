@@ -1,0 +1,51 @@
+---
+import Button from "~/components/Button.astro";
+import { useTranslations } from "~/i18n";
+
+type Props = {
+  current: string;
+  translations: Array<{ locale: string; path: string }>;
+};
+
+const { current, translations } = Astro.props;
+const others = translations
+  .filter((translation) => translation.locale !== current)
+  .sort((a, b) => a.locale.localeCompare(b.locale));
+
+// Endonym (the language's own name), so each option reads naturally to a
+// speaker of that language: "English", "Nederlands".
+const languageName = (locale: string) =>
+  new Intl.DisplayNames([locale], { type: "language" }).of(locale) ??
+  locale.toUpperCase();
+
+const { t } = useTranslations(current as "en" | "nl");
+---
+
+<nav class="locale-selector" aria-label={t("language")}>
+  <ul>
+    {
+      others.map(({ locale, path }) => (
+        <li>
+          <Button
+            as="a"
+            variant="transparent"
+            href={path}
+            icon={locale as "en" | "nl"}
+            iconOnly
+            hreflang={locale}
+            aria-label={languageName(locale)}
+          />
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .locale-selector ul {
+    display: flex;
+    list-style-type: "";
+    margin: 0;
+    padding: 0;
+  }
+</style>

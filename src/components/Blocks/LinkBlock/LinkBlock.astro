@@ -1,0 +1,12 @@
+---
+type Props = {
+  block: {
+    label?: string;
+  };
+};
+
+const { block } = Astro.props;
+// TODO: resolve `page` (link) + `icon` (link) into a real anchor
+---
+
+<a class="link-block" href="#">{block.label}</a>
