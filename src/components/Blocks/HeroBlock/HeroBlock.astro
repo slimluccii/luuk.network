@@ -1,0 +1,43 @@
+---
+import type { HeroBlockFragment } from "~/generated/datocms";
+import type { IconName } from "~/generated/icon-sprite";
+import Hero from "~/components/Hero.astro";
+import HeroCover from "~/components/HeroCover.astro";
+import HeroSubject from "~/components/HeroSubject.astro";
+import HeroTitle from "~/components/HeroTitle.astro";
+import Button from "~/components/Button.astro";
+
+type Props = {
+  block: HeroBlockFragment;
+};
+
+const { block } = Astro.props;
+---
+
+<Hero>
+  {
+    block.coverImage?.responsiveImage && (
+      <HeroCover slot="cover" src={block.coverImage.responsiveImage} />
+    )
+  }
+  {
+    block.subjectImage?.responsiveImage && (
+      <HeroSubject slot="subject" src={block.subjectImage.responsiveImage} />
+    )
+  }
+  {
+    block.action && (
+      <Button
+        slot="action"
+        as="a"
+        variant="secondary"
+        icon={block.action.icon ? (block.action.icon as IconName) : undefined}
+        href={block.action.url}
+      >
+        {block.action.label}
+      </Button>
+    )
+  }
+  <HeroTitle>{block.title}</HeroTitle>
+  <p>{block.description}</p>
+</Hero>

@@ -1,0 +1,24 @@
+---
+type Props = {
+  blocks: Array<Record<string, any>>;
+};
+
+const { blocks } = Astro.props;
+---
+
+{
+  blocks.map(async (block) => {
+    const blockName = block.__typename.replace("Record", "");
+
+    try {
+      const Block = (await import(`./${blockName}/${blockName}.astro`)).default;
+      return <Block block={block} />;
+    } catch (error) {
+      return (
+        <script is:inline>
+          console.error(`Error loading block ${blockName}: ${error}`);
+        </script>
+      );
+    }
+  })
+}

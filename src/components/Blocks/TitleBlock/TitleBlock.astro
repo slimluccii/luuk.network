@@ -1,0 +1,13 @@
+---
+type Props = {
+  block: {
+    title?: string;
+    level?: number;
+  };
+};
+
+const { block } = Astro.props;
+const Tag = `h${block.level ?? 2}` as `h${1 | 2 | 3 | 4 | 5 | 6}`;
+---
+
+<Tag class="title-block">{block.title}</Tag>

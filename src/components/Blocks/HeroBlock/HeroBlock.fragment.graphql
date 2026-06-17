@@ -1,0 +1,23 @@
+#import "~/datocms/responsive-image.fragment.graphql"
+
+fragment HeroBlock on HeroBlockRecord {
+  title
+  description
+  action {
+    ... on ButtonRecord {
+      label
+      url
+      icon
+    }
+  }
+  coverImage {
+    responsiveImage(imgixParams: { ar: "16:9", fit: crop, auto: [format] }) {
+      ...ResponsiveImage
+    }
+  }
+  subjectImage {
+    responsiveImage(imgixParams: { w: 400, h: 400, fit: crop, auto: [format] }) {
+      ...ResponsiveImage
+    }
+  }
+}
