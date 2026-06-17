@@ -1,0 +1,31 @@
+---
+import type { SectionBlockFragment } from "~/generated/datocms";
+import { StructuredText, type CdaStructuredTextValue } from "@datocms/astro";
+import Section from "~/components/Section.astro";
+import SectionHeader from "~/components/SectionHeader.astro";
+import SectionTitle from "~/components/SectionTitle.astro";
+import SectionContent from "~/components/SectionContent.astro";
+
+type Props = {
+  block: SectionBlockFragment;
+};
+
+const { block } = Astro.props;
+---
+
+<Section>
+  {
+    block.title && (
+      <SectionHeader>
+        <SectionTitle>{block.title}</SectionTitle>
+      </SectionHeader>
+    )
+  }
+  {
+    block.content && (
+      <SectionContent>
+        <StructuredText data={block.content as CdaStructuredTextValue} />
+      </SectionContent>
+    )
+  }
+</Section>

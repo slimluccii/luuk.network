@@ -1,0 +1,57 @@
+---
+import type { ComponentProps } from "astro/types";
+import { StructuredText as DatocmsStructuredText } from "@datocms/astro";
+import Prose from "~/components/Prose.astro";
+
+type Props = ComponentProps<typeof DatocmsStructuredText>;
+---
+
+<div class="structured-text">
+  <DatocmsStructuredText {...Astro.props} />
+</div>
+
+<style>
+  .structured-text {
+    padding-block: var(--spacing-size-xxl);
+  }
+
+  .structured-text > :global(*) {
+    margin-block: 0;
+    padding-inline: var(--spacing-size-l);
+  }
+
+  .structured-text > :global(* + *) {
+    margin-block-start: var(--spacing-size-m);
+  }
+
+  .structured-text > :global(* + :is(h2, h3)) {
+    margin-block-start: var(--spacing-size-xl);
+  }
+
+  .structured-text > :global(:is(h2, h3) + *) {
+    margin-block-start: var(--spacing-size-l);
+  }
+
+  .structured-text :global(:is(ul, ol)) {
+    padding-inline-start: var(--spacing-size-m);
+  }
+
+  .structured-text :global(li + li) {
+    margin-block-start: var(--spacing-size-s);
+  }
+
+  .structured-text :global(blockquote) {
+    margin-inline-start: var(--spacing-size-l);
+    border-inline-start: 2px solid var(--color-brand-accent);
+    padding-inline-start: var(--spacing-size-m);
+    font-style: italic;
+  }
+
+  .structured-text :global(blockquote > *) {
+    opacity: var(--opacity-muted);
+  }
+
+  .structured-text :global(blockquote > * + *) {
+    margin-block-start: var(--spacing-size-m);
+  }
+</style>

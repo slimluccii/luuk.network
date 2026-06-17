@@ -1,0 +1,56 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionBlockFragment } from "~/generated/datocms";
+import Section from "~/components/Section.astro";
+import EntryList from "~/components/EntryList.astro";
+import EmptyState from "~/components/EmptyState.astro";
+import { useTranslations } from "~/i18n";
+
+type Props = {
+  block: CollectionBlockFragment;
+};
+
+const { block } = Astro.props;
+
+const locale = (Astro.currentLocale ?? "en") as "en" | "nl";
+const { t, d } = useTranslations(locale);
+const dateFormat: Intl.DateTimeFormatOptions = { month: "long", year: "numeric" };
+
+type ItemData = {
+  _modelApiKey: string;
+  locale: string;
+  path: string;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+};
+
+const items = (await getCollection("pages"))
+  .map((entry) => entry.data as ItemData)
+  .filter((data) => data.locale === locale && data._modelApiKey === block.name)
+  .sort((a, b) => (b.startDate ?? "").localeCompare(a.startDate ?? ""));
+
+const entries = items.map((data) => ({
+  href: data.path,
+  title: data.title ?? data.slug,
+  description: data.description ?? undefined,
+  meta: data.startDate
+    ? `${d(data.startDate, dateFormat)} – ${data.endDate ? d(data.endDate, dateFormat) : t("present")}`
+    : undefined,
+  linkLabel: t("read_more"),
+}));
+---
+
+<Section>
+  {
+    entries.length > 0 ? (
+      <EntryList entries={entries} headingLevel={3} />
+    ) : (
+      <EmptyState>
+        <p>{t("collection_empty")}</p>
+      </EmptyState>
+    )
+  }
+</Section>
