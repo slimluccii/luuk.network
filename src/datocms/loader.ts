@@ -28,11 +28,15 @@ export function loader() {
 
       const entriesPerLocale = await Promise.all(
         locales.map(async (locale) => {
-          const { allRoutes, allPages, allPosts, allProjects } =
+          const { _site, allRoutes, allPages, allPosts, allProjects } =
             (await executeQuery(query, {
               locale,
               fallbackLocales: [defaultLocale],
             })) as LoaderQuery;
+
+          // Global favicon tags, prepended to every page's SEO meta tags so
+          // the page <Seo> renders them in one pass.
+          const favicon = _site.faviconMetaTags;
 
           const pageById = new Map<string, RoutablePage>(
             allPages.map((p) => [p.id, p])
@@ -60,7 +64,12 @@ export function loader() {
             if (page.slug == null) continue;
             entries.push({
               id: `${locale}/${page.id}`,
-              data: { ...page, locale, path: toUrl(prefixFor(page)) },
+              data: {
+                ...page,
+                locale,
+                path: toUrl(prefixFor(page)),
+                _seoMetaTags: [...favicon, ...page._seoMetaTags],
+              },
             });
           }
 
@@ -81,6 +90,7 @@ export function loader() {
                 ...record,
                 locale,
                 path: toUrl(`${prefixFor(indexPage)}/${record.slug}`),
+                _seoMetaTags: [...favicon, ...record._seoMetaTags],
               },
             });
           }

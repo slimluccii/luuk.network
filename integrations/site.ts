@@ -1,5 +1,5 @@
 import type { AstroIntegration } from "astro";
-import { executeQuery } from "@datocms/cda-client";
+import { buildClient } from "@datocms/cma-client";
 import { loadEnv } from "vite";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -10,45 +10,19 @@ const { DATOCMS_TOKEN } = loadEnv(
   ""
 );
 
-const query = `query Site {
-  _site {
-    locales
-    faviconMetaTags {
-      tag
-      attributes
-      content
-    }
-  }
-}`;
-
-type MetaTag = {
-  tag: string;
-  attributes: Record<string, string> | null;
-  content: string | null;
-};
-
-type SiteResult = {
-  _site: {
-    locales: string[];
-    faviconMetaTags: MetaTag[];
-  };
-};
+const client = buildClient({ apiToken: DATOCMS_TOKEN });
 
 export default function site(): AstroIntegration {
   return {
     name: "site",
     hooks: {
       "astro:config:setup": async ({ config, updateConfig, logger }) => {
-        const { _site } = await executeQuery<SiteResult>(query, {
-          token: DATOCMS_TOKEN,
-        });
+        const site = await client.site.find();
 
-        // Set i18n here (not from a generated file imported by astro.config),
-        // so a clean checkout without `.generated/` can still boot.
         updateConfig({
           i18n: {
-            defaultLocale: _site.locales[0],
-            locales: _site.locales,
+            defaultLocale: site.locales[0],
+            locales: site.locales,
             routing: {
               prefixDefaultLocale: true,
               redirectToDefaultLocale: true,
@@ -58,10 +32,11 @@ export default function site(): AstroIntegration {
         });
 
         const outputDir = join(config.root.pathname, ".generated");
+
         await mkdir(outputDir, { recursive: true });
         await writeFile(
-          join(outputDir, "favicon.json"),
-          JSON.stringify(_site.faviconMetaTags, null, 2)
+          join(outputDir, "site.json"),
+          JSON.stringify(site, null, 2)
         );
 
         logger.info("Generated");
