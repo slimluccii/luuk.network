@@ -224,18 +224,58 @@ const { t } = useTranslations(locale as "en" | "nl");
     block-size: 100dvh;
   }
 
-  /* In-flow header in its own grid row, so content sits below it rather than
-     scrolling under a sticky overlay. */
+  /* In its own grid row so it reserves space (content sits below it, no
+     overlap at rest), but sticky so it pins to the top on scroll. The
+     scroll-state container query reveals the divider + gradient once stuck. */
   .header {
     display: block;
+    position: sticky;
+    container-type: scroll-state;
     grid-area: header;
+    align-self: start;
+    z-index: 999;
+    inset-block-start: -1px;
     border-block-end-color: transparent;
+
+    &::after {
+      position: absolute;
+      transform: translateY(100%);
+      opacity: 0;
+      transition: opacity ease;
+      transition-duration: var(--motion-transition);
+      inset-block-end: 0px;
+      inset-inline: 0px;
+      background: linear-gradient(
+        to bottom,
+        var(--color-surface-base),
+        transparent
+      );
+      height: var(--spacing-size-l);
+      pointer-events: none;
+      content: "";
+    }
   }
 
   .header header {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition:
+      background-color ease,
+      border-block-end-color ease;
+    transition-duration: var(--motion-transition);
+    border-block-end: 1px solid transparent;
     padding: var(--spacing-size-xxs);
+  }
+
+  @container scroll-state(stuck: top) {
+    .header::after {
+      opacity: 1;
+    }
+
+    .header header {
+      background-color: var(--color-surface-canvas);
+      border-block-end-color: var(--color-surface-base);
+    }
   }
 </style>
