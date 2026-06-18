@@ -14,6 +14,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "@datocms/astro": "^0.6.13",
     "@datocms/cda-client": "^0.2.10",
+    "@datocms/cma-client": "^5.5.0",
     "@rive-app/canvas": "^2.38.1",
     "astro": "^6.4.6"
   },

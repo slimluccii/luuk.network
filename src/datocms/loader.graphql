@@ -8,6 +8,13 @@
 #import "~/datocms/responsive-image.fragment.graphql"
 
 query Loader($locale: SiteLocale, $fallbackLocales: [SiteLocale!]) {
+  _site {
+    faviconMetaTags {
+      tag
+      attributes
+      content
+    }
+  }
   allRoutes(locale: $locale, first: 100) {
     collection
     indexPage {
@@ -62,12 +69,12 @@ query Loader($locale: SiteLocale, $fallbackLocales: [SiteLocale!]) {
     endDate
     clientName
     cover {
-      responsiveImage(imgixParams: { ar: "16:9", fit: crop, auto: [format] }) {
+      responsiveImage(imgixParams: { ar: "16:9", fit: crop }) {
         ...ResponsiveImage
       }
     }
     clientLogo {
-      responsiveImage(imgixParams: { w: 400, h: 400, fit: crop, auto: [format] }) {
+      responsiveImage(imgixParams: { w: 400, h: 400, fit: crop }) {
         ...ResponsiveImage
       }
     }
