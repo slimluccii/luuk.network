@@ -1,7 +1,6 @@
 ---
 import NavList from "~/components/NavList.astro";
 import type { MenuItem } from "~/datocms/menu";
-import { useTranslations } from "~/i18n";
 
 interface Props {
   items: MenuItem[];
@@ -9,12 +8,13 @@ interface Props {
 }
 
 const { items, currentPageTitle } = Astro.props;
-const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
 ---
 
-<nav class="menu-sidebar" aria-label={t("main_navigation")}>
+{/* Not a landmark: the navigation role lives on the nav wrapper in Base so
+    the two viewport-specific menus don't nest duplicate navigation regions. */}
+<div class="menu-sidebar">
   <NavList items={items} currentPageTitle={currentPageTitle} showSubList />
-</nav>
+</div>
 
 <style>
   /* Wide-viewport affordance only; the drawer replaces it below the
