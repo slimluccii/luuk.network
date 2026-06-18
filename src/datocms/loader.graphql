@@ -69,7 +69,7 @@ query Loader($locale: SiteLocale, $fallbackLocales: [SiteLocale!]) {
     endDate
     clientName
     cover {
-      responsiveImage(imgixParams: { ar: "16:9", fit: crop, w: 1200 }) {
+      responsiveImage(imgixParams: { ar: "16:9", fit: crop, w: 1600 }) {
         ...ResponsiveImage
       }
     }
