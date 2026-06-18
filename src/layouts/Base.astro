@@ -14,6 +14,7 @@ import SetColorScheme from "~/components/SetColorScheme.astro";
 import ViewportState from "~/components/ViewportState.astro";
 import { getMenuItems } from "~/datocms/menu";
 import { useTranslations } from "~/i18n";
+import faviconMetaTags from "~/generated/favicon.json";
 
 import "~/generated/tokens.css";
 import "~/styles/a11y.css";
@@ -47,8 +48,8 @@ const { t } = useTranslations(locale as "en" | "nl");
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://www.datocms-assets.com" crossorigin />
+    <Seo data={faviconMetaTags as ComponentProps<typeof Seo>["data"]} />
     <Seo data={seoMetaTags} />
 
     <EnableJavascript />
