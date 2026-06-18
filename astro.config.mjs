@@ -38,11 +38,7 @@ export default defineConfig({
   },
   env: {
     schema: {
-      DATOCMS_CMA_TOKEN: envField.string({
-        context: "server",
-        access: "secret",
-      }),
-      DATOCMS_CDA_TOKEN: envField.string({
+      DATOCMS_TOKEN: envField.string({
         context: "server",
         access: "secret",
       }),

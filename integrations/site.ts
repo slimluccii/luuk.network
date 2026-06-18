@@ -1,31 +1,31 @@
 import type { AstroIntegration } from "astro";
-import { buildClient } from "@datocms/cma-client";
+import { executeQuery } from "@datocms/cda-client";
 import { loadEnv } from "vite";
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 
-const { DATOCMS_CMA_TOKEN } = loadEnv(
+const { DATOCMS_TOKEN } = loadEnv(
   process.env.NODE_ENV ?? "development",
   process.cwd(),
   ""
 );
 
-const client = buildClient({ apiToken: DATOCMS_CMA_TOKEN });
+const query = `query Site { _site { locales } }`;
 
 export default function site(): AstroIntegration {
   return {
     name: "site",
     hooks: {
-      "astro:config:setup": async ({ config, updateConfig, logger }) => {
-        const site = await client.site.find();
+      "astro:config:setup": async ({ updateConfig, logger }) => {
+        const { _site } = await executeQuery<{ _site: { locales: string[] } }>(
+          query,
+          { token: DATOCMS_TOKEN }
+        );
 
         // Set i18n here (not from a generated file imported by astro.config),
-        // so a clean checkout without `.generated/` can still boot — otherwise
-        // the config can't load the file the integration is meant to create.
+        // so a clean checkout without `.generated/` can still boot.
         updateConfig({
           i18n: {
-            defaultLocale: site.locales[0],
-            locales: site.locales,
+            defaultLocale: _site.locales[0],
+            locales: _site.locales,
             routing: {
               prefixDefaultLocale: true,
               redirectToDefaultLocale: true,
@@ -34,15 +34,7 @@ export default function site(): AstroIntegration {
           },
         });
 
-        const outputDir = join(config.root.pathname, ".generated");
-
-        await mkdir(outputDir, { recursive: true });
-        await writeFile(
-          join(outputDir, "site.json"),
-          JSON.stringify(site, null, 2)
-        );
-
-        logger.info("Generated");
+        logger.info("Configured i18n");
       },
     },
   };

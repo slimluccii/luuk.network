@@ -10,7 +10,7 @@ import type {
   TranslationsQueryVariables,
 } from "~/generated/datocms";
 
-const { DATOCMS_CDA_TOKEN } = loadEnv(process.env.NODE_ENV!, process.cwd(), "");
+const { DATOCMS_TOKEN } = loadEnv(process.env.NODE_ENV!, process.cwd(), "");
 
 export default function translations(): AstroIntegration {
   return {
@@ -28,7 +28,7 @@ export default function translations(): AstroIntegration {
             TranslationsQuery,
             TranslationsQueryVariables
           >(query, {
-            token: DATOCMS_CDA_TOKEN,
+            token: DATOCMS_TOKEN,
             variables: { locale: code as SiteLocale },
           });
 

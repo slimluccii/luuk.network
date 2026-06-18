@@ -1,7 +1,7 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import { loadEnv } from "vite";
 
-const { DATOCMS_CDA_TOKEN } = loadEnv(
+const { DATOCMS_TOKEN } = loadEnv(
   process.env.NODE_ENV ?? "development",
   process.cwd(),
   ""
@@ -11,7 +11,7 @@ const config: CodegenConfig = {
   schema: [
     {
       "https://graphql.datocms.com/": {
-        headers: { Authorization: `Bearer ${DATOCMS_CDA_TOKEN}` },
+        headers: { Authorization: `Bearer ${DATOCMS_TOKEN}` },
       },
     },
   ],
