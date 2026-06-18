@@ -18,10 +18,15 @@ const languageName = (locale: string) =>
   locale.toUpperCase();
 
 const { t } = useTranslations(current as "en" | "nl");
+
+// Unique per instance: the selector renders twice (sidebar + drawer), so a
+// fixed id would duplicate and break the label's `for` association.
+const selectId = `locale-selector-${crypto.randomUUID()}`;
 ---
 
 <locale-select class="locale-selector">
-  <select aria-label={t("language")} autocomplete="off">
+  <label for={selectId} class="sr-only">{t("language")}</label>
+  <select id={selectId} autocomplete="off">
     {
       locales.map(({ locale, path }) => (
         <option value={path} selected={locale === current} lang={locale}>
@@ -49,49 +54,75 @@ const { t } = useTranslations(current as "en" | "nl");
 </script>
 
 <style>
+  /* Mirrors <Button variant="transparent">: transparent until hover, then a
+     neutral fill plus the same lift. Text keeps `inherit` (the base button's
+     #000 is meant for icon-only use and is unreadable on the dark surface).
+     The lift lives on the wrapper so the caret rides along with the select. */
   .locale-selector {
-    position: relative;
     display: inline-flex;
+    position: relative;
     align-items: center;
+    transition: transform var(--motion-feedback);
+
+    &:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    &:active {
+      transform: translateY(0) scale(0.96);
+      transition-duration: 0.05s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+
+      &:hover,
+      &:active {
+        transform: none;
+      }
+    }
   }
 
   /* Custom caret (no chevron in the icon sprite). */
   .locale-selector::after {
-    content: "";
     position: absolute;
-    inset-inline-end: var(--spacing-size-xxs);
-    inline-size: 0.4em;
-    block-size: 0.4em;
+    rotate: 45deg;
+    inset-inline-end: var(--spacing-size-m);
     border-inline-end: 1.5px solid currentColor;
     border-block-end: 1.5px solid currentColor;
-    rotate: 45deg;
-    opacity: var(--opacity-muted);
+    inline-size: 0.4em;
+    block-size: 0.4em;
     pointer-events: none;
+    content: "";
   }
 
   .locale-selector select {
-    /* Strip native chrome so it inherits the surrounding type, leaving room
-       on the right for the custom caret. */
+    /* Strip native chrome; the wrapper provides the button shape and caret. */
     appearance: none;
+    transition:
+      background var(--motion-feedback),
+      border var(--motion-feedback),
+      color var(--motion-feedback);
+    cursor: pointer;
     margin: 0;
-    border: 0;
-    padding-block: var(--spacing-size-xxs);
-    padding-inline: 0 var(--spacing-size-m);
-    background: transparent;
+    border: 1px solid transparent;
+    background-color: transparent;
+    padding-block: var(--spacing-size-xs);
+    padding-inline: var(--spacing-size-m)
+      calc(var(--spacing-size-m) + var(--spacing-size-s));
     color: inherit;
     font: inherit;
-    opacity: var(--opacity-muted);
-    cursor: pointer;
-    transition: var(--motion-feedback) ease;
-
-    &:hover {
-      opacity: 1;
-    }
+    font-weight: 500;
 
     &:focus-visible {
       outline: 2px solid currentColor;
       outline-offset: 2px;
     }
+  }
+
+  .locale-selector:hover select {
+    border-color: var(--color-brand-neutral);
+    background-color: var(--color-brand-neutral);
   }
 
   /* The native popup list renders in the OS theme; force readable colors. */
