@@ -16,7 +16,7 @@ fragment HeroBlock on HeroBlockRecord {
     }
   }
   subjectImage {
-    responsiveImage(imgixParams: { w: 400, h: 400, fit: crop }) {
+    responsiveImage(imgixParams: { w: 600, h: 600, fit: crop }) {
       ...ResponsiveImage
     }
   }
