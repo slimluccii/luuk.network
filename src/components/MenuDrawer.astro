@@ -1,6 +1,7 @@
 ---
 import Border from "~/components/Border.astro";
 import Button from "~/components/Button.astro";
+import LocaleSelector from "~/components/LocaleSelector.astro";
 import Logo from "~/components/Logo.astro";
 import NavList from "~/components/NavList.astro";
 import type { MenuItem } from "~/datocms/menu";
@@ -9,9 +10,11 @@ import { useTranslations } from "~/i18n";
 interface Props {
   items: MenuItem[];
   currentPageTitle?: string;
+  locale: string;
+  translations: Array<{ locale: string; path: string }>;
 }
 
-const { items, currentPageTitle } = Astro.props;
+const { items, currentPageTitle, locale, translations } = Astro.props;
 const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
 ---
 
@@ -36,6 +39,11 @@ const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
           </header>
         </Border>
         <NavList items={items} currentPageTitle={currentPageTitle} showSubList />
+        {translations.length > 0 && (
+          <div class="drawer__locale">
+            <LocaleSelector current={locale} translations={translations} />
+          </div>
+        )}
         <Button class="close" type="button" icon="xmark">{t("close")}</Button>
       </nav>
     </div>
@@ -309,6 +317,8 @@ const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
   .drawer__sheet {
     /* `svh`, not `vh`/`dvh`, so the height doesn't jump when the mobile
        address bar resizes mid-swipe. */
+    display: flex;
+    flex-direction: column;
     block-size: 100svh;
     background-color: var(--color-surface-overlay);
     overflow-y: auto;
@@ -319,6 +329,15 @@ const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
 
   .drawer__sheet :global(.nav-list) {
     padding: var(--spacing-size-l);
+  }
+
+  /* Pin the locale selector to the bottom of the sheet; the auto margin
+     eats the free space left above it by the nav list. */
+  .drawer__locale {
+    margin-block-start: auto;
+    padding: var(--spacing-size-l);
+    /* Clear the floating close button (bottom-right) on tight viewports. */
+    padding-inline-end: calc(var(--spacing-size-l) + var(--header-height));
   }
 
   /* --- Header (logo) -------------------------------------------------- */

@@ -100,9 +100,16 @@ const { t } = useTranslations(locale as "en" | "nl");
       {t("skip_to_navigation")}
     </Button>
     <aside id="navigation" class="navigation" tabindex="-1">
-      <Menu items={menuItems} currentPageTitle={title} />
+      <Menu
+        items={menuItems}
+        currentPageTitle={title}
+        locale={locale}
+        translations={translations}
+      />
       {translations.length > 0 && (
-        <LocaleSelector current={locale} translations={translations} />
+        <div class="navigation__locale">
+          <LocaleSelector current={locale} translations={translations} />
+        </div>
       )}
     </aside>
     <div class="content">
@@ -191,6 +198,16 @@ const { t } = useTranslations(locale as "en" | "nl");
 
   .navigation {
     grid-area: left;
+  }
+
+  /* The standalone selector is a wide-viewport affordance only; on narrow it
+     lives inside the menu drawer (owned by <MenuDrawer>). */
+  .navigation__locale {
+    display: none;
+  }
+
+  :global(html[data-viewport="wide"]) .navigation__locale {
+    display: block;
   }
 
   /* On wide the whole left column sticks for the full viewport height, so the
