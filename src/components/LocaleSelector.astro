@@ -1,5 +1,4 @@
 ---
-import Button from "~/components/Button.astro";
 import { useTranslations } from "~/i18n";
 
 type Props = {
@@ -8,9 +7,9 @@ type Props = {
 };
 
 const { current, translations } = Astro.props;
-const others = translations
-  .filter((translation) => translation.locale !== current)
-  .sort((a, b) => a.locale.localeCompare(b.locale));
+const locales = [...translations].sort((a, b) =>
+  a.locale.localeCompare(b.locale)
+);
 
 // Endonym (the language's own name), so each option reads naturally to a
 // speaker of that language: "English", "Nederlands".
@@ -21,31 +20,83 @@ const languageName = (locale: string) =>
 const { t } = useTranslations(current as "en" | "nl");
 ---
 
-<nav class="locale-selector" aria-label={t("language")}>
-  <ul>
+<locale-select class="locale-selector">
+  <select aria-label={t("language")} autocomplete="off">
     {
-      others.map(({ locale, path }) => (
-        <li>
-          <Button
-            as="a"
-            variant="transparent"
-            href={path}
-            icon={locale as "en" | "nl"}
-            iconOnly
-            hreflang={locale}
-            aria-label={languageName(locale)}
-          />
-        </li>
+      locales.map(({ locale, path }) => (
+        <option value={path} selected={locale === current} lang={locale}>
+          {languageName(locale)}
+        </option>
       ))
     }
-  </ul>
-</nav>
+  </select>
+</locale-select>
+
+<script>
+  class LocaleSelect extends HTMLElement {
+    connectedCallback() {
+      const select = this.querySelector("select");
+      select?.addEventListener("change", () => {
+        const path = select.value;
+        if (path && path !== location.pathname) location.href = path;
+      });
+    }
+  }
+
+  if (!customElements.get("locale-select")) {
+    customElements.define("locale-select", LocaleSelect);
+  }
+</script>
 
 <style>
-  .locale-selector ul {
-    display: flex;
-    list-style-type: "";
+  .locale-selector {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* Custom caret (no chevron in the icon sprite). */
+  .locale-selector::after {
+    content: "";
+    position: absolute;
+    inset-inline-end: var(--spacing-size-xxs);
+    inline-size: 0.4em;
+    block-size: 0.4em;
+    border-inline-end: 1.5px solid currentColor;
+    border-block-end: 1.5px solid currentColor;
+    rotate: 45deg;
+    opacity: var(--opacity-muted);
+    pointer-events: none;
+  }
+
+  .locale-selector select {
+    /* Strip native chrome so it inherits the surrounding type, leaving room
+       on the right for the custom caret. */
+    appearance: none;
     margin: 0;
-    padding: 0;
+    border: 0;
+    padding-block: var(--spacing-size-xxs);
+    padding-inline: 0 var(--spacing-size-m);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    opacity: var(--opacity-muted);
+    cursor: pointer;
+    transition: var(--motion-feedback) ease;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+  }
+
+  /* The native popup list renders in the OS theme; force readable colors. */
+  .locale-selector option {
+    background-color: var(--color-surface-canvas);
+    color: inherit;
   }
 </style>
