@@ -1,13 +1,10 @@
 fragment ResponsiveImage on ResponsiveImage {
   src
   srcSet
-  webpSrcSet
-  sizes
   width
   height
-  aspectRatio
-  base64
-  bgColor
   alt
   title
+  base64
+  sizes
 }

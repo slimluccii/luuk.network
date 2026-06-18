@@ -11,7 +11,7 @@ fragment HeroBlock on HeroBlockRecord {
     }
   }
   coverImage {
-    responsiveImage(imgixParams: { ar: "16:9", fit: crop }) {
+    responsiveImage(imgixParams: { ar: "16:9", fit: crop, w: 1200 }) {
       ...ResponsiveImage
     }
   }
