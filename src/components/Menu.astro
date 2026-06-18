@@ -6,10 +6,17 @@ import type { MenuItem } from "~/datocms/menu";
 interface Props {
   items: MenuItem[];
   currentPageTitle?: string;
+  locale: string;
+  translations: Array<{ locale: string; path: string }>;
 }
 
-const { items, currentPageTitle } = Astro.props;
+const { items, currentPageTitle, locale, translations } = Astro.props;
 ---
 
 <MenuSidebar items={items} currentPageTitle={currentPageTitle} />
-<MenuDrawer items={items} currentPageTitle={currentPageTitle} />
+<MenuDrawer
+  items={items}
+  currentPageTitle={currentPageTitle}
+  locale={locale}
+  translations={translations}
+/>
