@@ -7,7 +7,7 @@ import SVGSpriter from "svg-sprite";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const { DATOCMS_CMA_TOKEN } = loadEnv(process.env.NODE_ENV!, process.cwd(), "");
+const { DATOCMS_TOKEN } = loadEnv(process.env.NODE_ENV!, process.cwd(), "");
 
 export default function icons(): AstroIntegration {
   return {
@@ -17,7 +17,7 @@ export default function icons(): AstroIntegration {
         const { allIcons } = await executeQuery<
           IconsQuery,
           IconsQueryVariables
-        >(query, { token: DATOCMS_CMA_TOKEN });
+        >(query, { token: DATOCMS_TOKEN });
 
         const spriter = new SVGSpriter({
           mode: {
