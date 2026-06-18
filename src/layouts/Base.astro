@@ -140,10 +140,6 @@ const { t } = useTranslations(locale as "en" | "nl");
 
 <style>
   html {
-    --header-height: calc(
-      var(--typography-scale-subtitle) + var(--spacing-size-xxs) * 2
-    );
-
     container-type: inline-size;
     background-color: var(--color-surface-canvas);
     scrollbar-gutter: stable;
@@ -192,8 +188,9 @@ const { t } = useTranslations(locale as "en" | "nl");
 
   .content__border {
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
+      "header"
       "stack"
       "footer";
     block-size: 100%;
@@ -227,55 +224,18 @@ const { t } = useTranslations(locale as "en" | "nl");
     block-size: 100dvh;
   }
 
+  /* In-flow header in its own grid row, so content sits below it rather than
+     scrolling under a sticky overlay. */
   .header {
     display: block;
-    position: sticky;
-    container-type: scroll-state;
-    grid-area: stack;
-    align-self: start;
-    z-index: 999;
-    inset-block-start: -1px;
+    grid-area: header;
     border-block-end-color: transparent;
-
-    &::after {
-      position: absolute;
-      transform: translateY(100%);
-      opacity: 0;
-      transition: opacity ease;
-      transition-duration: var(--motion-transition);
-      inset-block-end: 0px;
-      inset-inline: 0px;
-      background: linear-gradient(
-        to bottom,
-        var(--color-surface-base),
-        transparent
-      );
-      height: var(--spacing-size-l);
-      pointer-events: none;
-      content: "";
-    }
   }
 
   .header header {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition:
-      background-color ease,
-      border-block-end-color ease;
-    transition-duration: var(--motion-transition);
-    border-block-end: 1px solid transparent;
     padding: var(--spacing-size-xxs);
-  }
-
-  @container scroll-state(stuck: top) {
-    .header::after {
-      opacity: 1;
-    }
-
-    .header header {
-      background-color: var(--color-surface-canvas);
-      border-block-end-color: var(--color-surface-base);
-    }
   }
 </style>
