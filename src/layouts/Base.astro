@@ -99,7 +99,11 @@ const { t } = useTranslations(locale as "en" | "nl");
     <Button as="a" class="kb-only skip-link" href="#navigation">
       {t("skip_to_navigation")}
     </Button>
-    <aside id="navigation" class="navigation" tabindex="-1">
+    {/* Plain wrapper, not <aside>: this is the navigation region, not
+        complementary content. The real navigation landmarks are the inner
+        <nav>s in <MenuSidebar>/<MenuDrawer>; a <nav> here would just nest
+        duplicate landmarks. Stays the skip-link target via id + tabindex. */}
+    <div id="navigation" class="navigation" tabindex="-1">
       <Menu
         items={menuItems}
         currentPageTitle={title}
@@ -111,7 +115,7 @@ const { t } = useTranslations(locale as "en" | "nl");
           <LocaleSelector current={locale} translations={translations} />
         </div>
       )}
-    </aside>
+    </div>
     <div class="content">
       <Border class="content__border">
         <Border class="header">
@@ -221,7 +225,6 @@ const { t } = useTranslations(locale as "en" | "nl");
     position: sticky;
     flex-direction: column;
     grid-area: left;
-    padding: var(--spacing-size-xs);
     inset-block-start: 0;
     block-size: 100dvh;
   }
