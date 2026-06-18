@@ -14,7 +14,9 @@ import codegenConfig from "./codegen";
 // https://astro.build/config
 export default defineConfig({
   site: "https://luuk.network",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'passthrough'
+  }),
   integrations: [
     codegen(codegenConfig),
     site(),
