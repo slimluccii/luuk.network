@@ -32,7 +32,9 @@ const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
        light-dismiss never fires mid-swipe. -->
   <div class="drawer" id="menu-drawer" popover="manual">
     <div class="drawer__scroller">
-      <nav class="drawer__sheet" tabindex="-1" aria-label={t("main_navigation")}>
+      {/* Not a landmark (the nav wrapper in Base owns the navigation role);
+          tabindex keeps it the focus target when the drawer opens. */}
+      <div class="drawer__sheet" tabindex="-1">
         <Border class="header__border">
           <header class="header">
             <Logo />
@@ -45,7 +47,7 @@ const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
           </div>
         )}
         <Button class="close" type="button" icon="xmark">{t("close")}</Button>
-      </nav>
+      </div>
     </div>
   </div>
 </menu-drawer>

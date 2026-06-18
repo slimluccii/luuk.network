@@ -99,11 +99,10 @@ const { t } = useTranslations(locale as "en" | "nl");
     <Button as="a" class="kb-only skip-link" href="#navigation">
       {t("skip_to_navigation")}
     </Button>
-    {/* Plain wrapper, not <aside>: this is the navigation region, not
-        complementary content. The real navigation landmarks are the inner
-        <nav>s in <MenuSidebar>/<MenuDrawer>; a <nav> here would just nest
-        duplicate landmarks. Stays the skip-link target via id + tabindex. */}
-    <div id="navigation" class="navigation" tabindex="-1">
+    {/* The single navigation landmark: the viewport-specific menus inside
+        (<MenuSidebar>/<MenuDrawer>) are plain wrappers, so there's one nav,
+        not nested duplicates. Also the skip-link target via id + tabindex. */}
+    <nav id="navigation" class="navigation" aria-label={t("main_navigation")} tabindex="-1">
       <Menu
         items={menuItems}
         currentPageTitle={title}
@@ -115,7 +114,7 @@ const { t } = useTranslations(locale as "en" | "nl");
           <LocaleSelector current={locale} translations={translations} />
         </div>
       )}
-    </div>
+    </nav>
     <div class="content">
       <Border class="content__border">
         <Border class="header">
@@ -200,12 +199,11 @@ const { t } = useTranslations(locale as "en" | "nl");
     block-size: 100%;
   }
 
-  /* On narrow the aside has no in-flow content (the sidebar and standalone
-     selector are hidden, the drawer trigger is fixed), so drop its box
-     entirely — otherwise its padding leaves a gap at the top of the page. */
-  .navigation {
-    display: contents;
-  }
+  /* Mobile-first: the nav region has no in-flow content on narrow (sidebar
+     and standalone selector hidden, drawer trigger fixed), so its default
+     block box collapses to zero height — no gap, while staying a reliable
+     navigation landmark (unlike display:contents). The wide rule below gives
+     it the sticky sidebar layout. */
 
   /* The standalone selector is a wide-viewport affordance only; on narrow it
      lives inside the menu drawer (owned by <MenuDrawer>). */
