@@ -196,8 +196,11 @@ const { t } = useTranslations(locale as "en" | "nl");
     block-size: 100%;
   }
 
+  /* On narrow the aside has no in-flow content (the sidebar and standalone
+     selector are hidden, the drawer trigger is fixed), so drop its box
+     entirely — otherwise its padding leaves a gap at the top of the page. */
   .navigation {
-    grid-area: left;
+    display: contents;
   }
 
   /* The standalone selector is a wide-viewport affordance only; on narrow it
@@ -217,6 +220,8 @@ const { t } = useTranslations(locale as "en" | "nl");
     display: flex;
     position: sticky;
     flex-direction: column;
+    grid-area: left;
+    padding: var(--spacing-size-xs);
     inset-block-start: 0;
     block-size: 100dvh;
   }
