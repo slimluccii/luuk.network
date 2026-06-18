@@ -1,4 +1,5 @@
 {
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "luuk-network",
   "observability": {
     "enabled": true,
@@ -14,5 +15,8 @@
       "persist": true,
       "head_sampling_rate": 1,
     },
+  },
+  "secrets": {
+    "required": ["DATOCMS_TOKEN"],
   },
 }
