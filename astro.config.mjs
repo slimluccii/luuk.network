@@ -25,9 +25,6 @@ export default defineConfig({
     designTokens(),
     sitemap(),
   ],
-  security: {
-    csp: true,
-  },
   markdown: {
     syntaxHighlight: false,
   },
