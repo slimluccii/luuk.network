@@ -338,8 +338,6 @@ const { t } = useTranslations((Astro.currentLocale ?? "en") as "en" | "nl");
   .drawer__locale {
     margin-block-start: auto;
     padding: var(--spacing-size-l);
-    /* Clear the floating close button (bottom-right) on tight viewports. */
-    padding-inline-end: calc(var(--spacing-size-l) + var(--header-height));
   }
 
   /* --- Header (logo) -------------------------------------------------- */
