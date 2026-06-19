@@ -54,65 +54,14 @@ const selectId = `locale-selector-${crypto.randomUUID()}`;
 </script>
 
 <style>
-  /* Mirrors <Button variant="transparent">: transparent until hover, then a
-     neutral fill plus the same lift. Text keeps `inherit` (the base button's
-     #000 is meant for icon-only use and is unreadable on the dark surface).
-     The lift lives on the wrapper so the caret rides along with the select. */
-  .locale-selector {
-    display: inline-flex;
-    position: relative;
-    align-items: center;
-    transition: transform var(--motion-feedback);
-
-    &:hover {
-      transform: translateY(-2px) scale(1.02);
-    }
-
-    &:active {
-      transform: translateY(0) scale(0.96);
-      transition-duration: 0.05s;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-
-      &:hover,
-      &:active {
-        transform: none;
-      }
-    }
-  }
-
-  /* Custom caret (no chevron in the icon sprite). */
-  .locale-selector::after {
-    position: absolute;
-    rotate: 45deg;
-    inset-inline-end: var(--spacing-size-m);
-    border-inline-end: 1.5px solid currentColor;
-    border-block-end: 1.5px solid currentColor;
-    inline-size: 0.4em;
-    block-size: 0.4em;
-    pointer-events: none;
-    content: "";
-  }
-
   .locale-selector select {
-    /* Strip native chrome; the wrapper provides the button shape and caret. */
-    appearance: none;
-    transition:
-      background var(--motion-feedback),
-      border var(--motion-feedback),
-      color var(--motion-feedback);
+    display: block;
     cursor: pointer;
     margin: 0;
     border: 1px solid transparent;
     background-color: transparent;
-    padding-block: var(--spacing-size-xs);
-    padding-inline: var(--spacing-size-m)
-      calc(var(--spacing-size-m) + var(--spacing-size-s));
-    color: inherit;
-    font: inherit;
-    font-weight: 500;
+    padding: var(--spacing-size-xs);
+    inline-size: 100%;
 
     &:focus-visible {
       outline: 2px solid currentColor;
@@ -123,11 +72,5 @@ const selectId = `locale-selector-${crypto.randomUUID()}`;
   .locale-selector:hover select {
     border-color: var(--color-brand-neutral);
     background-color: var(--color-brand-neutral);
-  }
-
-  /* The native popup list renders in the OS theme; force readable colors. */
-  .locale-selector option {
-    background-color: var(--color-surface-canvas);
-    color: inherit;
   }
 </style>

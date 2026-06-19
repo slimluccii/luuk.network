@@ -40,11 +40,11 @@ const { pathname } = Astro.url;
             <ul class="nav-list__sublist" role="list">
               <li>
                 <a
-                  class="nav-list__sublink"
+                  class="nav-list-sublink"
                   href={pathname}
                   aria-current="page"
                 >
-                  <Icon name="corner-down-right" />
+                  <Icon class="nav-list-sublink__icon" name="corner-down-right" />
                   <span>{currentPageTitle}</span>
                 </a>
               </li>
@@ -64,7 +64,7 @@ const { pathname } = Astro.url;
     padding: 0;
     list-style: none;
     gap: var(--spacing-size-s);
-    margin-inline-start: var(--spacing-size-xs)
+    padding-inline: var(--spacing-size-xs);
   }
 
   .nav-list__link {
@@ -103,19 +103,15 @@ const { pathname } = Astro.url;
     list-style: none;
   }
 
-  .nav-list__sublink {
+  .nav-list-sublink {
     display: flex;
-    gap: var(--spacing-size-xs);
+    gap: var(--spacing-size-xxs);
     opacity: var(--opacity-muted);
     transition: var(--motion-feedback) ease;
     color: inherit;
     font-size: var(--typography-scale-caption);
     text-decoration: underline;
     text-decoration-color: transparent;
-
-    span {
-        margin-block-start: 2px;
-    }
 
     &:hover {
       opacity: 1;
@@ -129,6 +125,10 @@ const { pathname } = Astro.url;
 
     &[aria-current="page"] {
       opacity: 1;
+    }
+
+    & .nav-list-sublink__icon {
+        margin-block-start: 2px;
     }
   }
 </style>
