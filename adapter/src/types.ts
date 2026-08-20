@@ -20,13 +20,17 @@ export interface Options {
   /** Bundle the server into a single deployable edge script. Default: true. */
   bundle?: boolean;
   /**
-   * Which image service to configure. "passthrough" serves originals
-   * untouched; "bunny" transforms images through Bunny Optimizer URL
-   * parameters (requires the Optimizer add-on with the Dynamic Image API
-   * enabled on the pull zone). Default: "passthrough", unless you configured
-   * a non-sharp `image.service` yourself, which is left alone.
+   * Which image service to configure:
+   * - "passthrough" (default): originals are served untouched. A non-sharp
+   *   `image.service` you configured yourself is left alone.
+   * - "bunny": images are transformed through Bunny Optimizer URL parameters
+   *   (requires the Optimizer add-on with the Dynamic Image API enabled on
+   *   the pull zone). `astro dev` uses sharp so images work locally.
+   * - "compile": sharp optimizes images at build time for prerendered pages
+   *   only; on-demand rendered pages serve originals.
+   * - "custom": the adapter never touches the image configuration.
    */
-  imageService?: "passthrough" | "bunny";
+  imageService?: "passthrough" | "bunny" | "compile" | "custom";
 }
 
 export interface InternalOptions extends Options {

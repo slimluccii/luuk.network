@@ -15,9 +15,9 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./server.ts": "./src/server.ts",
-    "./session.ts": "./src/session.ts",
-    "./image.ts": "./src/image.ts",
+    "./server.ts": "./src/runtime/server.ts",
+    "./session.ts": "./src/runtime/session.ts",
+    "./image.ts": "./src/runtime/image.ts",
     "./package.json": "./package.json"
   },
   "files": [
