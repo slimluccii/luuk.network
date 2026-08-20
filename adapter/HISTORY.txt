@@ -1,0 +1,18 @@
+2026-08-20 11:44  Add Astro 7 adapter for Bunny Edge Scripting with local Deno verification
+2026-08-20 11:44  Add deploy workflow with storage sync, script deploy and cache purge
+2026-08-20 12:02  Add middleware mode for pull zone origin interception
+2026-08-20 12:14  Add provisioning script for storage, pull zone and middleware script
+2026-08-20 12:14  Prevent CDN caching of rendered responses without explicit cache headers
+2026-08-20 12:14  Expand example with dynamic routes, cookies, redirects and streaming
+2026-08-20 13:31  Add session driver, env secret support and session path blocking
+2026-08-20 13:31  Configure pull zone cookie and cache settings in provisioning
+2026-08-20 13:31  Add example pages for islands, env schema, sessions and middleware
+2026-08-20 13:43  Probe the 1MB script limit with runtime syntax highlighting
+2026-08-20 13:45  Revert "Probe the 1MB script limit with runtime syntax highlighting"
+2026-08-20 13:48  Fail the build when the edge script exceeds Bunny's size limit
+2026-08-20 14:03  Serve prerendered 404 pages and survive unreachable static origins
+2026-08-20 14:10  Default to the noop image service so sharp stays out of the bundle
+2026-08-20 14:27  Add Bunny Optimizer image service with imageService adapter option
+2026-08-20 14:39  Declare adapter features, static page headers and full imageService options
+2026-08-20 14:40  Split adapter source into build and runtime domains
+2026-08-20 15:07  Remove test site deploy workflow
