@@ -1,0 +1,40 @@
+{
+  "name": "astro-adapter-bunny",
+  "description": "Deploy your Astro site to Bunny Edge Scripting",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "keywords": [
+    "adapter",
+    "astro",
+    "astro-adapter",
+    "bunny",
+    "edge",
+    "ssr",
+    "withastro"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./server.ts": "./src/server.ts",
+    "./session.ts": "./src/session.ts",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "check": "tsc"
+  },
+  "dependencies": {
+    "@bunny.net/edgescript-sdk": "^0.12.1",
+    "esbuild": "^0.28.2",
+    "mrmime": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "astro": "^7.0.0"
+  }
+}

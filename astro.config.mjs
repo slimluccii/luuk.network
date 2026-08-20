@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig, envField } from "astro/config";
 
-import node from "@astrojs/node";
+import bunny from "astro-adapter-bunny";
 import sitemap from "@astrojs/sitemap";
 import graphql from "@rollup/plugin-graphql";
 import site from "./integrations/site";
@@ -14,8 +14,10 @@ import codegenConfig from "./codegen";
 // https://astro.build/config
 export default defineConfig({
   site: "https://luuk.network",
-  adapter: node({
-    mode: "standalone",
+  adapter: bunny({
+    mode: "middleware",
+    port: 8085,
+    staticOrigin: "http://127.0.0.1:8095",
   }),
   integrations: [
     codegen(codegenConfig),
