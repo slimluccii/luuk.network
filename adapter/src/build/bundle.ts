@@ -11,6 +11,8 @@ export async function bundleServer(
   serverDir: string,
   serverEntry: string,
   logger: AstroIntegrationLogger,
+  staticHeaders: Record<string, Record<string, string>>,
+  external: string[],
 ): Promise<void> {
   const entryPath = join(serverDir, serverEntry);
   // The bundle replaces its own input, so build in memory first.
@@ -19,6 +21,7 @@ export async function bundleServer(
     outfile: entryPath,
     bundle: true,
     write: false,
+    external,
     // Bunny caps edge scripts at 1MB
     minify: true,
     format: "esm",
@@ -26,6 +29,13 @@ export async function bundleServer(
     target: "esnext",
     conditions: ["deno"],
     logLevel: "silent",
+    // Static-page headers only exist after the server build, so they are
+    // injected here rather than through the virtual config module.
+    banner: {
+      js: `globalThis.__ASTRO_ADAPTER_BUNNY_STATIC_HEADERS__ = ${
+        JSON.stringify(staticHeaders)
+      };`,
+    },
   });
   for (const warning of result.warnings) {
     logger.warn(warning.text);

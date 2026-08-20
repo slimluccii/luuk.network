@@ -1,10 +1,11 @@
 import type { AstroIntegration } from "astro";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { bundleServer } from "./bundle.ts";
-import { createServerAliases } from "./node-compat.ts";
+import { bundleServer } from "./build/bundle.ts";
+import { resolveImageService } from "./build/image-config.ts";
+import { createServerAliases } from "./build/node-compat.ts";
+import { createConfigPlugin } from "./build/vite-plugin-config.ts";
 import type { InternalOptions, Options } from "./types.ts";
-import { createConfigPlugin } from "./vite-plugin-config.ts";
 
 export default function createIntegration(args?: Options): AstroIntegration {
   const internalOptions: InternalOptions = {
@@ -14,10 +15,11 @@ export default function createIntegration(args?: Options): AstroIntegration {
   };
   let serverDir: string;
   let serverEntry: string;
+  const staticHeaders: Record<string, Record<string, string>> = {};
   return {
     name: "astro-adapter-bunny",
     hooks: {
-      "astro:config:setup": ({ updateConfig, config }) => {
+      "astro:config:setup": ({ updateConfig, config, command }) => {
         updateConfig({
           vite: {
             plugins: [createConfigPlugin(internalOptions)],
@@ -30,22 +32,13 @@ export default function createIntegration(args?: Options): AstroIntegration {
             },
           });
         }
-        if (internalOptions.imageService === "bunny") {
-          updateConfig({
-            image: {
-              service: { entrypoint: "astro-adapter-bunny/image.ts", config: {} },
-            },
-          });
-        } else if (
-          // Astro's default image service is sharp, whose native bindings and
-          // child_process usage crash the Bunny runtime at startup.
-          String(config.image?.service?.entrypoint).includes("services/sharp")
-        ) {
-          updateConfig({
-            image: {
-              service: { entrypoint: "astro/assets/services/noop", config: {} },
-            },
-          });
+        const imageService = resolveImageService(
+          internalOptions.imageService,
+          config,
+          command,
+        );
+        if (imageService) {
+          updateConfig({ image: { service: imageService } });
         }
       },
       "astro:config:done": ({ setAdapter, config }) => {
@@ -60,15 +53,25 @@ export default function createIntegration(args?: Options): AstroIntegration {
           name: "astro-adapter-bunny",
           entrypointResolution: "auto",
           serverEntrypoint: "astro-adapter-bunny/server.ts",
+          adapterFeatures: {
+            staticHeaders: true,
+            preserveBuildClientDir: true,
+            preserveBuildServerDir: true,
+          },
           supportedAstroFeatures: {
             hybridOutput: "stable",
             staticOutput: "stable",
             serverOutput: "stable",
             envGetSecret: "stable",
+            i18nDomains: {
+              support: "experimental",
+              message:
+                "Multiple hostnames on one pull zone should route locale domains correctly, but this has not been validated on the Bunny network.",
+            },
             sharpImageService: {
               support: "limited",
               message:
-                "Sharp is not available on the Bunny Edge Scripting runtime. Use passthroughImageService or prerender image-heavy pages.",
+                "Sharp is not available on the Bunny Edge Scripting runtime. The adapter falls back to the noop image service; set imageService: 'bunny' for Bunny Optimizer.",
             },
           },
         });
@@ -89,9 +92,32 @@ export default function createIntegration(args?: Options): AstroIntegration {
           }
         }
       },
+      "astro:build:generated": ({ routeToHeaders }) => {
+        for (const [pathname, { headers }] of routeToHeaders) {
+          const entries: Record<string, string> = {};
+          headers.forEach((value, key) => {
+            entries[key] = value;
+          });
+          if (Object.keys(entries).length > 0) {
+            staticHeaders[pathname] = entries;
+          }
+        }
+      },
       "astro:build:done": async ({ logger }) => {
         if (internalOptions.bundle === false) return;
-        await bundleServer(serverDir, serverEntry, logger);
+        // In compile mode prerendering already ran with sharp; leaving the
+        // lazy `import("sharp")` unresolved keeps the native module out of
+        // the deployed bundle, and nothing prerendered ever executes it.
+        const external = internalOptions.imageService === "compile"
+          ? ["sharp"]
+          : [];
+        await bundleServer(
+          serverDir,
+          serverEntry,
+          logger,
+          staticHeaders,
+          external,
+        );
       },
     },
   };
