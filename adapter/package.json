@@ -17,6 +17,7 @@
     ".": "./src/index.ts",
     "./server.ts": "./src/server.ts",
     "./session.ts": "./src/session.ts",
+    "./image.ts": "./src/image.ts",
     "./package.json": "./package.json"
   },
   "files": [
