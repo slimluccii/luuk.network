@@ -18,6 +18,7 @@ export default defineConfig({
     mode: "middleware",
     port: 8085,
     staticOrigin: "http://127.0.0.1:8095",
+    imageService: "passthrough",
   }),
   integrations: [
     codegen(codegenConfig),

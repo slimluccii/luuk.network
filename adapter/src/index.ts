@@ -30,9 +30,17 @@ export default function createIntegration(args?: Options): AstroIntegration {
             },
           });
         }
-        // Astro's default image service is sharp, whose native bindings and
-        // child_process usage crash the Bunny runtime at startup.
-        if (String(config.image?.service?.entrypoint).includes("services/sharp")) {
+        if (internalOptions.imageService === "bunny") {
+          updateConfig({
+            image: {
+              service: { entrypoint: "astro-adapter-bunny/image.ts", config: {} },
+            },
+          });
+        } else if (
+          // Astro's default image service is sharp, whose native bindings and
+          // child_process usage crash the Bunny runtime at startup.
+          String(config.image?.service?.entrypoint).includes("services/sharp")
+        ) {
           updateConfig({
             image: {
               service: { entrypoint: "astro/assets/services/noop", config: {} },

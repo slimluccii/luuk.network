@@ -19,6 +19,14 @@ export interface Options {
   staticOrigin?: string;
   /** Bundle the server into a single deployable edge script. Default: true. */
   bundle?: boolean;
+  /**
+   * Which image service to configure. "passthrough" serves originals
+   * untouched; "bunny" transforms images through Bunny Optimizer URL
+   * parameters (requires the Optimizer add-on with the Dynamic Image API
+   * enabled on the pull zone). Default: "passthrough", unless you configured
+   * a non-sharp `image.service` yourself, which is left alone.
+   */
+  imageService?: "passthrough" | "bunny";
 }
 
 export interface InternalOptions extends Options {
