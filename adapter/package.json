@@ -16,6 +16,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./server.ts": "./src/runtime/server.ts",
+    "./handler.ts": "./src/runtime/handler.ts",
     "./session.ts": "./src/runtime/session.ts",
     "./image.ts": "./src/runtime/image.ts",
     "./package.json": "./package.json"
