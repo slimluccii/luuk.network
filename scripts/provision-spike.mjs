@@ -98,7 +98,7 @@ Provisioned:
   hostnames      https://${name}.b-cdn.net, spike-a.luuk.network, spike-b.luuk.network
 
 Export for the other scripts:
-  export SPIKE_SCRIPT_ID=${script.Id}
-  export SPIKE_PULL_ZONE_ID=${pullZone.Id}
+  export BUNNY_SCRIPT_ID=${script.Id}
+  export BUNNY_PULL_ZONE_ID=${pullZone.Id}
 
 Next: node scripts/deploy-router.mjs`);

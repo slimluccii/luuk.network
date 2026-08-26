@@ -3,10 +3,10 @@
 //   /deployments/<id>/server/entry.mjs
 //   /deployments/<id>/manifest.json
 //
-// Usage: node deploy-deployment.mjs [--id <id>] [--route <hostname>]
+// Usage: node deploy-deployment.mjs [--id <id>] [--route <hostname>]...
 //          [--pad-mb <n>] [--dry-run]
 // Env: BUNNY_STORAGE_ZONE, BUNNY_STORAGE_PASSWORD, BUNNY_STORAGE_ENDPOINT,
-//      and for --route purging: BUNNY_API_KEY, SPIKE_PULL_ZONE_ID
+//      and for --route purging: BUNNY_API_KEY, BUNNY_PULL_ZONE_ID
 
 import { execFileSync, execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
@@ -15,12 +15,12 @@ import { exit } from "node:process";
 
 const args = process.argv.slice(2);
 let id;
-let routeHostname;
+const routeHostnames = [];
 let padMb = 0;
 let dryRun = false;
 for (let i = 0; i < args.length; i++) {
   if (args[i] === "--id") id = args[++i];
-  else if (args[i] === "--route") routeHostname = args[++i];
+  else if (args[i] === "--route") routeHostnames.push(args[++i]);
   else if (args[i] === "--pad-mb") padMb = Number(args[++i]);
   else if (args[i] === "--dry-run") dryRun = true;
 }
@@ -80,13 +80,28 @@ if (padMb > 0) {
 await put(`deployments/${id}/server/entry.mjs`, entry);
 await put(`deployments/${id}/manifest.json`, await readFile("dist/manifest.json"));
 
-if (routeHostname) {
+for (const hostname of routeHostnames) {
   execFileSync("node", [
     "scripts/switch-route.mjs",
-    routeHostname,
+    hostname,
     id,
+    "--no-purge",
     ...(dryRun ? ["--dry-run"] : []),
   ], { stdio: "inherit", env: process.env });
 }
+if (routeHostnames.length > 0 && !dryRun) {
+  if (process.env.BUNNY_API_KEY && process.env.BUNNY_PULL_ZONE_ID) {
+    execFileSync("node", ["scripts/purge-pullzone.mjs"], {
+      stdio: "inherit",
+      env: process.env,
+    });
+  } else {
+    console.warn("BUNNY_API_KEY or BUNNY_PULL_ZONE_ID missing; skipping purge");
+  }
+}
 
-console.log(`deployed ${id}${routeHostname ? ` -> ${routeHostname}` : ""}`);
+console.log(
+  `deployed ${id}${
+    routeHostnames.length ? ` -> ${routeHostnames.join(", ")}` : ""
+  }`,
+);

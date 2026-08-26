@@ -1,16 +1,16 @@
 // Build and deploy the router script to Bunny Edge Scripting.
 //
 // Usage: node deploy-router.mjs
-// Env: BUNNY_API_KEY, SPIKE_SCRIPT_ID
+// Env: BUNNY_API_KEY, BUNNY_SCRIPT_ID
 
 import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { exit } from "node:process";
 
 const apiKey = process.env.BUNNY_API_KEY;
-const scriptId = process.env.SPIKE_SCRIPT_ID;
+const scriptId = process.env.BUNNY_SCRIPT_ID;
 if (!apiKey || !scriptId) {
-  console.error("Missing BUNNY_API_KEY or SPIKE_SCRIPT_ID");
+  console.error("Missing BUNNY_API_KEY or BUNNY_SCRIPT_ID");
   exit(1);
 }
 

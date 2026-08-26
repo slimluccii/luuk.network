@@ -2,7 +2,7 @@
 // the pull zone hostname and the DNS record.
 //
 // Usage: node destroy-preview.mjs <hostname> [--prefix <deploymentIdPrefix>]
-// Env: BUNNY_API_KEY, SPIKE_PULL_ZONE_ID,
+// Env: BUNNY_API_KEY, BUNNY_PULL_ZONE_ID,
 //      BUNNY_STORAGE_ZONE, BUNNY_STORAGE_PASSWORD, BUNNY_STORAGE_ENDPOINT
 
 import { exit } from "node:process";
@@ -29,7 +29,7 @@ function requireEnv(name) {
 }
 
 const apiKey = requireEnv("BUNNY_API_KEY");
-const pullZoneId = requireEnv("SPIKE_PULL_ZONE_ID");
+const pullZoneId = requireEnv("BUNNY_PULL_ZONE_ID");
 const storageZone = requireEnv("BUNNY_STORAGE_ZONE");
 const storagePassword = requireEnv("BUNNY_STORAGE_PASSWORD");
 const storageEndpoint = process.env.BUNNY_STORAGE_ENDPOINT ||

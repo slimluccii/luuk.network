@@ -3,7 +3,7 @@
 // so safe to run on every PR push.
 //
 // Usage: node provision-preview.mjs <hostname>
-// Env: BUNNY_API_KEY, SPIKE_PULL_ZONE_ID
+// Env: BUNNY_API_KEY, BUNNY_PULL_ZONE_ID
 
 import { exit } from "node:process";
 
@@ -13,9 +13,9 @@ if (!hostname) {
   exit(1);
 }
 const apiKey = process.env.BUNNY_API_KEY;
-const pullZoneId = process.env.SPIKE_PULL_ZONE_ID;
+const pullZoneId = process.env.BUNNY_PULL_ZONE_ID;
 if (!apiKey || !pullZoneId) {
-  console.error("Missing BUNNY_API_KEY or SPIKE_PULL_ZONE_ID");
+  console.error("Missing BUNNY_API_KEY or BUNNY_PULL_ZONE_ID");
   exit(1);
 }
 
