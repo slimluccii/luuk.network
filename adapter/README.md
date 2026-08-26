@@ -28,7 +28,7 @@ export default defineConfig({
 
 | Option | Default | Description |
 | --- | --- | --- |
-| `mode` | `standalone` | `middleware` hooks into a pull zone whose origin serves `dist/client`; `standalone` serves everything itself. Must match the script type on Bunny. |
+| `mode` | `standalone` | `middleware` hooks into a pull zone whose origin serves `dist/client`; `standalone` serves everything itself. Must match the script type on Bunny. `handler` builds an iife bundle whose evaluation yields a `(request) => Promise<Response>` handler (plus `dist/manifest.json` with the SSR routes), meant to be loaded by a router script; Bunny's runtime blocks dynamic `import()`, so routers evaluate the bundle with `new Function` instead. |
 | `port` | `8080` | Local server port. Ignored on Bunny. |
 | `hostname` | `0.0.0.0` | Local server hostname. Ignored on Bunny. |
 | `staticOrigin` | none | Absolute URL where `dist/client` is served. Standalone mode uses it as asset fallback on Bunny; middleware mode only uses it locally, to emulate the pull zone origin. |
