@@ -117,6 +117,27 @@ Overige bevindingen:
   komt uit env, gecheckt).
 - Productie (luuk.network) is onaangeraakt; het pad-schema botst nergens.
 
+## PR-previews (gebouwd op de spike, 2026-08-26)
+
+Elke PR krijgt `pr-<nr>.luuk.network`. Omdat de DNS-zone van luuk.network al
+bij Bunny DNS staat, gaat alles via de API; er is bewust geen wildcard
+gebruikt (per-hostname records plus gratis SSL is bewezen techniek, het
+productiedomein draait er zelf op).
+
+- `scripts/provision-preview.mjs <hostname>`: CNAME-record + hostname op de
+  pull zone + gratis certificaat. Idempotent; end-to-end getest met
+  `pr-test.luuk.network` (live in ~15s, HTTPS werkte direct).
+- `.github/workflows/preview.yml`: bij elke PR-push build, provision,
+  deployment met id `pr<nr>-<sha8>-<runid>`, routing-write, en de preview-URL
+  als (bijgewerkt) PR-comment.
+- `.github/workflows/preview-cleanup.yml` + `scripts/destroy-preview.mjs`:
+  bij PR-close verdwijnen routing-bestand, alle `pr<nr>-`-deployments,
+  hostname, certificaat en DNS-record. Ook live getest.
+- Extra repository-secret: `SPIKE_PULL_ZONE_ID` (gezet).
+
+Previews delen het router-script en dus de env-vars; per-PR secrets zijn er
+nog niet (stond al op de niet-getest-lijst).
+
 ## Beslissing (sectie 10 van het spike-document)
 
 H1 slaagt in de geest (dynamisch laden werkt, alleen via eval in plaats van
