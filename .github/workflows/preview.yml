@@ -1,0 +1,75 @@
+name: Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      PREVIEW_HOSTNAME: pr-${{ github.event.pull_request.number }}.luuk.network
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+        env:
+          DATOCMS_TOKEN: ${{ secrets.DATOCMS_TOKEN }}
+
+      - name: Provision preview hostname
+        run: node scripts/provision-preview.mjs "$PREVIEW_HOSTNAME"
+        env:
+          BUNNY_API_KEY: ${{ secrets.BUNNY_API_KEY }}
+          BUNNY_PULL_ZONE_ID: ${{ secrets.PREVIEW_PULL_ZONE_ID }}
+
+      - name: Deploy and route
+        run: |
+          SHORT_SHA=$(echo "${{ github.event.pull_request.head.sha }}" | cut -c1-8)
+          node scripts/deploy-deployment.mjs \
+            --id "pr${{ github.event.pull_request.number }}-${SHORT_SHA}-${{ github.run_id }}" \
+            --route "$PREVIEW_HOSTNAME"
+        env:
+          BUNNY_STORAGE_ZONE: ${{ secrets.BUNNY_STORAGE_ZONE }}
+          BUNNY_STORAGE_PASSWORD: ${{ secrets.BUNNY_STORAGE_PASSWORD }}
+          BUNNY_STORAGE_ENDPOINT: ${{ secrets.BUNNY_STORAGE_ENDPOINT }}
+          BUNNY_API_KEY: ${{ secrets.BUNNY_API_KEY }}
+          BUNNY_PULL_ZONE_ID: ${{ secrets.PREVIEW_PULL_ZONE_ID }}
+
+      - name: Comment preview URL
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = "<!-- preview-url -->";
+            const body = `${marker}\nPreview: https://${process.env.PREVIEW_HOSTNAME} (commit ${context.payload.pull_request.head.sha.slice(0, 8)})`;
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find((c) => c.body.startsWith(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                ...context.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
