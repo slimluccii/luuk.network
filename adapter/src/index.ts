@@ -1,4 +1,5 @@
-import type { AstroIntegration } from "astro";
+import type { AstroIntegration, IntegrationResolvedRoute } from "astro";
+import { writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { bundleServer } from "./build/bundle.ts";
@@ -15,6 +16,7 @@ export default function createIntegration(args?: Options): AstroIntegration {
   };
   let serverDir: string;
   let serverEntry: string;
+  let resolvedRoutes: IntegrationResolvedRoute[] = [];
   const staticHeaders: Record<string, Record<string, string>> = {};
   return {
     name: "astro-adapter-bunny",
@@ -52,7 +54,9 @@ export default function createIntegration(args?: Options): AstroIntegration {
         setAdapter({
           name: "astro-adapter-bunny",
           entrypointResolution: "auto",
-          serverEntrypoint: "astro-adapter-bunny/server.ts",
+          serverEntrypoint: internalOptions.mode === "handler"
+            ? "astro-adapter-bunny/handler.ts"
+            : "astro-adapter-bunny/server.ts",
           adapterFeatures: {
             staticHeaders: true,
             preserveBuildClientDir: true,
@@ -92,6 +96,9 @@ export default function createIntegration(args?: Options): AstroIntegration {
           }
         }
       },
+      "astro:routes:resolved": ({ routes }) => {
+        resolvedRoutes = routes;
+      },
       "astro:build:generated": ({ routeToHeaders }) => {
         for (const [pathname, { headers }] of routeToHeaders) {
           const entries: Record<string, string> = {};
@@ -104,6 +111,20 @@ export default function createIntegration(args?: Options): AstroIntegration {
         }
       },
       "astro:build:done": async ({ logger }) => {
+        if (internalOptions.mode === "handler") {
+          const manifest = {
+            ssrRoutes: resolvedRoutes
+              .filter((route) => !route.isPrerendered)
+              .map((route) => ({
+                pattern: route.pattern,
+                regex: route.patternRegex.source,
+              })),
+          };
+          await writeFile(
+            join(serverDir, "..", "manifest.json"),
+            JSON.stringify(manifest, null, 2),
+          );
+        }
         if (internalOptions.bundle === false) return;
         // In compile mode prerendering already ran with sharp; leaving the
         // lazy `import("sharp")` unresolved keeps the native module out of
@@ -117,6 +138,10 @@ export default function createIntegration(args?: Options): AstroIntegration {
           logger,
           staticHeaders,
           external,
+          // Handler bundles are fetched from storage, not deployed as the
+          // edge script, so Bunny's 1MB script cap does not apply to them.
+          internalOptions.mode !== "handler",
+          internalOptions.mode === "handler" ? "iife" : "esm",
         );
       },
     },

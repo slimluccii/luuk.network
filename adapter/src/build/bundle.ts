@@ -13,6 +13,8 @@ export async function bundleServer(
   logger: AstroIntegrationLogger,
   staticHeaders: Record<string, Record<string, string>>,
   external: string[],
+  enforceSizeLimit = true,
+  moduleFormat: "esm" | "iife" = "esm",
 ): Promise<void> {
   const entryPath = join(serverDir, serverEntry);
   // The bundle replaces its own input, so build in memory first.
@@ -24,7 +26,12 @@ export async function bundleServer(
     external,
     // Bunny caps edge scripts at 1MB
     minify: true,
-    format: "esm",
+    format: moduleFormat,
+    // Bunny's runtime refuses dynamic import() of any specifier (https,
+    // blob and data URLs all fail to resolve), so handler bundles are
+    // built as an iife and evaluated with new Function by the router;
+    // the global name is how the router reaches the module namespace.
+    globalName: moduleFormat === "iife" ? "__astroHandler" : undefined,
     platform: "node",
     target: "esnext",
     conditions: ["deno"],
@@ -43,7 +50,7 @@ export async function bundleServer(
   const contents = result.outputFiles[0].contents;
   // Bunny accepts oversized scripts at deploy time but every request then
   // fails with a bare 400, so exceeding the limit must fail the build.
-  if (contents.byteLength > SCRIPT_SIZE_LIMIT) {
+  if (enforceSizeLimit && contents.byteLength > SCRIPT_SIZE_LIMIT) {
     throw new Error(
       `Edge script is ${format(contents.byteLength)} but Bunny Edge Scripting caps scripts at ${
         format(SCRIPT_SIZE_LIMIT)

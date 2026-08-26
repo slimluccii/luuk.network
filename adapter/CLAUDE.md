@@ -27,6 +27,13 @@ as long as `package.json` exports follow.
   through the pull zone returns a bare 400: full outage, no fallback to the
   previous release. The build guard in `src/build/bundle.ts` exists to make
   this impossible; never remove it or the minification.
+- **Dynamic `import()` is disabled in the isolate.** Every specifier form
+  fails with "failed to resolve module": https URLs, blob: URLs, data: URLs
+  (measured 2026-08-26; `router/probe.ts` in the site repo re-runs the
+  probe). `new Function` and `eval` DO work. Handler-mode bundles are
+  therefore built as an iife with globalName `__astroHandler` and evaluated
+  by the router script; anything appended to such a bundle must be script
+  syntax, not ESM.
 - **Native modules crash the runtime at boot with the same all-400 symptom.**
   Sharp (Astro's default image service) did this via `node:child_process`.
   The adapter swaps sharp out unless configured otherwise; the `imageService`

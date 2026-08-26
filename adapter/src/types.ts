@@ -4,9 +4,12 @@ export interface Options {
    * request itself; "middleware" hooks into a pull zone whose origin is a
    * storage zone with dist/client, rendering only SSR routes and letting
    * assets pass through to the origin. Must match the script type configured
-   * on Bunny. Default: "standalone".
+   * on Bunny. "handler" produces no server at all: the bundle's default
+   * export is a `(request) => Promise<Response>` handler, meant to be
+   * imported dynamically by a router script, and the build emits a
+   * `dist/manifest.json` describing the SSR routes. Default: "standalone".
    */
-  mode?: "standalone" | "middleware";
+  mode?: "standalone" | "middleware" | "handler";
   /** Port for the local dev server. Ignored on the Bunny runtime. */
   port?: number;
   /** Hostname for the local dev server. Ignored on the Bunny runtime. */

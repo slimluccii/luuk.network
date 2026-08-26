@@ -15,9 +15,7 @@ import codegenConfig from "./codegen";
 export default defineConfig({
   site: "https://luuk.network",
   adapter: bunny({
-    mode: "middleware",
-    port: 8085,
-    staticOrigin: "http://127.0.0.1:8095",
+    mode: "handler",
     imageService: "passthrough",
   }),
   integrations: [
