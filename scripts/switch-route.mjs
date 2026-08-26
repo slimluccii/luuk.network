@@ -1,10 +1,10 @@
 // Point a hostname at a deployment (also the rollback mechanism):
-// writes /routing/<hostname>.json and purges the spike pull zone so cached
+// writes /routing/<hostname>.json and purges the pull zone so cached
 // static pages of the previous deployment disappear.
 //
 // Usage: node switch-route.mjs <hostname> <deploymentId> [--no-purge] [--dry-run]
 // Env: BUNNY_STORAGE_ZONE, BUNNY_STORAGE_PASSWORD, BUNNY_STORAGE_ENDPOINT,
-//      and for the purge: BUNNY_API_KEY, SPIKE_PULL_ZONE_ID
+//      and for the purge: BUNNY_API_KEY, BUNNY_PULL_ZONE_ID
 
 import { exit } from "node:process";
 
@@ -56,9 +56,9 @@ if (!dryRun) {
 
 if (purge) {
   const apiKey = process.env.BUNNY_API_KEY;
-  const pullZoneId = process.env.SPIKE_PULL_ZONE_ID;
+  const pullZoneId = process.env.BUNNY_PULL_ZONE_ID;
   if (!apiKey || !pullZoneId) {
-    console.warn("BUNNY_API_KEY or SPIKE_PULL_ZONE_ID missing; skipping purge");
+    console.warn("BUNNY_API_KEY or BUNNY_PULL_ZONE_ID missing; skipping purge");
   } else if (!dryRun) {
     const response = await fetch(
       `https://api.bunny.net/pullzone/${pullZoneId}/purgeCache`,
