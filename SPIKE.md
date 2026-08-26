@@ -138,6 +138,28 @@ productiedomein draait er zelf op).
 Previews delen het router-script en dus de env-vars; per-PR secrets zijn er
 nog niet (stond al op de niet-getest-lijst).
 
+## Productiemigratie (2026-08-26)
+
+Productie is in-place gemigreerd op de bestaande resources: storage zone
+`luuk-network-static` (nu met `/deployments/` en `/routing/` naast de oude
+root-statics), het bestaande edge script en de bestaande pull zone. De zone
+`slimluccii-luuk-network` was alleen voor de spike en kan weg. Volgorde was:
+router-env-vars op het script, deployment uploaden, en dan de cutover
+(`scripts/cutover-production.mjs`: routing-bestanden, router-deploy, purge).
+Geverifieerd na de cutover: SSR-redirect met `x-deployment`, statics met
+immutable `_astro`-headers, eigen 404-pagina, geblokkeerde paden, en warm
+`import=0.0` met TTFB ~72ms.
+
+De preview-pull zone deelt dezelfde storage zone; previews en productie
+verschillen alleen in pull zone en routerscript. `deploy.yml` doet nu
+router-deploys naar beide scripts plus `deploy-deployment` met routing voor
+`luuk.network` en `luuk-network.b-cdn.net`.
+
+Nog opruimen, geen haast: storage zone `slimluccii-luuk-network`, de
+`spike-a/b.luuk.network`-hostnames, de oude root-statics in
+`luuk-network-static` (let op `/_sessions/`), en het obsolete
+`BUNNY_DEPLOY_KEY`-secret.
+
 ## Beslissing (sectie 10 van het spike-document)
 
 H1 slaagt in de geest (dynamisch laden werkt, alleen via eval in plaats van

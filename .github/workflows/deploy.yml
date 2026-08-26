@@ -22,22 +22,26 @@ jobs:
         env:
           DATOCMS_TOKEN: ${{ secrets.DATOCMS_TOKEN }}
 
-      - name: Sync static assets to storage zone
-        run: node scripts/deploy-storage.mjs dist/client
+      - name: Deploy router to production script
+        run: node scripts/deploy-router.mjs
+        env:
+          BUNNY_API_KEY: ${{ secrets.BUNNY_API_KEY }}
+          BUNNY_SCRIPT_ID: ${{ secrets.BUNNY_SCRIPT_ID }}
+
+      - name: Deploy router to preview script
+        run: node scripts/deploy-router.mjs
+        env:
+          BUNNY_API_KEY: ${{ secrets.BUNNY_API_KEY }}
+          BUNNY_SCRIPT_ID: ${{ secrets.PREVIEW_SCRIPT_ID }}
+
+      - name: Deploy and route production
+        run: |
+          node scripts/deploy-deployment.mjs \
+            --route luuk.network \
+            --route luuk-network.b-cdn.net
         env:
           BUNNY_STORAGE_ZONE: ${{ secrets.BUNNY_STORAGE_ZONE }}
           BUNNY_STORAGE_PASSWORD: ${{ secrets.BUNNY_STORAGE_PASSWORD }}
           BUNNY_STORAGE_ENDPOINT: ${{ secrets.BUNNY_STORAGE_ENDPOINT }}
-
-      - name: Deploy edge script
-        uses: BunnyWay/actions/deploy-script@main
-        with:
-          script_id: ${{ secrets.BUNNY_SCRIPT_ID }}
-          deploy_key: ${{ secrets.BUNNY_DEPLOY_KEY }}
-          file: dist/server/entry.mjs
-
-      - name: Purge pull zone cache
-        run: node scripts/purge-pullzone.mjs
-        env:
           BUNNY_API_KEY: ${{ secrets.BUNNY_API_KEY }}
           BUNNY_PULL_ZONE_ID: ${{ secrets.BUNNY_PULL_ZONE_ID }}
