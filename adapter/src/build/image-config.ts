@@ -13,16 +13,13 @@ export function resolveImageService(
   imageService: Options["imageService"],
   config: AstroConfig,
   command: string,
+  bunnyServiceEntrypoint: string,
 ): ImageServiceConfig | undefined {
   if (imageService === "bunny" && command !== "dev") {
-    return { entrypoint: "astro-adapter-bunny/image.ts", config: {} };
+    return { entrypoint: bunnyServiceEntrypoint, config: {} };
   }
-  const isSharp = String(config.image?.service?.entrypoint).includes(
-    "services/sharp",
-  );
-  if (
-    (imageService === undefined || imageService === "passthrough") && isSharp
-  ) {
+  const isSharp = String(config.image?.service?.entrypoint).includes("services/sharp");
+  if ((imageService === undefined || imageService === "passthrough") && isSharp) {
     return { entrypoint: "astro/assets/services/noop", config: {} };
   }
   // "compile" and "custom" keep the configured service; compile additionally

@@ -1,76 +1,33 @@
+import { dirname, join } from "node:path";
 import type { AstroIntegrationLogger } from "astro";
 import { build } from "esbuild";
-import { mkdir, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 
-/**
- * Bundle Astro's server output into a single self-contained edge script,
- * replacing the server dir contents with just the entry file.
- */
+// The router evaluates this bundle with new Function and reads the handler
+// from globalThis.__oesterHandler; Bunny's runtime refuses dynamic import().
 export async function bundleServer(
-  serverDir: string,
-  serverEntry: string,
+  entryPath: string,
   logger: AstroIntegrationLogger,
-  staticHeaders: Record<string, Record<string, string>>,
   external: string[],
-  enforceSizeLimit = true,
-  moduleFormat: "esm" | "iife" = "esm",
-): Promise<void> {
-  const entryPath = join(serverDir, serverEntry);
-  // The bundle replaces its own input, so build in memory first.
+): Promise<Uint8Array> {
   const result = await build({
     entryPoints: [entryPath],
-    outfile: entryPath,
+    outfile: join(dirname(entryPath), "entry.oester.js"),
     bundle: true,
     write: false,
     external,
-    // Bunny caps edge scripts at 1MB
     minify: true,
-    format: moduleFormat,
-    // Bunny's runtime refuses dynamic import() of any specifier (https,
-    // blob and data URLs all fail to resolve), so handler bundles are
-    // built as an iife and evaluated with new Function by the router;
-    // the global name is how the router reaches the module namespace.
-    globalName: moduleFormat === "iife" ? "__astroHandler" : undefined,
+    format: "iife",
+    globalName: "__oesterModule",
+    footer: { js: "globalThis.__oesterHandler = __oesterModule.default;" },
     platform: "node",
     target: "esnext",
     conditions: ["deno"],
     logLevel: "silent",
-    // Static-page headers only exist after the server build, so they are
-    // injected here rather than through the virtual config module.
-    banner: {
-      js: `globalThis.__ASTRO_ADAPTER_BUNNY_STATIC_HEADERS__ = ${
-        JSON.stringify(staticHeaders)
-      };`,
-    },
   });
   for (const warning of result.warnings) {
     logger.warn(warning.text);
   }
-  const contents = result.outputFiles[0].contents;
-  // Bunny accepts oversized scripts at deploy time but every request then
-  // fails with a bare 400, so exceeding the limit must fail the build.
-  if (enforceSizeLimit && contents.byteLength > SCRIPT_SIZE_LIMIT) {
-    throw new Error(
-      `Edge script is ${format(contents.byteLength)} but Bunny Edge Scripting caps scripts at ${
-        format(SCRIPT_SIZE_LIMIT)
-      }. Deploying it would take the site down. A heavy server-side dependency is the usual cause; prerender the page that uses it or move the work elsewhere.`,
-    );
-  }
-  await rm(serverDir, { recursive: true, force: true });
-  await mkdir(serverDir, { recursive: true });
-  await writeFile(entryPath, contents);
-  logger.info(
-    `Bundled edge script to ${entryPath} (${format(contents.byteLength)} of ${
-      format(SCRIPT_SIZE_LIMIT)
-    } limit)`,
-  );
-}
-
-const SCRIPT_SIZE_LIMIT = 1024 * 1024;
-
-function format(bytes: number): string {
-  return bytes >= 1024 * 1024
-    ? `${(bytes / (1024 * 1024)).toFixed(2)}MB`
-    : `${Math.round(bytes / 1024)}KB`;
+  const output = result.outputFiles[0];
+  if (!output) throw new Error("esbuild produced no output");
+  return output.contents;
 }

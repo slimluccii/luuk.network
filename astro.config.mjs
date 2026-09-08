@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig, envField } from "astro/config";
 
-import bunny from "astro-adapter-bunny";
+import oester from "@oester/astro";
 import sitemap from "@astrojs/sitemap";
 import graphql from "@rollup/plugin-graphql";
 import site from "./integrations/site";
@@ -14,10 +14,7 @@ import codegenConfig from "./codegen";
 // https://astro.build/config
 export default defineConfig({
   site: "https://luuk.network",
-  adapter: bunny({
-    mode: "handler",
-    imageService: "passthrough",
-  }),
+  adapter: oester({ imageService: "passthrough" }),
   integrations: [
     codegen(codegenConfig),
     site(),

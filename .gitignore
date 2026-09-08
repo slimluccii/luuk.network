@@ -1,6 +1,6 @@
 # build output
 dist/
-router/dist/
+.oester/
 # generated types
 .astro/
 .generated/
