@@ -1,62 +1,43 @@
-import type { AstroIntegration, IntegrationResolvedRoute } from "astro";
-import { writeFile } from "node:fs/promises";
-import { join, relative } from "node:path";
+import { cp, mkdir, rm, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { validateManifest } from "./build-output/index.ts";
+import type { AstroConfig, AstroIntegration, IntegrationResolvedRoute } from "astro";
 import { bundleServer } from "./build/bundle.ts";
 import { resolveImageService } from "./build/image-config.ts";
+import { buildManifest } from "./build/manifest.ts";
 import { createServerAliases } from "./build/node-compat.ts";
-import { createConfigPlugin } from "./build/vite-plugin-config.ts";
-import type { InternalOptions, Options } from "./types.ts";
+import type { Options } from "./types.ts";
 
-export default function createIntegration(args?: Options): AstroIntegration {
-  const internalOptions: InternalOptions = {
-    ...args,
-    relativeClientPath: "",
-    assetsDir: "",
-  };
-  let serverDir: string;
-  let serverEntry: string;
+function runtimePath(file: string): string {
+  return fileURLToPath(new URL(`./runtime/${file}`, import.meta.url));
+}
+
+export default function createIntegration(options: Options = {}): AstroIntegration {
+  let resolvedConfig: AstroConfig;
   let resolvedRoutes: IntegrationResolvedRoute[] = [];
   const staticHeaders: Record<string, Record<string, string>> = {};
+
   return {
-    name: "astro-adapter-bunny",
+    name: "@oester/astro",
     hooks: {
       "astro:config:setup": ({ updateConfig, config, command }) => {
-        updateConfig({
-          vite: {
-            plugins: [createConfigPlugin(internalOptions)],
-          },
-        });
-        if (config.session !== false && !config.session?.driver) {
-          updateConfig({
-            session: {
-              driver: { entrypoint: "astro-adapter-bunny/session.ts" },
-            },
-          });
-        }
         const imageService = resolveImageService(
-          internalOptions.imageService,
+          options.imageService,
           config,
           command,
+          runtimePath("image.ts"),
         );
         if (imageService) {
           updateConfig({ image: { service: imageService } });
         }
       },
       "astro:config:done": ({ setAdapter, config }) => {
-        const clientPath = join(fileURLToPath(config.build.client));
-        const serverPath = join(fileURLToPath(config.build.server));
-        internalOptions.relativeClientPath = relative(serverPath, clientPath) +
-          "/";
-        internalOptions.assetsDir = config.build.assets;
-        serverDir = serverPath;
-        serverEntry = config.build.serverEntry;
+        resolvedConfig = config;
         setAdapter({
-          name: "astro-adapter-bunny",
+          name: "@oester/astro",
           entrypointResolution: "auto",
-          serverEntrypoint: internalOptions.mode === "handler"
-            ? "astro-adapter-bunny/handler.ts"
-            : "astro-adapter-bunny/server.ts",
+          serverEntrypoint: runtimePath("handler.ts"),
           adapterFeatures: {
             staticHeaders: true,
             preserveBuildClientDir: true,
@@ -67,15 +48,10 @@ export default function createIntegration(args?: Options): AstroIntegration {
             staticOutput: "stable",
             serverOutput: "stable",
             envGetSecret: "stable",
-            i18nDomains: {
-              support: "experimental",
-              message:
-                "Multiple hostnames on one pull zone should route locale domains correctly, but this has not been validated on the Bunny network.",
-            },
             sharpImageService: {
               support: "limited",
               message:
-                "Sharp is not available on the Bunny Edge Scripting runtime. The adapter falls back to the noop image service; set imageService: 'bunny' for Bunny Optimizer.",
+                "Sharp is not available on the target runtime. The adapter falls back to the noop image service; set imageService: 'bunny' for Bunny Optimizer.",
             },
           },
         });
@@ -90,8 +66,7 @@ export default function createIntegration(args?: Options): AstroIntegration {
             vite.resolve.alias = [...vite.resolve.alias, ...aliases];
           } else {
             for (const alias of aliases) {
-              (vite.resolve.alias as Record<string, string>)[alias.find] =
-                alias.replacement;
+              (vite.resolve.alias as Record<string, string>)[alias.find] = alias.replacement;
             }
           }
         }
@@ -111,37 +86,37 @@ export default function createIntegration(args?: Options): AstroIntegration {
         }
       },
       "astro:build:done": async ({ logger }) => {
-        if (internalOptions.mode === "handler") {
-          const manifest = {
-            ssrRoutes: resolvedRoutes
-              .filter((route) => !route.isPrerendered)
-              .map((route) => ({
-                pattern: route.pattern,
-                regex: route.patternRegex.source,
-              })),
-          };
-          await writeFile(
-            join(serverDir, "..", "manifest.json"),
-            JSON.stringify(manifest, null, 2),
-          );
-        }
-        if (internalOptions.bundle === false) return;
+        const root = fileURLToPath(resolvedConfig.root);
+        const clientDir = fileURLToPath(resolvedConfig.build.client);
+        const serverDir = fileURLToPath(resolvedConfig.build.server);
+        const outputDir = join(root, ".oester", "output");
+
         // In compile mode prerendering already ran with sharp; leaving the
         // lazy `import("sharp")` unresolved keeps the native module out of
         // the deployed bundle, and nothing prerendered ever executes it.
-        const external = internalOptions.imageService === "compile"
-          ? ["sharp"]
-          : [];
-        await bundleServer(
-          serverDir,
-          serverEntry,
+        const external = options.imageService === "compile" ? ["sharp"] : [];
+        const bundle = await bundleServer(
+          join(serverDir, resolvedConfig.build.serverEntry),
           logger,
-          staticHeaders,
           external,
-          // Handler bundles are fetched from storage, not deployed as the
-          // edge script, so Bunny's 1MB script cap does not apply to them.
-          internalOptions.mode !== "handler",
-          internalOptions.mode === "handler" ? "iife" : "esm",
+        );
+
+        const manifest = buildManifest({
+          buildFormat: resolvedConfig.build.format,
+          assetsDir: resolvedConfig.build.assets,
+          routes: resolvedRoutes,
+          staticHeaders,
+        });
+        const validation = validateManifest(manifest);
+        if (!validation.ok) throw new Error(`oester manifest: ${validation.errors.join("; ")}`);
+
+        await rm(outputDir, { recursive: true, force: true });
+        await mkdir(join(outputDir, "server"), { recursive: true });
+        await cp(clientDir, join(outputDir, "client"), { recursive: true });
+        await writeFile(join(outputDir, "server", "entry.js"), bundle);
+        await writeFile(join(outputDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+        logger.info(
+          `Wrote .oester/output (bundle ${Math.round(bundle.byteLength / 1024)}KB, ${manifest.routes.length} routes)`,
         );
       },
     },

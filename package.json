@@ -17,8 +17,7 @@
     "@datocms/cda-client": "^0.3.0",
     "@datocms/cma-client": "^5.7.0",
     "@rive-app/canvas": "^2.40.0",
-    "astro": "^7.2.2",
-    "astro-adapter-bunny": "file:./adapter"
+    "astro": "^7.2.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
@@ -36,6 +35,7 @@
     "prettier-plugin-css-order": "^2.2.0",
     "style-dictionary": "^5.5.1",
     "svg-sprite": "^2.0.4",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "@oester/astro": "file:./adapter"
   }
 }

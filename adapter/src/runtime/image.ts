@@ -27,9 +27,8 @@ const service: ExternalImageService = {
     if (options.width) params.set("width", String(options.width));
     if (options.height) params.set("height", String(options.height));
     if (options.quality) {
-      const quality = typeof options.quality === "number"
-        ? options.quality
-        : QUALITY_PRESETS[options.quality];
+      const quality =
+        typeof options.quality === "number" ? options.quality : QUALITY_PRESETS[options.quality];
       if (quality) params.set("quality", String(quality));
     }
     if (options.format) params.set("format", options.format);
