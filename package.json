@@ -3,7 +3,6 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "start": "HOST=0.0.0.0 node ./dist/server/entry.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -11,7 +10,6 @@
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
-    "@astrojs/node": "^11.1.2",
     "@astrojs/sitemap": "^3.7.3",
     "@datocms/astro": "^0.6.14",
     "@datocms/cda-client": "^0.3.0",

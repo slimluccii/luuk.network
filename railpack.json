@@ -1,5 +1,0 @@
-{
-  "$schema": "https://schema.railpack.com",
-  "packages": { "node": "24" },
-  "deploy": { "startCommand": "HOST=0.0.0.0 node dist/server/entry.mjs" }
-}
