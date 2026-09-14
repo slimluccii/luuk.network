@@ -1,4 +1,11 @@
-import type { HeaderRule, Manifest, Redirect, Route } from "../build-output/index.ts";
+import {
+  BUNDLE_FORMAT,
+  DEFAULT_SERVER_ENTRY,
+  type HeaderRule,
+  type Manifest,
+  type Redirect,
+  type Route,
+} from "../build-output/index.ts";
 
 // Structural subset of Astro's IntegrationResolvedRoute, so the builder
 // can be tested without constructing a full route.
@@ -73,12 +80,12 @@ export function buildManifest(input: ManifestInput): Manifest {
 
   const hasServer = routes.some((route) => route.type === "server");
   return {
-    version: 1,
-    framework: "astro",
+    version: 2,
+    framework: { name: "astro" },
     routes,
     redirects,
     headers,
-    ...(hasServer ? { server: { entry: "server/entry.js" } } : {}),
+    ...(hasServer ? { server: { entry: DEFAULT_SERVER_ENTRY, format: BUNDLE_FORMAT } } : {}),
   };
 }
 

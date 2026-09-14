@@ -1,9 +1,10 @@
+import { ENV_GLOBALS } from "../build-output/contract.ts";
 import { createApp } from "astro/app/entrypoint";
 import { setGetEnv } from "astro/env/setup";
 
-// Snapshot at evaluation: the router removes __oesterEnv right after, and another bundle may follow in this isolate.
+// Snapshot at evaluation: outside a request the router exposes the environment only while this bundle loads.
 const env: Record<string, string> = {
-  ...(globalThis as { __oesterEnv?: Record<string, string> }).__oesterEnv,
+  ...(globalThis as unknown as Record<string, Record<string, string> | undefined>)[ENV_GLOBALS[0]],
 };
 setGetEnv((key) => env[key]);
 
