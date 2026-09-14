@@ -1,7 +1,13 @@
 import { cp, mkdir, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { validateManifest } from "./build-output/index.ts";
+import {
+  CLIENT_DIRECTORY,
+  DEFAULT_SERVER_ENTRY,
+  MANIFEST_FILE,
+  OUTPUT_DIRECTORY,
+  validateManifest,
+} from "./build-output/index.ts";
 import type { AstroConfig, AstroIntegration, IntegrationResolvedRoute } from "astro";
 import { bundleServer } from "./build/bundle.ts";
 import { resolveImageService } from "./build/image-config.ts";
@@ -89,7 +95,7 @@ export default function createIntegration(options: Options = {}): AstroIntegrati
         const root = fileURLToPath(resolvedConfig.root);
         const clientDir = fileURLToPath(resolvedConfig.build.client);
         const serverDir = fileURLToPath(resolvedConfig.build.server);
-        const outputDir = join(root, ".oester", "output");
+        const outputDir = join(root, OUTPUT_DIRECTORY);
 
         // In compile mode prerendering already ran with sharp; leaving the
         // lazy `import("sharp")` unresolved keeps the native module out of
@@ -111,12 +117,12 @@ export default function createIntegration(options: Options = {}): AstroIntegrati
         if (!validation.ok) throw new Error(`oester manifest: ${validation.errors.join("; ")}`);
 
         await rm(outputDir, { recursive: true, force: true });
-        await mkdir(join(outputDir, "server"), { recursive: true });
-        await cp(clientDir, join(outputDir, "client"), { recursive: true });
-        await writeFile(join(outputDir, "server", "entry.js"), bundle);
-        await writeFile(join(outputDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+        await mkdir(dirname(join(outputDir, DEFAULT_SERVER_ENTRY)), { recursive: true });
+        await cp(clientDir, join(outputDir, CLIENT_DIRECTORY), { recursive: true });
+        await writeFile(join(outputDir, DEFAULT_SERVER_ENTRY), bundle);
+        await writeFile(join(outputDir, MANIFEST_FILE), `${JSON.stringify(manifest, null, 2)}\n`);
         logger.info(
-          `Wrote .oester/output (bundle ${Math.round(bundle.byteLength / 1024)}KB, ${manifest.routes.length} routes)`,
+          `Wrote ${OUTPUT_DIRECTORY} (bundle ${Math.round(bundle.byteLength / 1024)}KB, ${manifest.routes.length} routes)`,
         );
       },
     },

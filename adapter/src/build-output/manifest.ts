@@ -1,3 +1,5 @@
+import { BUNDLE_FORMAT } from "./contract.ts";
+
 export type RouteType = "prerendered" | "server";
 
 export interface Route {
@@ -20,14 +22,25 @@ export interface HeaderRule {
 
 export type Routing = "server-first" | "static-first";
 
+export interface Framework {
+  name: string;
+  version?: string;
+}
+
+export interface Server {
+  entry: string;
+  format: typeof BUNDLE_FORMAT;
+}
+
 export interface Manifest {
-  version: 1;
-  framework: string;
+  version: 2;
+  framework: Framework;
   routing?: Routing;
   routes: Route[];
   redirects: Redirect[];
   headers: HeaderRule[];
-  server?: { entry: string };
+  server?: Server;
+  notFound?: string;
   fallback?: string;
 }
 
@@ -65,9 +78,29 @@ export function validateManifest(json: unknown): Validation {
   if (!isRecord(json)) return { ok: false, errors: ["manifest must be an object"] };
   const errors: string[] = [];
 
-  if (json.version !== 1) errors.push("version must be 1");
-  if (typeof json.framework !== "string" || json.framework === "") {
+  const version = json.version;
+  if (version !== 1 && version !== 2) errors.push("version must be 1 or 2");
+
+  let framework: Framework | undefined;
+  if (version === 2) {
+    if (
+      !isRecord(json.framework) ||
+      typeof json.framework.name !== "string" ||
+      json.framework.name === ""
+    ) {
+      errors.push("framework must be an object with a non-empty name");
+    } else if (json.framework.version !== undefined && typeof json.framework.version !== "string") {
+      errors.push("framework.version must be a string");
+    } else {
+      framework = {
+        name: json.framework.name,
+        ...(json.framework.version === undefined ? {} : { version: json.framework.version }),
+      };
+    }
+  } else if (typeof json.framework !== "string" || json.framework === "") {
     errors.push("framework must be a non-empty string");
+  } else {
+    framework = { name: json.framework };
   }
 
   const routes: Route[] = [];
@@ -161,28 +194,38 @@ export function validateManifest(json: unknown): Validation {
   }
 
   const needsServer = routes.some((route) => route.type === "server");
-  let server: Manifest["server"];
+  let server: Server | undefined;
   if (json.server === undefined) {
     if (needsServer) errors.push("server.entry is required because a route has type server");
   } else if (!isRecord(json.server) || !isRelativeFile(json.server.entry)) {
     errors.push("server.entry must be a relative path without .. segments");
+  } else if (version === 2 && json.server.format !== BUNDLE_FORMAT) {
+    errors.push(`server.format must be ${BUNDLE_FORMAT}`);
   } else if (!needsServer) {
     errors.push("server.entry is set but no route has type server");
   } else {
-    server = { entry: json.server.entry };
+    server = { entry: json.server.entry, format: BUNDLE_FORMAT };
+  }
+
+  let notFound: string | undefined;
+  if (version === 2 && json.notFound !== undefined) {
+    if (!isRelativeFile(json.notFound))
+      errors.push("notFound must be a relative path without .. segments");
+    else notFound = json.notFound;
   }
 
   if (errors.length > 0) return { ok: false, errors };
   return {
     ok: true,
     manifest: {
-      version: 1,
-      framework: json.framework as string,
+      version: 2,
+      framework: framework as Framework,
       ...(routing ? { routing } : {}),
       routes,
       redirects,
       headers,
       ...(server ? { server } : {}),
+      ...(notFound ? { notFound } : {}),
       ...(fallback ? { fallback } : {}),
     },
   };
@@ -191,12 +234,18 @@ export function validateManifest(json: unknown): Validation {
 export type Match =
   | { kind: "server"; route: Route }
   | { kind: "prerendered"; file: string }
-  | { kind: "static"; file: string }
-  | { kind: "static-then-server"; file: string; route: Route };
+  | { kind: "static"; files: string[] }
+  | { kind: "static-then-server"; files: string[]; route: Route };
 
-function staticFile(pathname: string): string {
-  const file = pathname.endsWith("/") ? `${pathname}index.html` : pathname;
-  return file.replace(/^\/+/, "");
+// The files a path can be served from, in order of preference. A trailing
+// slash is ignored, so /docs and /docs/ both find docs/index.html.
+function staticFiles(pathname: string): string[] {
+  const path = pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+  if (path === "") return ["index.html"];
+  const lastSegment = path.slice(path.lastIndexOf("/") + 1);
+  if (lastSegment.includes(".")) return [path];
+  const pages = [`${path}/index.html`, `${path}.html`];
+  return pathname.endsWith("/") ? pages : [...pages, path];
 }
 
 export function matchRoute(manifest: Manifest, pathname: string): Match {
@@ -211,7 +260,7 @@ export function matchRoute(manifest: Manifest, pathname: string): Match {
   for (const route of manifest.routes) {
     if (route.type === "server" && route.regex && new RegExp(route.regex).test(pathname)) {
       return staticFirst
-        ? { kind: "static-then-server", file: staticFile(pathname), route }
+        ? { kind: "static-then-server", files: staticFiles(pathname), route }
         : { kind: "server", route };
     }
   }
@@ -220,5 +269,5 @@ export function matchRoute(manifest: Manifest, pathname: string): Match {
       return { kind: "prerendered", file: route.file };
     }
   }
-  return { kind: "static", file: staticFile(pathname) };
+  return { kind: "static", files: staticFiles(pathname) };
 }

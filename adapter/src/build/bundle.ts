@@ -1,9 +1,9 @@
 import { dirname, join } from "node:path";
+import { BUNDLE_FOOTER, MODULE_GLOBAL } from "../build-output/index.ts";
 import type { AstroIntegrationLogger } from "astro";
 import { build } from "esbuild";
 
-// The router evaluates this bundle with new Function and reads the handler
-// from globalThis.__oesterHandler; Bunny's runtime refuses dynamic import().
+// Bunny's runtime refuses dynamic import(), so the router evaluates this bundle as a script.
 export async function bundleServer(
   entryPath: string,
   logger: AstroIntegrationLogger,
@@ -17,8 +17,8 @@ export async function bundleServer(
     external,
     minify: true,
     format: "iife",
-    globalName: "__oesterModule",
-    footer: { js: "globalThis.__oesterHandler = __oesterModule.default;" },
+    globalName: MODULE_GLOBAL,
+    footer: { js: BUNDLE_FOOTER },
     platform: "node",
     target: "esnext",
     conditions: ["deno"],
