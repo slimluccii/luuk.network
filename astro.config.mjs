@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig, envField } from "astro/config";
 
-import oester from "@oester/astro";
+import oester from "astro-adapter-oester";
 import sitemap from "@astrojs/sitemap";
 import graphql from "@rollup/plugin-graphql";
 import site from "./integrations/site";
