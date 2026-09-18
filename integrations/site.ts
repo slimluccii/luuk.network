@@ -25,7 +25,9 @@ export default function site(): AstroIntegration {
             locales: site.locales,
             routing: {
               prefixDefaultLocale: true,
-              redirectToDefaultLocale: true,
+              // The root reads the visitor's language, which Astro's own
+              // redirect would answer before that page runs.
+              redirectToDefaultLocale: false,
               fallbackType: "redirect",
             },
           },
