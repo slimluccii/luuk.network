@@ -23,13 +23,9 @@ export default function site(): AstroIntegration {
           i18n: {
             defaultLocale: site.locales[0],
             locales: site.locales,
-            routing: {
-              prefixDefaultLocale: true,
-              // The root reads the visitor's language, which Astro's own
-              // redirect would answer before that page runs.
-              redirectToDefaultLocale: false,
-              fallbackType: "redirect",
-            },
+            // Astro's own i18n middleware is off, so src/middleware.ts is the
+            // only thing that decides which locale a visitor gets.
+            routing: "manual",
           },
         });
 
