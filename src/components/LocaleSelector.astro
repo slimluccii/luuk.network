@@ -38,10 +38,21 @@ const selectId = `locale-selector-${crypto.randomUUID()}`;
 </locale-select>
 
 <script>
+  import {
+    LOCALE_COOKIE,
+    LOCALE_COOKIE_MAX_AGE,
+  } from "~/i18n/locale-cookie";
+
   class LocaleSelect extends HTMLElement {
     connectedCallback() {
       const select = this.querySelector("select");
       select?.addEventListener("change", () => {
+        // Every localized page is static, so the choice is only known here;
+        // the root reads this cookie before it falls back to the browser.
+        const locale = select.selectedOptions[0]?.lang;
+        if (locale) {
+          document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${LOCALE_COOKIE_MAX_AGE}; samesite=lax; secure`;
+        }
         const path = select.value;
         if (path && path !== location.pathname) location.href = path;
       });
